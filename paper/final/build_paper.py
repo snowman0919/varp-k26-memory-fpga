@@ -10,6 +10,7 @@ import re
 import shutil
 import subprocess
 import sys
+import tempfile
 import xml.etree.ElementTree as ET
 from pathlib import Path
 from PIL import Image
@@ -161,17 +162,21 @@ def build_document(source: Path, css: Path, stem: Path, browser: str) -> int:
         line.rstrip() for line in plaintext.read_text(encoding="utf-8").splitlines()
     )
     plaintext.write_text(cleaned.rstrip() + "\n", encoding="utf-8")
-    run(
-        browser,
-        "--headless",
-        "--no-sandbox",
-        "--disable-gpu",
-        "--disable-dev-shm-usage",
-        "--run-all-compositor-stages-before-draw",
-        "--no-pdf-header-footer",
-        f"--print-to-pdf={pdf}",
-        html.as_uri(),
-    )
+    with tempfile.TemporaryDirectory(prefix="varp-chromium-profile-") as profile:
+        run(
+            browser,
+            "--headless",
+            "--no-sandbox",
+            "--disable-gpu",
+            "--disable-dev-shm-usage",
+            "--disable-extensions",
+            "--disable-background-networking",
+            "--run-all-compositor-stages-before-draw",
+            "--no-pdf-header-footer",
+            f"--user-data-dir={profile}",
+            f"--print-to-pdf={pdf}",
+            html.as_uri(),
+        )
     normalize_pdf_metadata(pdf)
     info = run("pdfinfo", str(pdf)).stdout
     match = re.search(r"^Pages:\s+(\d+)", info, re.MULTILINE)

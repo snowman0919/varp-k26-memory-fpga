@@ -1,5 +1,17 @@
 # Changelog
 
+## v10-submission-ready — 2026-08-01
+
+### Release closure
+
+- Corrected public metadata and added a reviewer-oriented landing page.
+- Added GitHub auto-ZIP fallback testing alongside checksum-bound Source ZIP
+  reproduction.
+- Added a 10-minute presentation, Manim animations, Korean study pack, and
+  claim-to-evidence release index.
+- Kept analytical, hybrid, estimated, RTL, and KiCad-native evidence labels
+  explicit throughout all public materials.
+
 ## 2.0.0 — public-repository cleanup
 
 - Preserved the complete v10 evidence snapshot on `v10-final` and

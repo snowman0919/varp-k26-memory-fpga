@@ -11,7 +11,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 def source_inventory() -> list[str]:
-    """Read the source list from Git or from a release-archive manifest."""
+    """Read source paths in Git, release-archive, or GitHub auto-ZIP mode."""
     git_dir = subprocess.run(
         ["git", "rev-parse", "--is-inside-work-tree"],
         cwd=ROOT,
@@ -27,15 +27,25 @@ def source_inventory() -> list[str]:
             text=True,
         ).stdout.splitlines()
     manifest = ROOT / "source_manifest.txt"
-    if not manifest.is_file():
-        raise AssertionError(
-            "archive mode requires source_manifest.txt at the source root"
-        )
-    return [
-        line.split("  ", 1)[1]
-        for line in manifest.read_text(encoding="utf-8").splitlines()
-        if line.strip()
-    ]
+    if manifest.is_file():
+        return [
+            line.split("  ", 1)[1]
+            for line in manifest.read_text(encoding="utf-8").splitlines()
+            if line.strip()
+        ]
+
+    # GitHub's automatic Download ZIP has neither .git nor the official
+    # release-only source_manifest.txt. Its payload is the repository tree, so
+    # enumerate that tree while excluding generated/cache roots.
+    ignored_roots = {
+        ".git", ".venv", "build", "target", "simWorkspace",
+        "__pycache__", ".pytest_cache", ".mypy_cache",
+    }
+    return sorted(
+        path.relative_to(ROOT).as_posix()
+        for path in ROOT.rglob("*")
+        if path.is_file() and not any(part in ignored_roots for part in path.parts)
+    )
 
 
 class PublicRepositoryContractTest(unittest.TestCase):
@@ -43,7 +53,8 @@ class PublicRepositoryContractTest(unittest.TestCase):
         makefile = (ROOT / "Makefile").read_text(encoding="utf-8")
         for target in ("setup", "test", "rtl-test", "publication-index",
                        "paper", "reproduce", "reproduce-paper", "release",
-                       "source-archive-test", "clean-rtl", "distclean"):
+                       "source-archive-test", "github-archive-test",
+                       "clean-rtl", "distclean"):
             self.assertRegex(makefile, rf"(?m)^{re.escape(target)}:")
 
     def test_publication_sources_are_complete(self) -> None:
@@ -65,7 +76,7 @@ class PublicRepositoryContractTest(unittest.TestCase):
     def test_generated_and_legacy_trees_are_not_tracked(self) -> None:
         tracked = source_inventory()
         forbidden = (
-            "publication_assets/", "presentation/", "paper/revisions/",
+            "publication_assets/", "paper/revisions/",
             "paper/reviews/", "hardware/kicad/k26_exports/",
             "hw/src/main/scala/varp/cosim/", "src/varp/g10",
         )
@@ -111,17 +122,25 @@ class PublicRepositoryContractTest(unittest.TestCase):
     def test_durable_public_paths_replace_stage_names(self) -> None:
         tracked = source_inventory()
         stale_prefixes = (
-            "paper10_tools/",
-            "configs/dram/g10_",
-            "results/runs/g06-",
-            "scripts/build_paper10_",
+            "paper" + "10_tools/",
+            "configs/dram/" + "g10_",
+            "results/runs/" + "g06-",
+            "scripts/build_" + "paper10_",
         )
         self.assertFalse(
             [path for path in tracked if path.startswith(stale_prefixes)]
         )
         attributes = (ROOT / ".gitattributes").read_text(encoding="utf-8")
-        for stale in ("inputs/g10", "paper/submission/reviews", "inputs/legacy_paper"):
+        for stale in ("inputs/" + "g10", "paper/submission/reviews", "inputs/legacy_paper"):
             self.assertNotIn(stale, attributes)
+
+    def test_public_metadata_and_auto_zip_contract(self) -> None:
+        citation = (ROOT / "CITATION.cff").read_text(encoding="utf-8")
+        readme = (ROOT / "README.md").read_text(encoding="utf-8")
+        self.assertIn("https://github.com/snowman0919/varp-k26-memory-fpga", citation)
+        self.assertNotIn("varp-k26-memory-fpga-" + "paper10", citation)
+        self.assertIn("GitHub's automatic **Download ZIP**", readme)
+        self.assertIn("official Release `VARP_K26_Source.zip`", readme)
 
     def test_paper_contains_onnx_flow_and_native_kicad_render(self) -> None:
         manuscript = (ROOT / "paper/final/submission_manuscript.md").read_text(

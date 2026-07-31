@@ -53,3 +53,5 @@ jobs:
         run: python3 scripts/build_release.py
       - name: Test Source ZIP without Git metadata
         run: make source-archive-test
+      - name: Test GitHub auto-ZIP fallback contract
+        run: make github-archive-test

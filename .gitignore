@@ -1,5 +1,10 @@
 __pycache__/
 *.py[cod]
+*.vcd
+*.fst
+*.tmp
+*.log
+*.kicad_prl
 .venv/
 .bsp/
 .metals/
@@ -15,8 +20,13 @@ dist/
 generated/bootstrap/
 simWorkspace/
 publication_assets/
-presentation/
-release/
+
+# Final public presentation and study deliverables are versioned. Temporary
+# slide-generation state and release archives remain below ignored build/.
+presentation/final/.work/
+presentation/final/prompts/
+presentation/final/drafts/
+study/.build/
 paper/final/*.html
 paper/final/*_plaintext.txt
 paper/final/*_pdf_text.txt

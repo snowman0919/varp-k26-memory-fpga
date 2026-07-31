@@ -25,12 +25,13 @@ def main() -> int:
                     raise SystemExit(f"unsafe archive member: {member.filename}")
             archive.extractall(target)
         subprocess.run(["make", "test"], cwd=target, check=True)
+        subprocess.run(["make", "publication-index"], cwd=target, check=True)
         subprocess.run(
             ["python3", "scripts/verify_clean_source.py"],
             cwd=target,
             check=True,
         )
-    print("source_archive_test=PASS")
+    print("source_archive_test=PASS commands=make_test,make_publication-index")
     return 0
 
 

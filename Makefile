@@ -2,11 +2,15 @@ PYTHON ?= python3
 PYTHONPATH := $(CURDIR)/src
 
 .PHONY: setup doctor test model-trace paper-experiments power-cost rtl-test \
-	kicad-gate figures flows paper presentation publication-index evidence-index \
-	reproduce reproduce-paper release source-archive-test clean clean-rtl distclean
+	kicad-gate figures flows paper presentation animations setup-presentation study publication-index evidence-index \
+	reproduce reproduce-paper release source-archive-test github-archive-test \
+	clean clean-rtl distclean
 
 setup:
 	$(PYTHON) -m pip install -r requirements.txt
+
+setup-presentation:
+	$(PYTHON) -m pip install -r requirements-presentation.txt
 
 doctor:
 	$(PYTHON) scripts/audit_phase_a_toolchain.py
@@ -37,6 +41,12 @@ publication-index:
 
 figures flows presentation: publication-index
 
+animations:
+	$(PYTHON) presentation/tools/generate_animations.py
+
+study:
+	$(PYTHON) scripts/build_study_pack.py
+
 paper: publication-index
 	$(PYTHON) paper/final/build_paper.py
 
@@ -53,6 +63,9 @@ release: reproduce
 
 source-archive-test:
 	$(PYTHON) scripts/test_source_archive.py
+
+github-archive-test:
+	$(PYTHON) scripts/test_github_archive.py
 
 clean:
 	rm -rf build

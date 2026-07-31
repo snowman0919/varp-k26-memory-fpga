@@ -1,15 +1,15 @@
 cff-version: 1.2.0
 message: "If you use this research artifact, cite the repository and accompanying manuscript."
-title: "VARP K26–Memory-FPGA Research Artifact"
+title: "VARP K26–Memory FPGA Accelerator Research Artifact"
 type: software
-version: "2.0.0"
-date-released: "2026-07-31"
+version: "v10-submission-ready"
+date-released: "2026-08-01"
 authors:
-  - family-names: "Choi"
-    given-names: "Yunhyuk"
+  - family-names: "CHOI"
+    given-names: "YUNHYUK"
     affiliation: "Korea Digital Media High School"
     orcid: "https://orcid.org/0009-0006-3537-0249"
-repository-code: "https://github.com/snowman0919/varp-k26-memory-fpga-paper10"
+repository-code: "https://github.com/snowman0919/varp-k26-memory-fpga"
 license: "LicenseRef-VARP-K26-Research-Evidence-Source-Available"
 keywords:
   - Gemma 3

@@ -7,6 +7,7 @@ import argparse
 import hashlib
 import json
 from pathlib import Path
+import shutil
 import subprocess
 from typing import Iterable
 import zipfile
@@ -24,7 +25,7 @@ rl_config.invariant = 1
 
 ROOT = Path(__file__).resolve().parents[1]
 EVIDENCE = ROOT / "build" / "evidence"
-RELEASE = ROOT / "build" / "release"
+RELEASE = ROOT / "release"
 
 RECORDS = (
     (
@@ -113,6 +114,18 @@ RECORDS = (
     ),
 )
 
+CLAIM_LINKS = (
+    ("C01", "Architecture planes and open payload boundary", "paper/final/figures/paper_f01_evidence_path.svg", "paper/final/submission_manuscript.md#iv-k26memory-fpga-시스템", "hw/src/main/scala/varp/k26/K26WorkStealingTop.scala", "docs/architecture.md"),
+    ("C02", "7,837 graph nodes and 183 projections/token", "paper/final/figures/paper_f02_onnx_runtime_graph.svg", "experiments/gemma3_1b/projection_trace.csv", "experiments/gemma3_1b/generate_trace.py", "experiments/gemma3_1b/trace_manifest.json"),
+    ("C03", "S0/S1/S2/S3 policy and evidence boundary", "paper/final/figures/paper_f03_policy_boundary.svg", "results/experiments/scheduler_controlled.csv", "scripts/run_k26_experiments.py", "src/varp/k26_scheduler_model.py"),
+    ("C04", "Three bounded steals preserve MatVec identity", "paper/final/figures/paper_f04_waveform_identity.svg", "evidence/waveforms/work_stealing_events.csv", "scripts/build_rtl_evidence.py", "hw/src/test/scala/varp/WorkStealingEvidenceSpec.scala"),
+    ("C05", "S3 lowers skew/mixed p95 versus S1", "paper/final/figures/paper_f05_tail_latency.svg", "build/publication_assets/tables/scheduler_core_metrics.csv", "publication_tools/generate_publication_and_presentation.py", "results/experiments/scheduler_controlled.csv"),
+    ("C06", "S3 p95/completion/remote-byte trade-off versus S2", "paper/final/figures/paper_f06_tradeoff.svg", "build/publication_assets/tables/scheduler_core_metrics.csv", "publication_tools/generate_publication_and_presentation.py", "results/experiments/scheduler_controlled.csv"),
+    ("C07", "Energy and cost are sensitivity estimates", "build/publication_assets/figures/F06/figure.svg", "results/power_cost/energy_category_model.csv", "scripts/build_power_cost_evidence.py", "cost/memory_die_price_snapshot.csv"),
+    ("C08", "Native KiCad coupon is not fabrication-ready", "paper/final/figures/paper_f07_kicad_coupon_render.png", "hardware/kicad/k26_reports/k26_scope_manifest.json", "scripts/verify_k26_kicad.py", "hardware/kicad/controlled_review.md"),
+    ("C09", "Blocked physical performance and power claims", "build/publication_assets/figures/F03/figure.svg", "build/publication_assets/tables/blocked_evidence.csv", "scripts/audit_phase_a_toolchain.py", "docs/evidence.md"),
+)
+
 
 def sha256(path: Path) -> str:
     digest = hashlib.sha256()
@@ -161,6 +174,19 @@ def write_index(rows: list[dict[str, object]]) -> None:
         lines.append(
             f"| {row['id']} | {row['evidence_type']} | `{row['path']}` | "
             f"{row['allowed_interpretation']} | {row['forbidden_interpretation']} |"
+        )
+    lines.extend(
+        [
+            "",
+            "## Claim-to-evidence crosswalk",
+            "",
+            "| Claim | Figure | Table / result | Generator / verifier | Primary source |",
+            "|---|---|---|---|---|",
+        ]
+    )
+    for identifier, claim, figure, table, script, source in CLAIM_LINKS:
+        lines.append(
+            f"| {identifier}: {claim} | `{figure}` | `{table}` | `{script}` | `{source}` |"
         )
     lines.extend(
         [
@@ -236,7 +262,7 @@ def write_index(rows: list[dict[str, object]]) -> None:
 def write_manifest(rows: list[dict[str, object]]) -> None:
     manifest = {
         "schema_version": "varp.k26.evidence-manifest.v1",
-        "release": "main-v2",
+        "release": "v10-submission-ready",
         "model_weights_included": False,
         "records": rows,
         "global_claim_boundary": (
@@ -266,7 +292,7 @@ def write_manifest(rows: list[dict[str, object]]) -> None:
 
 def tracked_files() -> list[Path]:
     result = subprocess.run(
-        ["git", "ls-files", "-z"],
+        ["git", "ls-files", "--cached", "--others", "--exclude-standard", "-z"],
         cwd=ROOT,
         check=True,
         capture_output=True,
@@ -289,7 +315,9 @@ def safe_for_release(path: Path) -> bool:
     }
     if path.name.lower() in forbidden_names:
         return False
-    if any(part in {".git", "target", ".venv"} for part in relative.parts):
+    if relative.parts and relative.parts[0] == "release":
+        return False
+    if any(part in {".git", "target", ".venv", ".work", "drafts", "__pycache__"} for part in relative.parts):
         return False
     if path.is_file() and path.stat().st_size > 100 * 1024 * 1024:
         return False
@@ -381,8 +409,11 @@ def build_archives() -> None:
     )
     deterministic_zip(
         RELEASE / "VARP_K26_Paper_and_Presentation.zip",
-        tracked_under("paper/final", "paper/technical_report")
-        + under("build/presentation"),
+        under("paper/final", "paper/technical_report", "presentation/final"),
+    )
+    deterministic_zip(
+        RELEASE / "VARP_K26_Study_Pack.zip",
+        under("study"),
     )
     archives = sorted(RELEASE.glob("VARP_K26_*.zip"))
     (RELEASE / "checksums.sha256").write_text(
@@ -393,7 +424,7 @@ def build_archives() -> None:
         json.dumps(
             {
                 "schema_version": "varp.k26.release-manifest.v1",
-                "tag": "main-v2",
+                "tag": "v10-submission-ready",
                 "model_weights_included": False,
                 "archives": [
                     {
@@ -423,11 +454,14 @@ def main() -> int:
     rows = resolve_records()
     write_index(rows)
     write_manifest(rows)
+    RELEASE.mkdir(parents=True, exist_ok=True)
+    shutil.copy2(EVIDENCE / "evidence_index.md", RELEASE / "evidence_index.md")
+    shutil.copy2(EVIDENCE / "evidence_index.pdf", RELEASE / "evidence_index.pdf")
     if not arguments.index_only:
         build_archives()
     print(
         f"VARP K26 evidence records={len(rows)} "
-        f"archives={0 if arguments.index_only else 4}"
+        f"archives={0 if arguments.index_only else 5}"
     )
     return 0
 
