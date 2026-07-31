@@ -1,0 +1,51 @@
+{
+  "schema_version": "varp.k26.paper-first-plan.v1",
+  "evidence_type": "analytical-model",
+  "job_count": 1000,
+  "workloads": ["balanced", "skew", "hotspot", "bursty", "mixed"],
+  "schedulers": ["S0", "S0-physical", "S1", "S2", "S3", "Oracle"],
+  "supported_factors": {
+    "clusters": [1, 2, 4],
+    "channels": [1, 2, 4],
+    "bundles": [1, 2, 4],
+    "link_width_bits": [32, 64, 128, 256]
+  },
+  "paper_first_subsets": [
+    {
+      "name": "scheduler",
+      "vary": "scheduler",
+      "values": ["S0", "S0-physical", "S1", "S2", "S3", "Oracle"],
+      "workloads": ["balanced", "skew", "hotspot", "bursty", "mixed"],
+      "fixed": {"clusters": 4, "channels": 4, "bundles": 4, "link_width_bits": 128}
+    },
+    {
+      "name": "clusters",
+      "vary": "clusters",
+      "values": [1, 2, 4],
+      "workloads": ["skew", "mixed"],
+      "fixed": {"scheduler": "S3", "channels": 4, "bundles": 4, "link_width_bits": 128}
+    },
+    {
+      "name": "channels",
+      "vary": "channels",
+      "values": [1, 2, 4],
+      "workloads": ["hotspot", "mixed"],
+      "fixed": {"scheduler": "S3", "clusters": 4, "bundles": 4, "link_width_bits": 128}
+    },
+    {
+      "name": "bundles",
+      "vary": "bundles",
+      "values": [1, 2, 4],
+      "workloads": ["skew", "mixed"],
+      "fixed": {"scheduler": "S3", "clusters": 4, "channels": 4, "link_width_bits": 128}
+    },
+    {
+      "name": "link_width",
+      "vary": "link_width_bits",
+      "values": [32, 64, 128, 256],
+      "workloads": ["mixed"],
+      "fixed": {"scheduler": "S3", "clusters": 4, "channels": 4, "bundles": 4}
+    }
+  ],
+  "claim_boundary": "These are analytical reference-model results, not RTL, DRAMsim3, synthesis, or physical measurements."
+}

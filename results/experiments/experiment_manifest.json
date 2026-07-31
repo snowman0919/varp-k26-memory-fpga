@@ -1,0 +1,34 @@
+{
+  "all_correct": true,
+  "any_timeout": false,
+  "claim_boundary": "These are analytical reference-model results, not RTL, DRAMsim3, synthesis, or physical measurements.",
+  "evidence_type": "analytical-model",
+  "full_cartesian_rows_not_run": 48600,
+  "paper_first_factor_cases": 52,
+  "plan_path": "configs/experiments/k26_scheduler_paper.json",
+  "plan_sha256": "feccf8509dac7a3b55fc32ac6551c66fad9d3715497a1a5cbc9ee64803677051",
+  "process_rows": 780,
+  "quick": false,
+  "results": {
+    "path": "results/experiments/scheduler_controlled.csv",
+    "sha256": "a125ceb4e2d49ac9235c2ee44a130f2ca12129b02ee6ee02d67cbda66c3f8ebd"
+  },
+  "schema_version": "varp.k26.experiment-manifest.v1",
+  "seed_ledger": {
+    "path": "results/experiments/seed_ledger.csv",
+    "rows": 25,
+    "sha256": "e831eb819a3132a2ce8d1c4410efbc8ab586ca33fdc2ec02fb97c28b65efc36e"
+  },
+  "seed_plan_path": "configs/experiments/k26_seed_ledger.json",
+  "seed_plan_sha256": "691992c3768f83c6c8312d3ae521306865ad3c98fe8afb2af117e0130ab96861",
+  "service_overlap_sensitivity": {
+    "claim_boundary": "analytical bounding comparison; neither mode is a validated DMA/link/DDR protocol timing model",
+    "modes": [
+      "full",
+      "sequential"
+    ],
+    "path": "results/experiments/service_overlap_sensitivity.csv",
+    "rows": 180,
+    "sha256": "247538e230bae627971b70a718acf6d84daafb5df6b713ab0d928592bab2fe9c"
+  }
+}

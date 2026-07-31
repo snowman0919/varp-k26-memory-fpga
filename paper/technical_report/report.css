@@ -1,0 +1,89 @@
+@page {
+  size: A4;
+  margin: 17mm 18mm 18mm 18mm;
+}
+
+html {
+  font-family: "Noto Sans CJK KR", "Noto Sans KR", "NanumGothic", sans-serif;
+  color: #111827;
+}
+
+body {
+  font-size: 9.3pt;
+  line-height: 1.52;
+  margin: 0;
+  text-align: justify;
+  word-break: keep-all;
+}
+
+#title-block-header {
+  text-align: center;
+  margin: 15mm 8mm 20mm;
+  break-after: page;
+}
+
+h1 {
+  font-size: 15pt;
+  margin: 6mm 0 2mm;
+  border-bottom: 0.7pt solid #64748b;
+  padding-bottom: 1mm;
+  break-after: avoid;
+}
+
+h2 {
+  font-size: 11.5pt;
+  margin: 4mm 0 1.5mm;
+  break-after: avoid;
+}
+
+p {
+  margin: 0 0 2.2mm;
+  orphans: 3;
+  widows: 3;
+}
+
+img {
+  width: 88%;
+  max-height: 118mm;
+  object-fit: contain;
+  display: block;
+  margin: 2mm auto;
+}
+
+figure {
+  margin: 3mm 0;
+  break-inside: avoid;
+}
+
+figcaption {
+  font-size: 8.4pt;
+  text-align: center;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 8pt;
+  margin: 2mm 0 4mm;
+  break-inside: avoid;
+}
+
+th, td {
+  border: 0.35pt solid #64748b;
+  padding: 1.2mm;
+  vertical-align: top;
+}
+
+th {
+  background: #e5e7eb;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.title {
+  font-size: 22pt;
+  line-height: 1.25;
+}

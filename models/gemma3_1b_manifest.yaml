@@ -1,0 +1,823 @@
+schema_version: varp.gemma3.model-manifest.v1
+status: available-local-external-artifact
+model_family: Gemma 3
+variant: 1B
+artifact_path: ${GEMMA3_1B_ONNX_DIR}
+artifact_policy: read-only; not copied into Git
+provenance: pre-existing local artifact; original acquisition transaction and exporter
+  revision are not present
+files:
+- name: model.onnx
+  path: ${GEMMA3_1B_ONNX_DIR}/model.onnx
+  size_bytes: 1468819
+  sha256: e63d7c5e59f8c54a17cb7302529350a186b173701c4809db1b4eb1fd43602ad2
+- name: model.onnx_data
+  path: ${GEMMA3_1B_ONNX_DIR}/model.onnx_data
+  size_bytes: 5207504384
+  sha256: c10ce493923725d45cae3c299ba2f8b9b6fe9183d93e88992595dd70db4b47e5
+- name: config.json
+  path: ${GEMMA3_1B_ONNX_DIR}/config.json
+  size_bytes: 1620
+  sha256: ee7011f01e165b755b6b002de0249d8a079627b7a707375e615d378fd90e5ef3
+- name: tokenizer.json
+  path: ${GEMMA3_1B_ONNX_DIR}/tokenizer.json
+  size_bytes: 33384568
+  sha256: 4667f2089529e8e7657cfb6d1c19910ae71ff5f28aa7ab2ff2763330affad795
+- name: tokenizer_config.json
+  path: ${GEMMA3_1B_ONNX_DIR}/tokenizer_config.json
+  size_bytes: 1155387
+  sha256: 983c80895e7b188911f5ccfbb4f780a4e73fb3131ed2080a3e847ef8623cfdca
+- name: special_tokens_map.json
+  path: ${GEMMA3_1B_ONNX_DIR}/special_tokens_map.json
+  size_bytes: 662
+  sha256: 2f7b0adf4fb469770bb1490e3e35df87b1dc578246c5e7e6fc76ecf33213a397
+- name: generation_config.json
+  path: ${GEMMA3_1B_ONNX_DIR}/generation_config.json
+  size_bytes: 210
+  sha256: 3f6c815fb4d217ffc4690d2898e24b2cee99dab9b878203b628371af4dca1b36
+- name: chat_template.jinja
+  path: ${GEMMA3_1B_ONNX_DIR}/chat_template.jinja
+  size_bytes: 1532
+  sha256: 7de1c58e208eda46e9c7f86397df37ec49883aeece39fb961e0a6b24088dd3c4
+onnx:
+  ir_version: 8
+  opsets:
+  - domain: ai.onnx
+    version: 17
+  graph_nodes: 7837
+  onnx_checker: passed-full_check_false
+  initializers: 341
+  initializer_dtypes:
+  - float
+  external_data_locations:
+  - model.onnx_data
+  inputs:
+  - name: input_ids
+    dtype: int64
+    shape:
+    - batch_size
+    - sequence_length
+  - name: attention_mask
+    dtype: int64
+    shape:
+    - batch_size
+    - past_sequence_length + sequence_length
+  - name: past_key_values.0.key
+    dtype: float
+    shape:
+    - batch_size
+    - 1
+    - past_sequence_length
+    - 256
+  - name: past_key_values.0.value
+    dtype: float
+    shape:
+    - batch_size
+    - 1
+    - past_sequence_length
+    - 256
+  - name: past_key_values.1.key
+    dtype: float
+    shape:
+    - batch_size
+    - 1
+    - past_sequence_length
+    - 256
+  - name: past_key_values.1.value
+    dtype: float
+    shape:
+    - batch_size
+    - 1
+    - past_sequence_length
+    - 256
+  - name: past_key_values.2.key
+    dtype: float
+    shape:
+    - batch_size
+    - 1
+    - past_sequence_length
+    - 256
+  - name: past_key_values.2.value
+    dtype: float
+    shape:
+    - batch_size
+    - 1
+    - past_sequence_length
+    - 256
+  - name: past_key_values.3.key
+    dtype: float
+    shape:
+    - batch_size
+    - 1
+    - past_sequence_length
+    - 256
+  - name: past_key_values.3.value
+    dtype: float
+    shape:
+    - batch_size
+    - 1
+    - past_sequence_length
+    - 256
+  - name: past_key_values.4.key
+    dtype: float
+    shape:
+    - batch_size
+    - 1
+    - past_sequence_length
+    - 256
+  - name: past_key_values.4.value
+    dtype: float
+    shape:
+    - batch_size
+    - 1
+    - past_sequence_length
+    - 256
+  - name: past_key_values.5.key
+    dtype: float
+    shape:
+    - batch_size
+    - 1
+    - past_sequence_length
+    - 256
+  - name: past_key_values.5.value
+    dtype: float
+    shape:
+    - batch_size
+    - 1
+    - past_sequence_length
+    - 256
+  - name: past_key_values.6.key
+    dtype: float
+    shape:
+    - batch_size
+    - 1
+    - past_sequence_length
+    - 256
+  - name: past_key_values.6.value
+    dtype: float
+    shape:
+    - batch_size
+    - 1
+    - past_sequence_length
+    - 256
+  - name: past_key_values.7.key
+    dtype: float
+    shape:
+    - batch_size
+    - 1
+    - past_sequence_length
+    - 256
+  - name: past_key_values.7.value
+    dtype: float
+    shape:
+    - batch_size
+    - 1
+    - past_sequence_length
+    - 256
+  - name: past_key_values.8.key
+    dtype: float
+    shape:
+    - batch_size
+    - 1
+    - past_sequence_length
+    - 256
+  - name: past_key_values.8.value
+    dtype: float
+    shape:
+    - batch_size
+    - 1
+    - past_sequence_length
+    - 256
+  - name: past_key_values.9.key
+    dtype: float
+    shape:
+    - batch_size
+    - 1
+    - past_sequence_length
+    - 256
+  - name: past_key_values.9.value
+    dtype: float
+    shape:
+    - batch_size
+    - 1
+    - past_sequence_length
+    - 256
+  - name: past_key_values.10.key
+    dtype: float
+    shape:
+    - batch_size
+    - 1
+    - past_sequence_length
+    - 256
+  - name: past_key_values.10.value
+    dtype: float
+    shape:
+    - batch_size
+    - 1
+    - past_sequence_length
+    - 256
+  - name: past_key_values.11.key
+    dtype: float
+    shape:
+    - batch_size
+    - 1
+    - past_sequence_length
+    - 256
+  - name: past_key_values.11.value
+    dtype: float
+    shape:
+    - batch_size
+    - 1
+    - past_sequence_length
+    - 256
+  - name: past_key_values.12.key
+    dtype: float
+    shape:
+    - batch_size
+    - 1
+    - past_sequence_length
+    - 256
+  - name: past_key_values.12.value
+    dtype: float
+    shape:
+    - batch_size
+    - 1
+    - past_sequence_length
+    - 256
+  - name: past_key_values.13.key
+    dtype: float
+    shape:
+    - batch_size
+    - 1
+    - past_sequence_length
+    - 256
+  - name: past_key_values.13.value
+    dtype: float
+    shape:
+    - batch_size
+    - 1
+    - past_sequence_length
+    - 256
+  - name: past_key_values.14.key
+    dtype: float
+    shape:
+    - batch_size
+    - 1
+    - past_sequence_length
+    - 256
+  - name: past_key_values.14.value
+    dtype: float
+    shape:
+    - batch_size
+    - 1
+    - past_sequence_length
+    - 256
+  - name: past_key_values.15.key
+    dtype: float
+    shape:
+    - batch_size
+    - 1
+    - past_sequence_length
+    - 256
+  - name: past_key_values.15.value
+    dtype: float
+    shape:
+    - batch_size
+    - 1
+    - past_sequence_length
+    - 256
+  - name: past_key_values.16.key
+    dtype: float
+    shape:
+    - batch_size
+    - 1
+    - past_sequence_length
+    - 256
+  - name: past_key_values.16.value
+    dtype: float
+    shape:
+    - batch_size
+    - 1
+    - past_sequence_length
+    - 256
+  - name: past_key_values.17.key
+    dtype: float
+    shape:
+    - batch_size
+    - 1
+    - past_sequence_length
+    - 256
+  - name: past_key_values.17.value
+    dtype: float
+    shape:
+    - batch_size
+    - 1
+    - past_sequence_length
+    - 256
+  - name: past_key_values.18.key
+    dtype: float
+    shape:
+    - batch_size
+    - 1
+    - past_sequence_length
+    - 256
+  - name: past_key_values.18.value
+    dtype: float
+    shape:
+    - batch_size
+    - 1
+    - past_sequence_length
+    - 256
+  - name: past_key_values.19.key
+    dtype: float
+    shape:
+    - batch_size
+    - 1
+    - past_sequence_length
+    - 256
+  - name: past_key_values.19.value
+    dtype: float
+    shape:
+    - batch_size
+    - 1
+    - past_sequence_length
+    - 256
+  - name: past_key_values.20.key
+    dtype: float
+    shape:
+    - batch_size
+    - 1
+    - past_sequence_length
+    - 256
+  - name: past_key_values.20.value
+    dtype: float
+    shape:
+    - batch_size
+    - 1
+    - past_sequence_length
+    - 256
+  - name: past_key_values.21.key
+    dtype: float
+    shape:
+    - batch_size
+    - 1
+    - past_sequence_length
+    - 256
+  - name: past_key_values.21.value
+    dtype: float
+    shape:
+    - batch_size
+    - 1
+    - past_sequence_length
+    - 256
+  - name: past_key_values.22.key
+    dtype: float
+    shape:
+    - batch_size
+    - 1
+    - past_sequence_length
+    - 256
+  - name: past_key_values.22.value
+    dtype: float
+    shape:
+    - batch_size
+    - 1
+    - past_sequence_length
+    - 256
+  - name: past_key_values.23.key
+    dtype: float
+    shape:
+    - batch_size
+    - 1
+    - past_sequence_length
+    - 256
+  - name: past_key_values.23.value
+    dtype: float
+    shape:
+    - batch_size
+    - 1
+    - past_sequence_length
+    - 256
+  - name: past_key_values.24.key
+    dtype: float
+    shape:
+    - batch_size
+    - 1
+    - past_sequence_length
+    - 256
+  - name: past_key_values.24.value
+    dtype: float
+    shape:
+    - batch_size
+    - 1
+    - past_sequence_length
+    - 256
+  - name: past_key_values.25.key
+    dtype: float
+    shape:
+    - batch_size
+    - 1
+    - past_sequence_length
+    - 256
+  - name: past_key_values.25.value
+    dtype: float
+    shape:
+    - batch_size
+    - 1
+    - past_sequence_length
+    - 256
+  outputs:
+  - name: logits
+    dtype: float
+    shape:
+    - batch_size
+    - sequence_length
+    - 262144
+  - name: present.0.key
+    dtype: float
+    shape:
+    - batch_size
+    - 1
+    - past_sequence_length + sequence_length
+    - 256
+  - name: present.0.value
+    dtype: float
+    shape:
+    - batch_size
+    - 1
+    - past_sequence_length + sequence_length
+    - 256
+  - name: present.1.key
+    dtype: float
+    shape:
+    - batch_size
+    - 1
+    - past_sequence_length + sequence_length
+    - 256
+  - name: present.1.value
+    dtype: float
+    shape:
+    - batch_size
+    - 1
+    - past_sequence_length + sequence_length
+    - 256
+  - name: present.2.key
+    dtype: float
+    shape:
+    - batch_size
+    - 1
+    - past_sequence_length + sequence_length
+    - 256
+  - name: present.2.value
+    dtype: float
+    shape:
+    - batch_size
+    - 1
+    - past_sequence_length + sequence_length
+    - 256
+  - name: present.3.key
+    dtype: float
+    shape:
+    - batch_size
+    - 1
+    - past_sequence_length + sequence_length
+    - 256
+  - name: present.3.value
+    dtype: float
+    shape:
+    - batch_size
+    - 1
+    - past_sequence_length + sequence_length
+    - 256
+  - name: present.4.key
+    dtype: float
+    shape:
+    - batch_size
+    - 1
+    - past_sequence_length + sequence_length
+    - 256
+  - name: present.4.value
+    dtype: float
+    shape:
+    - batch_size
+    - 1
+    - past_sequence_length + sequence_length
+    - 256
+  - name: present.5.key
+    dtype: float
+    shape:
+    - batch_size
+    - 1
+    - past_sequence_length + sequence_length
+    - 256
+  - name: present.5.value
+    dtype: float
+    shape:
+    - batch_size
+    - 1
+    - past_sequence_length + sequence_length
+    - 256
+  - name: present.6.key
+    dtype: float
+    shape:
+    - batch_size
+    - 1
+    - past_sequence_length + sequence_length
+    - 256
+  - name: present.6.value
+    dtype: float
+    shape:
+    - batch_size
+    - 1
+    - past_sequence_length + sequence_length
+    - 256
+  - name: present.7.key
+    dtype: float
+    shape:
+    - batch_size
+    - 1
+    - past_sequence_length + sequence_length
+    - 256
+  - name: present.7.value
+    dtype: float
+    shape:
+    - batch_size
+    - 1
+    - past_sequence_length + sequence_length
+    - 256
+  - name: present.8.key
+    dtype: float
+    shape:
+    - batch_size
+    - 1
+    - past_sequence_length + sequence_length
+    - 256
+  - name: present.8.value
+    dtype: float
+    shape:
+    - batch_size
+    - 1
+    - past_sequence_length + sequence_length
+    - 256
+  - name: present.9.key
+    dtype: float
+    shape:
+    - batch_size
+    - 1
+    - past_sequence_length + sequence_length
+    - 256
+  - name: present.9.value
+    dtype: float
+    shape:
+    - batch_size
+    - 1
+    - past_sequence_length + sequence_length
+    - 256
+  - name: present.10.key
+    dtype: float
+    shape:
+    - batch_size
+    - 1
+    - past_sequence_length + sequence_length
+    - 256
+  - name: present.10.value
+    dtype: float
+    shape:
+    - batch_size
+    - 1
+    - past_sequence_length + sequence_length
+    - 256
+  - name: present.11.key
+    dtype: float
+    shape:
+    - batch_size
+    - 1
+    - past_sequence_length + sequence_length
+    - 256
+  - name: present.11.value
+    dtype: float
+    shape:
+    - batch_size
+    - 1
+    - past_sequence_length + sequence_length
+    - 256
+  - name: present.12.key
+    dtype: float
+    shape:
+    - batch_size
+    - 1
+    - past_sequence_length + sequence_length
+    - 256
+  - name: present.12.value
+    dtype: float
+    shape:
+    - batch_size
+    - 1
+    - past_sequence_length + sequence_length
+    - 256
+  - name: present.13.key
+    dtype: float
+    shape:
+    - batch_size
+    - 1
+    - past_sequence_length + sequence_length
+    - 256
+  - name: present.13.value
+    dtype: float
+    shape:
+    - batch_size
+    - 1
+    - past_sequence_length + sequence_length
+    - 256
+  - name: present.14.key
+    dtype: float
+    shape:
+    - batch_size
+    - 1
+    - past_sequence_length + sequence_length
+    - 256
+  - name: present.14.value
+    dtype: float
+    shape:
+    - batch_size
+    - 1
+    - past_sequence_length + sequence_length
+    - 256
+  - name: present.15.key
+    dtype: float
+    shape:
+    - batch_size
+    - 1
+    - past_sequence_length + sequence_length
+    - 256
+  - name: present.15.value
+    dtype: float
+    shape:
+    - batch_size
+    - 1
+    - past_sequence_length + sequence_length
+    - 256
+  - name: present.16.key
+    dtype: float
+    shape:
+    - batch_size
+    - 1
+    - past_sequence_length + sequence_length
+    - 256
+  - name: present.16.value
+    dtype: float
+    shape:
+    - batch_size
+    - 1
+    - past_sequence_length + sequence_length
+    - 256
+  - name: present.17.key
+    dtype: float
+    shape:
+    - batch_size
+    - 1
+    - past_sequence_length + sequence_length
+    - 256
+  - name: present.17.value
+    dtype: float
+    shape:
+    - batch_size
+    - 1
+    - past_sequence_length + sequence_length
+    - 256
+  - name: present.18.key
+    dtype: float
+    shape:
+    - batch_size
+    - 1
+    - past_sequence_length + sequence_length
+    - 256
+  - name: present.18.value
+    dtype: float
+    shape:
+    - batch_size
+    - 1
+    - past_sequence_length + sequence_length
+    - 256
+  - name: present.19.key
+    dtype: float
+    shape:
+    - batch_size
+    - 1
+    - past_sequence_length + sequence_length
+    - 256
+  - name: present.19.value
+    dtype: float
+    shape:
+    - batch_size
+    - 1
+    - past_sequence_length + sequence_length
+    - 256
+  - name: present.20.key
+    dtype: float
+    shape:
+    - batch_size
+    - 1
+    - past_sequence_length + sequence_length
+    - 256
+  - name: present.20.value
+    dtype: float
+    shape:
+    - batch_size
+    - 1
+    - past_sequence_length + sequence_length
+    - 256
+  - name: present.21.key
+    dtype: float
+    shape:
+    - batch_size
+    - 1
+    - past_sequence_length + sequence_length
+    - 256
+  - name: present.21.value
+    dtype: float
+    shape:
+    - batch_size
+    - 1
+    - past_sequence_length + sequence_length
+    - 256
+  - name: present.22.key
+    dtype: float
+    shape:
+    - batch_size
+    - 1
+    - past_sequence_length + sequence_length
+    - 256
+  - name: present.22.value
+    dtype: float
+    shape:
+    - batch_size
+    - 1
+    - past_sequence_length + sequence_length
+    - 256
+  - name: present.23.key
+    dtype: float
+    shape:
+    - batch_size
+    - 1
+    - past_sequence_length + sequence_length
+    - 256
+  - name: present.23.value
+    dtype: float
+    shape:
+    - batch_size
+    - 1
+    - past_sequence_length + sequence_length
+    - 256
+  - name: present.24.key
+    dtype: float
+    shape:
+    - batch_size
+    - 1
+    - past_sequence_length + sequence_length
+    - 256
+  - name: present.24.value
+    dtype: float
+    shape:
+    - batch_size
+    - 1
+    - past_sequence_length + sequence_length
+    - 256
+  - name: present.25.key
+    dtype: float
+    shape:
+    - batch_size
+    - 1
+    - past_sequence_length + sequence_length
+    - 256
+  - name: present.25.value
+    dtype: float
+    shape:
+    - batch_size
+    - 1
+    - past_sequence_length + sequence_length
+    - 256
+architecture:
+  model_type: gemma3_text
+  hidden_size: 1152
+  intermediate_size: 6912
+  layers: 26
+  attention_heads: 4
+  key_value_heads: 1
+  head_dim: 256
+  vocabulary: 262144
+  max_position_embeddings: 32768
+  config_dtype: float32
+quantization:
+  artifact_state: unquantized-float32
+  graph_initializer_dtypes:
+  - float
+  accelerator_cost_transform: explicit modeled INT8; source graph remains float32
+projection_nodes: 183
+license:
+  identifier_from_local_model_card: gemma
+  gated_access_notice: true
+  redistribution_approved_by_this_manifest: false
+  notes: models/LICENSE_NOTES.md
+claim_boundary: Graph structure and local file hashes are directly inspected. Artifact
+  acquisition provenance and exporter identity remain unresolved.

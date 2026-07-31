@@ -1,0 +1,4 @@
+artifact,check,report_path,report_present,included_violations,evidence_class,scope
+reference schematic,ERC,hardware/kicad/k26_reports/reference_erc.json,true,0,KiCad-native-checked,declared schematic/coupon only; NOT FOR FABRICATION
+routing coupon schematic,ERC,hardware/kicad/k26_reports/coupon_erc.json,true,0,KiCad-native-checked,declared schematic/coupon only; NOT FOR FABRICATION
+routing coupon PCB,limited DRC,hardware/kicad/k26_reports/coupon_drc.json,true,0,KiCad-native-checked,declared schematic/coupon only; NOT FOR FABRICATION

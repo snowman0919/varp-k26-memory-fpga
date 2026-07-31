@@ -1,0 +1,2 @@
+implementation,input_dim,output_dim,tile_dim,macs,request_to_done_cycles,effective_mac_per_cycle,analytical_mac_per_cycle,issue_rate_gap,evidence
+DecodeMatVecInt8_demo,16,4,1,64,65,0.9846153846,64,65,LegacyMatVecSpec RTL simulation

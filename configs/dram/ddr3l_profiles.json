@@ -1,0 +1,149 @@
+{
+  "schema_version": "varp.k26.dram-profiles.v1",
+  "provenance": {
+    "manufacturer": "Micron Technology, Inc.",
+    "document_title": "4Gb: x4, x8, x16 DDR3L SDRAM",
+    "document_code": "09005aef85af8fa8",
+    "document_revision": "R 09/18",
+    "document_sha256": "aa71e4a25901da402147abc017818e5d52fa214c88d73f6090c229edd558be7b",
+    "official_document_id": "CCMTD-1725822587-3354",
+    "official_last_updated": "2018-10-25",
+    "official_dam_path": "/content/dam/micron/global/secure/products/data-sheet/dram/ddr3/4gb-ddr3l.pdf",
+    "official_metadata_record_sha256": "ad9d2782e39ff7e54bc40a5285f8b8b4fc1c54d67e0d602fb4f6e96a111f5ef5",
+    "transport_mirror_url": "https://www.micro-processor.com/parts-file/a2-mt41k512m8da-107-p.pdf",
+    "transport_equality_to_official_bytes": "not_cryptographically_established"
+  },
+  "shared": {
+    "protocol": "DDR3",
+    "capacity_gib_per_channel": 8,
+    "ranks": 2,
+    "bankgroups": 1,
+    "banks_per_group": 8,
+    "rows": 65536,
+    "columns": 1024,
+    "device_width_bits": 8,
+    "burst_length": 8,
+    "bus_width_bits": 64,
+    "command_queue_size": 8,
+    "transaction_queue_size": 32,
+    "row_buffer_policy": "OPEN_PAGE",
+    "refresh_policy": "RANK_LEVEL_STAGGERED"
+  },
+  "derivation_rules": {
+    "primary_speed_bin_source": "Micron Table 9, non-E column for each named rate and x4/x8 rows",
+    "tWTR_tRTP": "max(4 CK, ceil(7.5 ns / tCK)) from Micron Table 58",
+    "tWR": "ceil(15 ns / tCK) from Micron Table 58",
+    "tCKE": "rate-specific max(3 CK, datasheet nanosecond minimum) from Micron Table 58",
+    "tCKESR": "tCKE + 1 CK from Micron Table 58",
+    "tXS": "tRFC + ceil(10 ns / tCK) from Micron Table 58",
+    "refresh_interval": "ceil-free exact 7800 ns / tCK for these four rational periods",
+    "power_800": "DDR3L-1066 x8 limits reused for the documented 1066 device operated at the 800 timing point",
+    "power_1066_1333_1600": "Micron Table 20 x8 values",
+    "rounding": "all nanosecond minima convert with mathematical ceiling to integer DRAM cycles"
+  },
+  "derivation_table": {
+    "path": "configs/dram/ddr3l_derivation.csv",
+    "sha256": "e3c0d9ab0f9e080c96ef452ebf114212aefa0a2e15a7840e61dfa68d2f9afa2b",
+    "row_count": 236,
+    "generator": "controlled profile-derivation snapshot"
+  },
+  "profiles": [
+    {
+      "rate_mtps": 800,
+      "path": "configs/dram/ddr3l_4gb_x8_800.ini",
+      "sha256": "fb12bf95ca2d38bc4361d38ef019924d463f15550c62d9162a84ecf9a8af8383",
+      "tck_ns": "2.5",
+      "timing_cycles": {
+        "CL": 6,
+        "CWL": 5,
+        "tRCD": 6,
+        "tRP": 6,
+        "tRAS": 15,
+        "tRC": 21,
+        "tRRD": 4,
+        "tFAW": 16,
+        "tRFC": 104,
+        "tWTR": 4,
+        "tWR": 6,
+        "tRTP": 4,
+        "tCKE": 3,
+        "tCKESR": 4,
+        "tXS": 108,
+        "tXP": 3
+      }
+    },
+    {
+      "rate_mtps": 1066,
+      "path": "configs/dram/ddr3l_4gb_x8_1066.ini",
+      "sha256": "2b50496998305abbb422d40d845e6385087384807087f9308bb8208ee838d729",
+      "tck_ns": "1.875",
+      "timing_cycles": {
+        "CL": 8,
+        "CWL": 6,
+        "tRCD": 8,
+        "tRP": 8,
+        "tRAS": 20,
+        "tRC": 28,
+        "tRRD": 4,
+        "tFAW": 20,
+        "tRFC": 139,
+        "tWTR": 4,
+        "tWR": 8,
+        "tRTP": 4,
+        "tCKE": 3,
+        "tCKESR": 4,
+        "tXS": 145,
+        "tXP": 4
+      }
+    },
+    {
+      "rate_mtps": 1333,
+      "path": "configs/dram/ddr3l_4gb_x8_1333.ini",
+      "sha256": "b948e1530e62b663333896bc8cccb31ea2ee85b3bf8abfc73b1b64872eebaa94",
+      "tck_ns": "1.5",
+      "timing_cycles": {
+        "CL": 10,
+        "CWL": 7,
+        "tRCD": 10,
+        "tRP": 10,
+        "tRAS": 24,
+        "tRC": 34,
+        "tRRD": 4,
+        "tFAW": 20,
+        "tRFC": 174,
+        "tWTR": 5,
+        "tWR": 10,
+        "tRTP": 5,
+        "tCKE": 4,
+        "tCKESR": 5,
+        "tXS": 181,
+        "tXP": 4
+      }
+    },
+    {
+      "rate_mtps": 1600,
+      "path": "configs/dram/ddr3l_4gb_x8_1600.ini",
+      "sha256": "aa322d3b2ec00df7afeb8a574c235b3978bb3f9094bd3dfbe2658fe80a19c370",
+      "tck_ns": "1.25",
+      "timing_cycles": {
+        "CL": 11,
+        "CWL": 8,
+        "tRCD": 11,
+        "tRP": 11,
+        "tRAS": 28,
+        "tRC": 39,
+        "tRRD": 5,
+        "tFAW": 24,
+        "tRFC": 208,
+        "tWTR": 6,
+        "tWR": 12,
+        "tRTP": 6,
+        "tCKE": 4,
+        "tCKESR": 5,
+        "tXS": 216,
+        "tXP": 5
+      }
+    }
+  ],
+  "dramsim3_upstream_commit": "29817593b3389f1337235d63cac515024ab8fd6e"
+}

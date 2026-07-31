@@ -1,0 +1,81 @@
+(kicad_sch
+	(version 20250114)
+	(generator "eeschema")
+	(generator_version "9.0")
+	(uuid "83a1ac54-1ed2-4471-b400-910045388e46")
+	(paper "A4")
+	(title_block
+		(title "K26 SOM GTH connector boundary")
+		(date "2026-07-31")
+		(rev "P0 proposal_only")
+		(company "VARP K26/XC7K160T conditional reference")
+		(comment 1 "NOT FOR FABRICATION")
+		(comment 2 "No BGA or MIG pinout claim")
+	)
+	(lib_symbols)
+	(text "4 TX differential lanes + 4 RX differential lanes; max capability is not a board rate claim."
+		(exclude_from_sim no)
+		(at 22.86 38.1 0)
+		(effects
+			(font
+				(size 1.524 1.524)
+				(thickness 0.3048)
+				(bold yes)
+			)
+			(justify left bottom)
+		)
+		(uuid "10df7f6f-e7d5-49bb-a14b-940bedc38194")
+	)
+	(text "Exact SOM connector positions must be rechecked against the released DS987 revision."
+		(exclude_from_sim no)
+		(at 22.86 53.34 0)
+		(effects
+			(font
+				(size 1.524 1.524)
+				(thickness 0.3048)
+				(bold yes)
+			)
+			(justify left bottom)
+		)
+		(uuid "79a0b78b-9fde-4a89-98ca-825ef17d2ae6")
+	)
+	(text "XCK26-SFVC784-2LV-C/I; SOM240_2 exposes PL GTH bank224."
+		(exclude_from_sim no)
+		(at 22.86 30.48 0)
+		(effects
+			(font
+				(size 1.524 1.524)
+				(thickness 0.3048)
+				(bold yes)
+			)
+			(justify left bottom)
+		)
+		(uuid "cc24e884-387e-4fb4-9fa3-ece142a238dd")
+	)
+	(text "GTH_REFCLK0 and GTH_REFCLK1 are carrier-supplied inputs."
+		(exclude_from_sim no)
+		(at 22.86 45.72 0)
+		(effects
+			(font
+				(size 1.524 1.524)
+				(thickness 0.3048)
+				(bold yes)
+			)
+			(justify left bottom)
+		)
+		(uuid "e96d3968-3b70-40f2-a1eb-3b55047b3d82")
+	)
+	(text "NOT FOR FABRICATION - DS987 boundary only."
+		(exclude_from_sim no)
+		(at 22.86 22.86 0)
+		(effects
+			(font
+				(size 1.524 1.524)
+				(thickness 0.3048)
+				(bold yes)
+			)
+			(justify left bottom)
+		)
+		(uuid "f86d3dfc-a90a-4523-902c-40851535d9bf")
+	)
+)

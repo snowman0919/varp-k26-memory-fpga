@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="250" viewBox="0 0 800 250">
+  <style>
+    text{font-family:"Noto Sans CJK KR","Noto Sans",sans-serif;fill:#172033}
+    .h{font-size:26px;font-weight:700}.t{font-size:20px;font-weight:700}.s{font-size:18px}
+  </style>
+  <text class="h" x="24" y="34">Figure 5 · Full-overlap p95: static S1 versus locality-aware S3</text>
+  <text class="t" x="200" y="75" text-anchor="middle">skew</text>
+  <text class="t" x="600" y="75" text-anchor="middle">mixed</text>
+  <text class="s" x="28" y="112">S1</text><rect x="76" y="94" width="260" height="28" fill="#c98b21"/><text class="s" x="346" y="115">285,333</text>
+  <text class="s" x="28" y="158">S3</text><rect x="76" y="140" width="213" height="28" fill="#6f8f3d"/><text class="s" x="299" y="161">233,625</text>
+  <text class="s" x="430" y="112">S1</text><rect x="478" y="94" width="260" height="28" fill="#c98b21"/><text class="s" x="748" y="115" text-anchor="end">478,553</text>
+  <text class="s" x="430" y="158">S3</text><rect x="478" y="140" width="214" height="28" fill="#6f8f3d"/><text class="s" x="702" y="161">394,375</text>
+  <rect x="76" y="180" width="260" height="42" rx="10" fill="#eef5fb" stroke="#1677b8" stroke-width="2"/>
+  <text class="t" x="206" y="208" text-anchor="middle">18.12% lower p95</text>
+  <rect x="478" y="180" width="260" height="42" rx="10" fill="#eef5fb" stroke="#1677b8" stroke-width="2"/>
+  <text class="t" x="608" y="208" text-anchor="middle">17.59% lower p95</text>
+  <text class="s" x="400" y="244" text-anchor="middle">Analytical model cycles · five-seed median · not physical protocol timing</text>
+</svg>

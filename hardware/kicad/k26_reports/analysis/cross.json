@@ -1,0 +1,691 @@
+{
+  "analyzer_type": "cross_analysis",
+  "schema_version": "1.4.0",
+  "inputs": {
+    "source_files": [
+      "hardware/kicad/k26_reports/analysis/schematic.json",
+      "hardware/kicad/k26_reports/analysis/pcb.json"
+    ],
+    "source_hashes": {
+      "hardware/kicad/k26_reports/analysis/schematic.json": "2732930ac3be5798560420dd7a4724925aff9638e11e75b6ab282247368efe18",
+      "hardware/kicad/k26_reports/analysis/pcb.json": "eb4b9e604a7f40d21c66a6b66132ce0401cf7932d1a22b683ac315759bb06e8a"
+    },
+    "run_id": "20260730T201957Z-5d4440",
+    "config_hash": null,
+    "upstream_artifacts": {
+      "schematic": {
+        "path": "hardware/kicad/k26_reports/analysis/schematic.json",
+        "sha256": "2732930ac3be5798560420dd7a4724925aff9638e11e75b6ab282247368efe18",
+        "schema_version": "1.4.0",
+        "run_id": "20260730T201957Z-5d4440"
+      },
+      "pcb": {
+        "path": "hardware/kicad/k26_reports/analysis/pcb.json",
+        "sha256": "eb4b9e604a7f40d21c66a6b66132ce0401cf7932d1a22b683ac315759bb06e8a",
+        "schema_version": "1.4.0",
+        "run_id": "20260730T201957Z-5d4440"
+      }
+    }
+  },
+  "compat": {
+    "minimum_consumer_version": "1.4.0",
+    "deprecated_fields": [],
+    "experimental_fields": []
+  },
+  "elapsed_s": 0.012,
+  "summary": {
+    "total_findings": 10,
+    "by_severity": {
+      "error": 9,
+      "warning": 1,
+      "info": 0
+    }
+  },
+  "findings": [
+    {
+      "detector": "check_return_path_enhanced",
+      "rule_id": "RP-002",
+      "category": "return_path",
+      "summary": "memory net /DDR_CK_N crosses /GND plane gap",
+      "description": "memory signal /DDR_CK_N crosses a gap in /GND plane on layer F.Cu.",
+      "components": [],
+      "nets": [
+        "/DDR_CK_N",
+        "/GND"
+      ],
+      "pins": [],
+      "severity": "error",
+      "confidence": "deterministic",
+      "evidence_source": "topology",
+      "recommendation": "Re-route /DDR_CK_N to avoid the /GND plane gap, or bridge with a stitching capacitor.",
+      "report_context": {
+        "section": "Return Path",
+        "impact": "Increased EMI from enlarged return path loop",
+        "standard_ref": ""
+      },
+      "finding_id": "cross_analysis:RP-002:/ddr_ck_n",
+      "stages": [
+        "layout"
+      ]
+    },
+    {
+      "detector": "check_return_path_enhanced",
+      "rule_id": "RP-002",
+      "category": "return_path",
+      "summary": "memory net /DDR_CK_P crosses /GND plane gap",
+      "description": "memory signal /DDR_CK_P crosses a gap in /GND plane on layer F.Cu.",
+      "components": [],
+      "nets": [
+        "/DDR_CK_P",
+        "/GND"
+      ],
+      "pins": [],
+      "severity": "error",
+      "confidence": "deterministic",
+      "evidence_source": "topology",
+      "recommendation": "Re-route /DDR_CK_P to avoid the /GND plane gap, or bridge with a stitching capacitor.",
+      "report_context": {
+        "section": "Return Path",
+        "impact": "Increased EMI from enlarged return path loop",
+        "standard_ref": ""
+      },
+      "finding_id": "cross_analysis:RP-002:/ddr_ck_p",
+      "stages": [
+        "layout"
+      ]
+    },
+    {
+      "detector": "check_return_path_enhanced",
+      "rule_id": "RP-002",
+      "category": "return_path",
+      "summary": "memory net /DDR_DQ0 crosses /GND plane gap",
+      "description": "memory signal /DDR_DQ0 crosses a gap in /GND plane on layer F.Cu.",
+      "components": [],
+      "nets": [
+        "/DDR_DQ0",
+        "/GND"
+      ],
+      "pins": [],
+      "severity": "error",
+      "confidence": "deterministic",
+      "evidence_source": "topology",
+      "recommendation": "Re-route /DDR_DQ0 to avoid the /GND plane gap, or bridge with a stitching capacitor.",
+      "report_context": {
+        "section": "Return Path",
+        "impact": "Increased EMI from enlarged return path loop",
+        "standard_ref": ""
+      },
+      "finding_id": "cross_analysis:RP-002:/ddr_dq0",
+      "stages": [
+        "layout"
+      ]
+    },
+    {
+      "detector": "check_return_path_enhanced",
+      "rule_id": "RP-002",
+      "category": "return_path",
+      "summary": "memory net /DDR_LDQS_N crosses /GND plane gap",
+      "description": "memory signal /DDR_LDQS_N crosses a gap in /GND plane on layer F.Cu.",
+      "components": [],
+      "nets": [
+        "/DDR_LDQS_N",
+        "/GND"
+      ],
+      "pins": [],
+      "severity": "error",
+      "confidence": "deterministic",
+      "evidence_source": "topology",
+      "recommendation": "Re-route /DDR_LDQS_N to avoid the /GND plane gap, or bridge with a stitching capacitor.",
+      "report_context": {
+        "section": "Return Path",
+        "impact": "Increased EMI from enlarged return path loop",
+        "standard_ref": ""
+      },
+      "finding_id": "cross_analysis:RP-002:/ddr_ldqs_n",
+      "stages": [
+        "layout"
+      ]
+    },
+    {
+      "detector": "check_return_path_enhanced",
+      "rule_id": "RP-002",
+      "category": "return_path",
+      "summary": "memory net /DDR_LDQS_P crosses /GND plane gap",
+      "description": "memory signal /DDR_LDQS_P crosses a gap in /GND plane on layer F.Cu.",
+      "components": [],
+      "nets": [
+        "/DDR_LDQS_P",
+        "/GND"
+      ],
+      "pins": [],
+      "severity": "error",
+      "confidence": "deterministic",
+      "evidence_source": "topology",
+      "recommendation": "Re-route /DDR_LDQS_P to avoid the /GND plane gap, or bridge with a stitching capacitor.",
+      "report_context": {
+        "section": "Return Path",
+        "impact": "Increased EMI from enlarged return path loop",
+        "standard_ref": ""
+      },
+      "finding_id": "cross_analysis:RP-002:/ddr_ldqs_p",
+      "stages": [
+        "layout"
+      ]
+    },
+    {
+      "detector": "check_return_path_enhanced",
+      "rule_id": "RP-002",
+      "category": "return_path",
+      "summary": "clock net /GTH_REFCLK0_N crosses /GND plane gap",
+      "description": "clock signal /GTH_REFCLK0_N crosses a gap in /GND plane on layer F.Cu.",
+      "components": [],
+      "nets": [
+        "/GTH_REFCLK0_N",
+        "/GND"
+      ],
+      "pins": [],
+      "severity": "error",
+      "confidence": "deterministic",
+      "evidence_source": "topology",
+      "recommendation": "Re-route /GTH_REFCLK0_N to avoid the /GND plane gap, or bridge with a stitching capacitor.",
+      "report_context": {
+        "section": "Return Path",
+        "impact": "Increased EMI from enlarged return path loop",
+        "standard_ref": ""
+      },
+      "finding_id": "cross_analysis:RP-002:/gth_refclk0_n",
+      "stages": [
+        "layout"
+      ]
+    },
+    {
+      "detector": "check_return_path_enhanced",
+      "rule_id": "RP-002",
+      "category": "return_path",
+      "summary": "clock net /GTH_REFCLK0_P crosses /GND plane gap",
+      "description": "clock signal /GTH_REFCLK0_P crosses a gap in /GND plane on layer F.Cu.",
+      "components": [],
+      "nets": [
+        "/GTH_REFCLK0_P",
+        "/GND"
+      ],
+      "pins": [],
+      "severity": "error",
+      "confidence": "deterministic",
+      "evidence_source": "topology",
+      "recommendation": "Re-route /GTH_REFCLK0_P to avoid the /GND plane gap, or bridge with a stitching capacitor.",
+      "report_context": {
+        "section": "Return Path",
+        "impact": "Increased EMI from enlarged return path loop",
+        "standard_ref": ""
+      },
+      "finding_id": "cross_analysis:RP-002:/gth_refclk0_p",
+      "stages": [
+        "layout"
+      ]
+    },
+    {
+      "detector": "check_return_path_enhanced",
+      "rule_id": "RP-002",
+      "category": "return_path",
+      "summary": "clock net /GTH_REFCLK1_N crosses /GND plane gap",
+      "description": "clock signal /GTH_REFCLK1_N crosses a gap in /GND plane on layer F.Cu.",
+      "components": [],
+      "nets": [
+        "/GTH_REFCLK1_N",
+        "/GND"
+      ],
+      "pins": [],
+      "severity": "error",
+      "confidence": "deterministic",
+      "evidence_source": "topology",
+      "recommendation": "Re-route /GTH_REFCLK1_N to avoid the /GND plane gap, or bridge with a stitching capacitor.",
+      "report_context": {
+        "section": "Return Path",
+        "impact": "Increased EMI from enlarged return path loop",
+        "standard_ref": ""
+      },
+      "finding_id": "cross_analysis:RP-002:/gth_refclk1_n",
+      "stages": [
+        "layout"
+      ]
+    },
+    {
+      "detector": "check_return_path_enhanced",
+      "rule_id": "RP-002",
+      "category": "return_path",
+      "summary": "clock net /GTH_REFCLK1_P crosses /GND plane gap",
+      "description": "clock signal /GTH_REFCLK1_P crosses a gap in /GND plane on layer F.Cu.",
+      "components": [],
+      "nets": [
+        "/GTH_REFCLK1_P",
+        "/GND"
+      ],
+      "pins": [],
+      "severity": "error",
+      "confidence": "deterministic",
+      "evidence_source": "topology",
+      "recommendation": "Re-route /GTH_REFCLK1_P to avoid the /GND plane gap, or bridge with a stitching capacitor.",
+      "report_context": {
+        "section": "Return Path",
+        "impact": "Increased EMI from enlarged return path loop",
+        "standard_ref": ""
+      },
+      "finding_id": "cross_analysis:RP-002:/gth_refclk1_p",
+      "stages": [
+        "layout"
+      ]
+    },
+    {
+      "detector": "check_via_stitching_density",
+      "rule_id": "VS-002",
+      "category": "via_stitching",
+      "summary": "No ground stitching vias found",
+      "description": "The board has no ground vias. Ground stitching vias are important for EMC.",
+      "components": [],
+      "nets": [],
+      "pins": [],
+      "severity": "warning",
+      "confidence": "deterministic",
+      "evidence_source": "topology",
+      "recommendation": "Add ground stitching vias at <= 73mm spacing.",
+      "report_context": {
+        "section": "Via Stitching",
+        "impact": "Poor ground plane connectivity between layers",
+        "standard_ref": ""
+      },
+      "finding_id": "cross_analysis:VS-002:37f6f60e3c36",
+      "stages": [
+        "layout"
+      ]
+    }
+  ],
+  "assessments": [],
+  "trust_summary": {
+    "total_findings": 10,
+    "trust_level": "high",
+    "by_confidence": {
+      "deterministic": 10,
+      "heuristic": 0,
+      "datasheet_backed": 0
+    },
+    "by_evidence_source": {
+      "datasheet": 0,
+      "topology": 10,
+      "heuristic_rule": 0,
+      "symbol_footprint": 0,
+      "bom": 0,
+      "geometry": 0,
+      "api_lookup": 0
+    },
+    "provenance_coverage_pct": 0.0
+  },
+  "audience_summary": {
+    "designer": {
+      "total_findings": 10,
+      "by_severity": {
+        "error": 9,
+        "warning": 1,
+        "info": 0
+      },
+      "by_category": {
+        "return_path": 9,
+        "via_stitching": 1
+      },
+      "top_issues": [
+        {
+          "detector": "check_return_path_enhanced",
+          "rule_id": "RP-002",
+          "category": "return_path",
+          "summary": "memory net /DDR_CK_N crosses /GND plane gap",
+          "description": "memory signal /DDR_CK_N crosses a gap in /GND plane on layer F.Cu.",
+          "components": [],
+          "nets": [
+            "/DDR_CK_N",
+            "/GND"
+          ],
+          "pins": [],
+          "severity": "error",
+          "confidence": "deterministic",
+          "evidence_source": "topology",
+          "recommendation": "Re-route /DDR_CK_N to avoid the /GND plane gap, or bridge with a stitching capacitor.",
+          "report_context": {
+            "section": "Return Path",
+            "impact": "Increased EMI from enlarged return path loop",
+            "standard_ref": ""
+          },
+          "finding_id": "cross_analysis:RP-002:/ddr_ck_n",
+          "stages": [
+            "layout"
+          ]
+        },
+        {
+          "detector": "check_return_path_enhanced",
+          "rule_id": "RP-002",
+          "category": "return_path",
+          "summary": "memory net /DDR_CK_P crosses /GND plane gap",
+          "description": "memory signal /DDR_CK_P crosses a gap in /GND plane on layer F.Cu.",
+          "components": [],
+          "nets": [
+            "/DDR_CK_P",
+            "/GND"
+          ],
+          "pins": [],
+          "severity": "error",
+          "confidence": "deterministic",
+          "evidence_source": "topology",
+          "recommendation": "Re-route /DDR_CK_P to avoid the /GND plane gap, or bridge with a stitching capacitor.",
+          "report_context": {
+            "section": "Return Path",
+            "impact": "Increased EMI from enlarged return path loop",
+            "standard_ref": ""
+          },
+          "finding_id": "cross_analysis:RP-002:/ddr_ck_p",
+          "stages": [
+            "layout"
+          ]
+        },
+        {
+          "detector": "check_return_path_enhanced",
+          "rule_id": "RP-002",
+          "category": "return_path",
+          "summary": "memory net /DDR_DQ0 crosses /GND plane gap",
+          "description": "memory signal /DDR_DQ0 crosses a gap in /GND plane on layer F.Cu.",
+          "components": [],
+          "nets": [
+            "/DDR_DQ0",
+            "/GND"
+          ],
+          "pins": [],
+          "severity": "error",
+          "confidence": "deterministic",
+          "evidence_source": "topology",
+          "recommendation": "Re-route /DDR_DQ0 to avoid the /GND plane gap, or bridge with a stitching capacitor.",
+          "report_context": {
+            "section": "Return Path",
+            "impact": "Increased EMI from enlarged return path loop",
+            "standard_ref": ""
+          },
+          "finding_id": "cross_analysis:RP-002:/ddr_dq0",
+          "stages": [
+            "layout"
+          ]
+        },
+        {
+          "detector": "check_return_path_enhanced",
+          "rule_id": "RP-002",
+          "category": "return_path",
+          "summary": "memory net /DDR_LDQS_N crosses /GND plane gap",
+          "description": "memory signal /DDR_LDQS_N crosses a gap in /GND plane on layer F.Cu.",
+          "components": [],
+          "nets": [
+            "/DDR_LDQS_N",
+            "/GND"
+          ],
+          "pins": [],
+          "severity": "error",
+          "confidence": "deterministic",
+          "evidence_source": "topology",
+          "recommendation": "Re-route /DDR_LDQS_N to avoid the /GND plane gap, or bridge with a stitching capacitor.",
+          "report_context": {
+            "section": "Return Path",
+            "impact": "Increased EMI from enlarged return path loop",
+            "standard_ref": ""
+          },
+          "finding_id": "cross_analysis:RP-002:/ddr_ldqs_n",
+          "stages": [
+            "layout"
+          ]
+        },
+        {
+          "detector": "check_return_path_enhanced",
+          "rule_id": "RP-002",
+          "category": "return_path",
+          "summary": "memory net /DDR_LDQS_P crosses /GND plane gap",
+          "description": "memory signal /DDR_LDQS_P crosses a gap in /GND plane on layer F.Cu.",
+          "components": [],
+          "nets": [
+            "/DDR_LDQS_P",
+            "/GND"
+          ],
+          "pins": [],
+          "severity": "error",
+          "confidence": "deterministic",
+          "evidence_source": "topology",
+          "recommendation": "Re-route /DDR_LDQS_P to avoid the /GND plane gap, or bridge with a stitching capacitor.",
+          "report_context": {
+            "section": "Return Path",
+            "impact": "Increased EMI from enlarged return path loop",
+            "standard_ref": ""
+          },
+          "finding_id": "cross_analysis:RP-002:/ddr_ldqs_p",
+          "stages": [
+            "layout"
+          ]
+        },
+        {
+          "detector": "check_return_path_enhanced",
+          "rule_id": "RP-002",
+          "category": "return_path",
+          "summary": "clock net /GTH_REFCLK0_N crosses /GND plane gap",
+          "description": "clock signal /GTH_REFCLK0_N crosses a gap in /GND plane on layer F.Cu.",
+          "components": [],
+          "nets": [
+            "/GTH_REFCLK0_N",
+            "/GND"
+          ],
+          "pins": [],
+          "severity": "error",
+          "confidence": "deterministic",
+          "evidence_source": "topology",
+          "recommendation": "Re-route /GTH_REFCLK0_N to avoid the /GND plane gap, or bridge with a stitching capacitor.",
+          "report_context": {
+            "section": "Return Path",
+            "impact": "Increased EMI from enlarged return path loop",
+            "standard_ref": ""
+          },
+          "finding_id": "cross_analysis:RP-002:/gth_refclk0_n",
+          "stages": [
+            "layout"
+          ]
+        },
+        {
+          "detector": "check_return_path_enhanced",
+          "rule_id": "RP-002",
+          "category": "return_path",
+          "summary": "clock net /GTH_REFCLK0_P crosses /GND plane gap",
+          "description": "clock signal /GTH_REFCLK0_P crosses a gap in /GND plane on layer F.Cu.",
+          "components": [],
+          "nets": [
+            "/GTH_REFCLK0_P",
+            "/GND"
+          ],
+          "pins": [],
+          "severity": "error",
+          "confidence": "deterministic",
+          "evidence_source": "topology",
+          "recommendation": "Re-route /GTH_REFCLK0_P to avoid the /GND plane gap, or bridge with a stitching capacitor.",
+          "report_context": {
+            "section": "Return Path",
+            "impact": "Increased EMI from enlarged return path loop",
+            "standard_ref": ""
+          },
+          "finding_id": "cross_analysis:RP-002:/gth_refclk0_p",
+          "stages": [
+            "layout"
+          ]
+        },
+        {
+          "detector": "check_return_path_enhanced",
+          "rule_id": "RP-002",
+          "category": "return_path",
+          "summary": "clock net /GTH_REFCLK1_N crosses /GND plane gap",
+          "description": "clock signal /GTH_REFCLK1_N crosses a gap in /GND plane on layer F.Cu.",
+          "components": [],
+          "nets": [
+            "/GTH_REFCLK1_N",
+            "/GND"
+          ],
+          "pins": [],
+          "severity": "error",
+          "confidence": "deterministic",
+          "evidence_source": "topology",
+          "recommendation": "Re-route /GTH_REFCLK1_N to avoid the /GND plane gap, or bridge with a stitching capacitor.",
+          "report_context": {
+            "section": "Return Path",
+            "impact": "Increased EMI from enlarged return path loop",
+            "standard_ref": ""
+          },
+          "finding_id": "cross_analysis:RP-002:/gth_refclk1_n",
+          "stages": [
+            "layout"
+          ]
+        },
+        {
+          "detector": "check_return_path_enhanced",
+          "rule_id": "RP-002",
+          "category": "return_path",
+          "summary": "clock net /GTH_REFCLK1_P crosses /GND plane gap",
+          "description": "clock signal /GTH_REFCLK1_P crosses a gap in /GND plane on layer F.Cu.",
+          "components": [],
+          "nets": [
+            "/GTH_REFCLK1_P",
+            "/GND"
+          ],
+          "pins": [],
+          "severity": "error",
+          "confidence": "deterministic",
+          "evidence_source": "topology",
+          "recommendation": "Re-route /GTH_REFCLK1_P to avoid the /GND plane gap, or bridge with a stitching capacitor.",
+          "report_context": {
+            "section": "Return Path",
+            "impact": "Increased EMI from enlarged return path loop",
+            "standard_ref": ""
+          },
+          "finding_id": "cross_analysis:RP-002:/gth_refclk1_p",
+          "stages": [
+            "layout"
+          ]
+        },
+        {
+          "detector": "check_via_stitching_density",
+          "rule_id": "VS-002",
+          "category": "via_stitching",
+          "summary": "No ground stitching vias found",
+          "description": "The board has no ground vias. Ground stitching vias are important for EMC.",
+          "components": [],
+          "nets": [],
+          "pins": [],
+          "severity": "warning",
+          "confidence": "deterministic",
+          "evidence_source": "topology",
+          "recommendation": "Add ground stitching vias at <= 73mm spacing.",
+          "report_context": {
+            "section": "Via Stitching",
+            "impact": "Poor ground plane connectivity between layers",
+            "standard_ref": ""
+          },
+          "finding_id": "cross_analysis:VS-002:37f6f60e3c36",
+          "stages": [
+            "layout"
+          ]
+        }
+      ]
+    },
+    "reviewer": {
+      "total_findings": 10,
+      "by_category": {
+        "return_path": 9,
+        "via_stitching": 1
+      },
+      "top_issues": [
+        {
+          "rule_id": "RP-002",
+          "severity": "error",
+          "summary": "memory net /DDR_CK_N crosses /GND plane gap",
+          "recommendation": "Re-route /DDR_CK_N to avoid the /GND plane gap, or bridge with a stitching capacitor.",
+          "category": "return_path"
+        },
+        {
+          "rule_id": "RP-002",
+          "severity": "error",
+          "summary": "memory net /DDR_CK_P crosses /GND plane gap",
+          "recommendation": "Re-route /DDR_CK_P to avoid the /GND plane gap, or bridge with a stitching capacitor.",
+          "category": "return_path"
+        },
+        {
+          "rule_id": "RP-002",
+          "severity": "error",
+          "summary": "memory net /DDR_DQ0 crosses /GND plane gap",
+          "recommendation": "Re-route /DDR_DQ0 to avoid the /GND plane gap, or bridge with a stitching capacitor.",
+          "category": "return_path"
+        },
+        {
+          "rule_id": "RP-002",
+          "severity": "error",
+          "summary": "memory net /DDR_LDQS_N crosses /GND plane gap",
+          "recommendation": "Re-route /DDR_LDQS_N to avoid the /GND plane gap, or bridge with a stitching capacitor.",
+          "category": "return_path"
+        },
+        {
+          "rule_id": "RP-002",
+          "severity": "error",
+          "summary": "memory net /DDR_LDQS_P crosses /GND plane gap",
+          "recommendation": "Re-route /DDR_LDQS_P to avoid the /GND plane gap, or bridge with a stitching capacitor.",
+          "category": "return_path"
+        },
+        {
+          "rule_id": "RP-002",
+          "severity": "error",
+          "summary": "clock net /GTH_REFCLK0_N crosses /GND plane gap",
+          "recommendation": "Re-route /GTH_REFCLK0_N to avoid the /GND plane gap, or bridge with a stitching capacitor.",
+          "category": "return_path"
+        },
+        {
+          "rule_id": "RP-002",
+          "severity": "error",
+          "summary": "clock net /GTH_REFCLK0_P crosses /GND plane gap",
+          "recommendation": "Re-route /GTH_REFCLK0_P to avoid the /GND plane gap, or bridge with a stitching capacitor.",
+          "category": "return_path"
+        },
+        {
+          "rule_id": "RP-002",
+          "severity": "error",
+          "summary": "clock net /GTH_REFCLK1_N crosses /GND plane gap",
+          "recommendation": "Re-route /GTH_REFCLK1_N to avoid the /GND plane gap, or bridge with a stitching capacitor.",
+          "category": "return_path"
+        },
+        {
+          "rule_id": "RP-002",
+          "severity": "error",
+          "summary": "clock net /GTH_REFCLK1_P crosses /GND plane gap",
+          "recommendation": "Re-route /GTH_REFCLK1_P to avoid the /GND plane gap, or bridge with a stitching capacitor.",
+          "category": "return_path"
+        },
+        {
+          "rule_id": "VS-002",
+          "severity": "warning",
+          "summary": "No ground stitching vias found",
+          "recommendation": "Add ground stitching vias at <= 73mm spacing.",
+          "category": "via_stitching"
+        }
+      ]
+    },
+    "manager": {
+      "risk_level": "high",
+      "blocker_count": 9,
+      "warning_count": 1,
+      "stage_readiness": {
+        "schematic": "pass",
+        "layout": "needs_work",
+        "pre_fab": "pass",
+        "bring_up": "pass"
+      },
+      "one_liner": "9 errors, 1 warning across 2 categories. Layout stage has blockers."
+    }
+  },
+  "capability_mode_ref": {
+    "source": "analysis/capability_mode.json",
+    "run_id": "20260730T201957Z-5d4440"
+  }
+}

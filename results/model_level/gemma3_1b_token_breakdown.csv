@@ -1,0 +1,4 @@
+operator_category,graph_nodes_per_token,source_float32_weight_bytes,modeled_int8_weight_bytes,host_measured_mean_ms,graph_evidence_type,timing_evidence_type,claim_boundary
+attention_projection,104,306708480,76677120,23.975333333,graph-derived,host-measured,Weight bytes are static graph initializer bytes; host duration is a separate Y700 CPU-EP profile and is not memory-only time.
+mlp_projection,78,2484338688,621084672,124.106666667,graph-derived,host-measured,Weight bytes are static graph initializer bytes; host duration is a separate Y700 CPU-EP profile and is not memory-only time.
+lm_head,1,1207959552,301989888,52.074333333,graph-derived,host-measured,Weight bytes are static graph initializer bytes; host duration is a separate Y700 CPU-EP profile and is not memory-only time.

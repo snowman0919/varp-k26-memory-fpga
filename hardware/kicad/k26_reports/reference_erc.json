@@ -1,0 +1,53 @@
+{
+    "$schema": "https://schemas.kicad.org/erc.v1.json",
+    "coordinate_units": "mm",
+    "date": "2026-07-31T05:28:46+0900",
+    "included_severities": [
+        "error",
+        "warning"
+    ],
+    "kicad_version": "9.0.9",
+    "sheets": [
+        {
+            "path": "/",
+            "uuid_path": "/4ef8c25c-5024-4255-b4ff-bcb97c186a94",
+            "violations": []
+        },
+        {
+            "path": "/K26 SOM GTH connector boundary/",
+            "uuid_path": "/4ef8c25c-5024-4255-b4ff-bcb97c186a94/00000000-0000-0000-0000-000062000000",
+            "violations": []
+        },
+        {
+            "path": "/Four independent DDR3L x16 channel topology/",
+            "uuid_path": "/4ef8c25c-5024-4255-b4ff-bcb97c186a94/00000000-0000-0000-0000-000062000002",
+            "violations": []
+        },
+        {
+            "path": "/Clock reset and configuration/",
+            "uuid_path": "/4ef8c25c-5024-4255-b4ff-bcb97c186a94/00000000-0000-0000-0000-000062000004",
+            "violations": []
+        },
+        {
+            "path": "/JTAG and debug boundary/",
+            "uuid_path": "/4ef8c25c-5024-4255-b4ff-bcb97c186a94/00000000-0000-0000-0000-000062000006",
+            "violations": []
+        },
+        {
+            "path": "/XC7K160T-2FFG676I bank boundary/",
+            "uuid_path": "/4ef8c25c-5024-4255-b4ff-bcb97c186a94/00000000-0000-0000-0000-000062000001",
+            "violations": []
+        },
+        {
+            "path": "/Four-lane full-duplex K26 to XC7K160T link/",
+            "uuid_path": "/4ef8c25c-5024-4255-b4ff-bcb97c186a94/00000000-0000-0000-0000-000062000003",
+            "violations": []
+        },
+        {
+            "path": "/Power tree and decoupling/",
+            "uuid_path": "/4ef8c25c-5024-4255-b4ff-bcb97c186a94/00000000-0000-0000-0000-000062000005",
+            "violations": []
+        }
+    ],
+    "source": "k26_memory_reference.kicad_sch"
+}

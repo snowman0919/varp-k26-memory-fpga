@@ -1,0 +1,6 @@
+order,block,quantity,role,capacity_or_width,status
+1,K26,1,compute,4 GB local DDR4,target
+2,compute cluster,4,TileJob execution,local queue,RTL-generated/model
+3,GTH link bundle,4,K26-to-memory-FPGA,4 exposed lanes,datasheet candidate
+4,Memory FPGA,1,channel-affine scheduling,XC7K160T fallback,conditional
+5,DDR3L x16 channel,4,external weights,2 GB/channel,topology arithmetic

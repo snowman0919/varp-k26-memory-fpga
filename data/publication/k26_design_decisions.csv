@@ -1,0 +1,6 @@
+order,decision,evidence,status,next_gate
+1,K26 compute SOM,AMD DS987,verified_by_datasheet,carrier concurrency
+2,four compute clusters,generated RTL + analytical model,candidate,synthesis/timing
+3,S3 locality-aware stealing,S1 imbalance reduction with migration cost,candidate,RTL/DRAM controlled measurement
+4,four DDR3L channels,capacity arithmetic + one-factor model,conditional,MIG placement
+5,XC7K160T fallback,package I/O budget,conditional,Vivado P&R

@@ -1,0 +1,5 @@
+scheduler,queue,assignment,steal,locality
+S0,global FIFO,first available,none,none
+S1,local FCFS,static home,none,home
+S2,local FCFS,static home,oldest eligible,not scored
+S3,local FCFS,static home,age-locality score,channel/bundle/owner

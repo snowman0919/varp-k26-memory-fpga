@@ -1,0 +1,82 @@
+{
+  "artifacts": {
+    "experiments/gemma3_1b/graph_inventory.csv": {
+      "sha256": "75c02a2f0ebe760a147fbfb53c6f8c7101dc149bc897834b4a147fbb1a46e414",
+      "size_bytes": 818425
+    },
+    "experiments/gemma3_1b/projection_trace.csv": {
+      "sha256": "d0948d20ce56daf43edc2ff61a405797df9980bbe86dfff91ba9d2f1cfb100c4",
+      "size_bytes": 79394
+    },
+    "experiments/gemma3_1b/representative_weight_tiles.json": {
+      "sha256": "c047c76b069571abb253eefb9aee1bee769af1190d3aac47dd9673f64cebe90f",
+      "size_bytes": 6837
+    },
+    "experiments/gemma3_1b/representative_weight_tiles_int8.csv": {
+      "sha256": "8ddf4a053fff1ec4398707a9798d18f24e3cc2b0ac79a9d5dd643c6a5b8e8d53",
+      "size_bytes": 5771
+    },
+    "experiments/gemma3_1b/scheduler_replay.csv": {
+      "sha256": "17689109f7e1d8b13f1eacc468e4862614206a551ec13183f2fabb84c882e5e5",
+      "size_bytes": 10067
+    },
+    "experiments/gemma3_1b/token_trace.jsonl": {
+      "sha256": "6529decb724b9b22cd233dac9c4d9cf217a696d8f307383e4e2d04da8d73fdea",
+      "size_bytes": 16304
+    },
+    "models/gemma3_1b_files.sha256": {
+      "sha256": "97ad83c4efc5c23cdbdc3dfc8ac34efbc809799d086e7057d2948219106e3fc1",
+      "size_bytes": 1023
+    },
+    "models/gemma3_1b_manifest.yaml": {
+      "sha256": "f57439747149e70e271f7940ee2c1576feb89e52a0f6e005918a63aff33c098c",
+      "size_bytes": 16549
+    },
+    "results/model_level/gemma3_1b_hybrid.csv": {
+      "sha256": "527b5ecb7e8d4381678607b47d22a2df5a6c4445614624fce703c5ea713ed983",
+      "size_bytes": 6163
+    },
+    "results/model_level/gemma3_1b_memory_budget.csv": {
+      "sha256": "120238cada823a23719a38fcbcb21fdf7d604143219e513f4fef3e0ee00e3a92",
+      "size_bytes": 1054
+    },
+    "results/model_level/gemma3_1b_token_breakdown.csv": {
+      "sha256": "eea6fa009aca6617ba785e102f931f86ce3acc5b3370a5393e572992c77dd299",
+      "size_bytes": 788
+    }
+  },
+  "claim_boundary": "Graph and tokenizer outputs are directly derived from the hashed local artifact. Scheduler and hybrid timing are analytical. Representative tiles have software references and a bounded RTL fixture; this is not full-model RTL inference.",
+  "decode_token_counts": [
+    1,
+    32
+  ],
+  "functional_reference": {
+    "artificial_past_length": 1,
+    "batch": 1,
+    "boundary": "Not rerun locally and not executed with token_trace.jsonl input.",
+    "measured_runs": 3,
+    "platform": "Lenovo Y700 / ONNX Runtime Android CPU EP",
+    "sequence_length": 1,
+    "source": "inputs/y700/logs/y700_full_graph_profile/benchmark_y700_ort_android.csv",
+    "status": "pre-existing-host-measurement",
+    "wallclock_mean_ms": 408.444844
+  },
+  "graph_nodes": 7837,
+  "model_external_data_sha256": "c10ce493923725d45cae3c299ba2f8b9b6fe9183d93e88992595dd70db4b47e5",
+  "model_onnx_sha256": "e63d7c5e59f8c54a17cb7302529350a186b173701c4809db1b4eb1fd43602ad2",
+  "projection_nodes_per_token": 183,
+  "repetition_scope": "One deterministic graph/token ledger. Seed and process repetitions would be byte-identical because this replay has no stochastic input.",
+  "scheduler_replays": 12,
+  "scheduler_variants_not_run": {},
+  "schedulers": [
+    "S0",
+    "S0-physical",
+    "S1",
+    "S2",
+    "S3",
+    "Oracle"
+  ],
+  "schema_version": "varp.gemma3.trace-manifest.v1",
+  "status": "complete-with-explicit-hybrid-boundary",
+  "token_records": 32
+}

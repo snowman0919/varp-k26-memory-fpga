@@ -1,0 +1,329 @@
+(kicad_sch
+	(version 20250114)
+	(generator "eeschema")
+	(generator_version "9.0")
+	(uuid "4ef8c25c-5024-4255-b4ff-bcb97c186a94")
+	(paper "A3")
+	(title_block
+		(title "K26 / XC7K160T 8GB memory accelerator conditional reference")
+		(date "2026-07-31")
+		(rev "P0 proposal_only")
+		(company "VARP research workbench")
+		(comment 1 "NOT FOR FABRICATION")
+		(comment 2 "Connector/bank boundaries only; no BGA/MIG pins")
+	)
+	(lib_symbols)
+	(text "NOT FOR FABRICATION - conditionally_feasible until Vivado MIG placement and sourcing gates pass."
+		(exclude_from_sim no)
+		(at 22.86 20.32 0)
+		(effects
+			(font
+				(size 2.032 2.032)
+				(thickness 0.4064)
+				(bold yes)
+			)
+			(justify left bottom)
+		)
+		(uuid "3d7254e3-6be9-480c-9be0-30ec40c13a82")
+	)
+	(sheet
+		(at 25.4 38.1)
+		(size 139.7 38.1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "00000000-0000-0000-0000-000062000000")
+		(property "Sheetname" "K26 SOM GTH connector boundary"
+			(at 25.4 37.2614 0)
+			(effects
+				(font
+					(size 1.524 1.524)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "01_K26_SOM_GTH_Boundary.kicad_sch"
+			(at 25.4 76.8862 0)
+			(effects
+				(font
+					(size 1.524 1.524)
+				)
+				(justify left top)
+			)
+		)
+		(instances
+			(project "k26_memory_reference"
+				(path "/4ef8c25c-5024-4255-b4ff-bcb97c186a94"
+					(page "2")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 203.2 38.1)
+		(size 139.7 38.1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "00000000-0000-0000-0000-000062000001")
+		(property "Sheetname" "XC7K160T-2FFG676I bank boundary"
+			(at 203.2 37.2614 0)
+			(effects
+				(font
+					(size 1.524 1.524)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "02_XC7K160T_Bank_Boundary.kicad_sch"
+			(at 203.2 76.8862 0)
+			(effects
+				(font
+					(size 1.524 1.524)
+				)
+				(justify left top)
+			)
+		)
+		(instances
+			(project "k26_memory_reference"
+				(path "/4ef8c25c-5024-4255-b4ff-bcb97c186a94"
+					(page "6")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 25.4 96.52)
+		(size 139.7 38.1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "00000000-0000-0000-0000-000062000002")
+		(property "Sheetname" "Four independent DDR3L x16 channel topology"
+			(at 25.4 95.6814 0)
+			(effects
+				(font
+					(size 1.524 1.524)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "03_DDR3L_Four_Channel_Topology.kicad_sch"
+			(at 25.4 135.3062 0)
+			(effects
+				(font
+					(size 1.524 1.524)
+				)
+				(justify left top)
+			)
+		)
+		(instances
+			(project "k26_memory_reference"
+				(path "/4ef8c25c-5024-4255-b4ff-bcb97c186a94"
+					(page "3")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 203.2 96.52)
+		(size 139.7 38.1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "00000000-0000-0000-0000-000062000003")
+		(property "Sheetname" "Four-lane full-duplex K26 to XC7K160T link"
+			(at 203.2 95.6814 0)
+			(effects
+				(font
+					(size 1.524 1.524)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "04_GTH_Four_Lane_Link.kicad_sch"
+			(at 203.2 135.3062 0)
+			(effects
+				(font
+					(size 1.524 1.524)
+				)
+				(justify left top)
+			)
+		)
+		(instances
+			(project "k26_memory_reference"
+				(path "/4ef8c25c-5024-4255-b4ff-bcb97c186a94"
+					(page "7")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 25.4 154.94)
+		(size 139.7 38.1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "00000000-0000-0000-0000-000062000004")
+		(property "Sheetname" "Clock reset and configuration"
+			(at 25.4 154.1014 0)
+			(effects
+				(font
+					(size 1.524 1.524)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "05_Clock_Reset_Config.kicad_sch"
+			(at 25.4 193.7262 0)
+			(effects
+				(font
+					(size 1.524 1.524)
+				)
+				(justify left top)
+			)
+		)
+		(instances
+			(project "k26_memory_reference"
+				(path "/4ef8c25c-5024-4255-b4ff-bcb97c186a94"
+					(page "4")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 203.2 154.94)
+		(size 139.7 38.1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "00000000-0000-0000-0000-000062000005")
+		(property "Sheetname" "Power tree and decoupling"
+			(at 203.2 154.1014 0)
+			(effects
+				(font
+					(size 1.524 1.524)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "06_Power_Decoupling.kicad_sch"
+			(at 203.2 193.7262 0)
+			(effects
+				(font
+					(size 1.524 1.524)
+				)
+				(justify left top)
+			)
+		)
+		(instances
+			(project "k26_memory_reference"
+				(path "/4ef8c25c-5024-4255-b4ff-bcb97c186a94"
+					(page "8")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 25.4 213.36)
+		(size 139.7 38.1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "00000000-0000-0000-0000-000062000006")
+		(property "Sheetname" "JTAG and debug boundary"
+			(at 25.4 212.5214 0)
+			(effects
+				(font
+					(size 1.524 1.524)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "07_JTAG_Debug.kicad_sch"
+			(at 25.4 252.1462 0)
+			(effects
+				(font
+					(size 1.524 1.524)
+				)
+				(justify left top)
+			)
+		)
+		(instances
+			(project "k26_memory_reference"
+				(path "/4ef8c25c-5024-4255-b4ff-bcb97c186a94"
+					(page "5")
+				)
+			)
+		)
+	)
+	(sheet_instances
+		(path "/"
+			(page "1")
+		)
+	)
+	(embedded_fonts no)
+)

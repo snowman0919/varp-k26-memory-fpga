@@ -1,0 +1,20 @@
+ERC report (2026-07-31T05:28:47+0900, Encoding UTF8)
+Report includes: Errors, Warnings
+
+***** Sheet /
+
+***** Sheet /K26 SOM GTH connector boundary/
+
+***** Sheet /Four independent DDR3L x16 channel topology/
+
+***** Sheet /Clock reset and configuration/
+
+***** Sheet /JTAG and debug boundary/
+
+***** Sheet /XC7K160T-2FFG676I bank boundary/
+
+***** Sheet /Four-lane full-duplex K26 to XC7K160T link/
+
+***** Sheet /Power tree and decoupling/
+
+ ** ERC messages: 0  Errors 0  Warnings 0

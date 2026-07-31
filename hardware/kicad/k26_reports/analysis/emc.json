@@ -1,0 +1,1566 @@
+{
+  "analyzer_type": "emc",
+  "schema_version": "1.4.0",
+  "inputs": {
+    "source_files": [
+      "hardware/kicad/k26_reports/analysis/schematic.json",
+      "hardware/kicad/k26_reports/analysis/pcb.json"
+    ],
+    "source_hashes": {
+      "hardware/kicad/k26_reports/analysis/schematic.json": "2732930ac3be5798560420dd7a4724925aff9638e11e75b6ab282247368efe18",
+      "hardware/kicad/k26_reports/analysis/pcb.json": "eb4b9e604a7f40d21c66a6b66132ce0401cf7932d1a22b683ac315759bb06e8a"
+    },
+    "run_id": "20260730T201957Z-5d4440",
+    "config_hash": null,
+    "upstream_artifacts": {
+      "schematic": {
+        "path": "hardware/kicad/k26_reports/analysis/schematic.json",
+        "sha256": "2732930ac3be5798560420dd7a4724925aff9638e11e75b6ab282247368efe18",
+        "schema_version": "1.4.0",
+        "run_id": "20260730T201957Z-5d4440"
+      },
+      "pcb": {
+        "path": "hardware/kicad/k26_reports/analysis/pcb.json",
+        "sha256": "eb4b9e604a7f40d21c66a6b66132ce0401cf7932d1a22b683ac315759bb06e8a",
+        "schema_version": "1.4.0",
+        "run_id": "20260730T201957Z-5d4440"
+      }
+    }
+  },
+  "compat": {
+    "minimum_consumer_version": "1.4.0",
+    "deprecated_fields": [],
+    "experimental_fields": []
+  },
+  "summary": {
+    "total_findings": 26,
+    "categories_checked": 5,
+    "active": 26,
+    "suppressed": 0,
+    "by_severity": {
+      "error": 1,
+      "warning": 18,
+      "info": 7
+    },
+    "emc_risk_score": 67.0
+  },
+  "target_standard": "fcc-class-b",
+  "findings": [
+    {
+      "category": "ground_plane",
+      "severity": "info",
+      "rule_id": "GP-001",
+      "confidence": "deterministic",
+      "title": "Return path analysis data not available",
+      "description": "PCB analysis did not include return path continuity data. Run the PCB analyzer with --full flag to enable GP-001 reference plane coverage checking.",
+      "components": [],
+      "nets": [],
+      "recommendation": "Re-run PCB analysis with: python3 analyze_pcb.py <file> --full",
+      "detector": "emc_ground_plane",
+      "summary": "Return path analysis data not available",
+      "pins": [],
+      "evidence_source": "topology",
+      "report_context": {
+        "section": "Ground Plane",
+        "impact": "",
+        "standard_ref": ""
+      },
+      "suppressed": false,
+      "suppression_reason": "",
+      "stages": [
+        "layout"
+      ],
+      "finding_id": "emc:GP-001:c6f889950823"
+    },
+    {
+      "category": "decoupling",
+      "severity": "warning",
+      "rule_id": "DC-003",
+      "confidence": "deterministic",
+      "title": "Decoupling cap C5 far from via",
+      "description": "C5 is 7.8mm from the nearest via (~5.4nH connection inductance). Long traces between cap and via degrade high-frequency decoupling effectiveness.",
+      "components": [
+        "C5",
+        "U1"
+      ],
+      "nets": [],
+      "recommendation": "Place a via directly adjacent to C5 pads. Use fat, short traces from cap pads to via.",
+      "detector": "emc_decoupling",
+      "summary": "Decoupling cap C5 far from via",
+      "pins": [],
+      "evidence_source": "topology",
+      "report_context": {
+        "section": "Decoupling",
+        "impact": "",
+        "standard_ref": ""
+      },
+      "suppressed": false,
+      "suppression_reason": "",
+      "stages": [
+        "layout"
+      ],
+      "finding_id": "emc:DC-003:c5"
+    },
+    {
+      "category": "decoupling",
+      "severity": "warning",
+      "rule_id": "DC-003",
+      "confidence": "deterministic",
+      "title": "Decoupling cap C4 far from via",
+      "description": "C4 is 8.4mm from the nearest via (~5.9nH connection inductance). Long traces between cap and via degrade high-frequency decoupling effectiveness.",
+      "components": [
+        "C4",
+        "U1"
+      ],
+      "nets": [],
+      "recommendation": "Place a via directly adjacent to C4 pads. Use fat, short traces from cap pads to via.",
+      "detector": "emc_decoupling",
+      "summary": "Decoupling cap C4 far from via",
+      "pins": [],
+      "evidence_source": "topology",
+      "report_context": {
+        "section": "Decoupling",
+        "impact": "",
+        "standard_ref": ""
+      },
+      "suppressed": false,
+      "suppression_reason": "",
+      "stages": [
+        "layout"
+      ],
+      "finding_id": "emc:DC-003:c4"
+    },
+    {
+      "category": "decoupling",
+      "severity": "warning",
+      "rule_id": "DC-003",
+      "confidence": "deterministic",
+      "title": "Decoupling cap C1 far from via",
+      "description": "C1 is 5.4mm from the nearest via (~3.8nH connection inductance). Long traces between cap and via degrade high-frequency decoupling effectiveness.",
+      "components": [
+        "C1",
+        "U1"
+      ],
+      "nets": [],
+      "recommendation": "Place a via directly adjacent to C1 pads. Use fat, short traces from cap pads to via.",
+      "detector": "emc_decoupling",
+      "summary": "Decoupling cap C1 far from via",
+      "pins": [],
+      "evidence_source": "topology",
+      "report_context": {
+        "section": "Decoupling",
+        "impact": "",
+        "standard_ref": ""
+      },
+      "suppressed": false,
+      "suppression_reason": "",
+      "stages": [
+        "layout"
+      ],
+      "finding_id": "emc:DC-003:c1"
+    },
+    {
+      "category": "decoupling",
+      "severity": "warning",
+      "rule_id": "DC-003",
+      "confidence": "deterministic",
+      "title": "Decoupling cap C6 far from via",
+      "description": "C6 is 5.0mm from the nearest via (~3.5nH connection inductance). Long traces between cap and via degrade high-frequency decoupling effectiveness.",
+      "components": [
+        "C6",
+        "U1"
+      ],
+      "nets": [],
+      "recommendation": "Place a via directly adjacent to C6 pads. Use fat, short traces from cap pads to via.",
+      "detector": "emc_decoupling",
+      "summary": "Decoupling cap C6 far from via",
+      "pins": [],
+      "evidence_source": "topology",
+      "report_context": {
+        "section": "Decoupling",
+        "impact": "",
+        "standard_ref": ""
+      },
+      "suppressed": false,
+      "suppression_reason": "",
+      "stages": [
+        "layout"
+      ],
+      "finding_id": "emc:DC-003:c6"
+    },
+    {
+      "category": "decoupling",
+      "severity": "warning",
+      "rule_id": "DC-003",
+      "confidence": "deterministic",
+      "title": "Decoupling cap C2 far from via",
+      "description": "C2 is 4.4mm from the nearest via (~3.1nH connection inductance). Long traces between cap and via degrade high-frequency decoupling effectiveness.",
+      "components": [
+        "C2",
+        "U1"
+      ],
+      "nets": [],
+      "recommendation": "Place a via directly adjacent to C2 pads. Use fat, short traces from cap pads to via.",
+      "detector": "emc_decoupling",
+      "summary": "Decoupling cap C2 far from via",
+      "pins": [],
+      "evidence_source": "topology",
+      "report_context": {
+        "section": "Decoupling",
+        "impact": "",
+        "standard_ref": ""
+      },
+      "suppressed": false,
+      "suppression_reason": "",
+      "stages": [
+        "layout"
+      ],
+      "finding_id": "emc:DC-003:c2"
+    },
+    {
+      "category": "decoupling",
+      "severity": "warning",
+      "rule_id": "DC-003",
+      "confidence": "deterministic",
+      "title": "Decoupling cap C8 far from via",
+      "description": "C8 is 6.5mm from the nearest via (~4.6nH connection inductance). Long traces between cap and via degrade high-frequency decoupling effectiveness.",
+      "components": [
+        "C8",
+        "U1"
+      ],
+      "nets": [],
+      "recommendation": "Place a via directly adjacent to C8 pads. Use fat, short traces from cap pads to via.",
+      "detector": "emc_decoupling",
+      "summary": "Decoupling cap C8 far from via",
+      "pins": [],
+      "evidence_source": "topology",
+      "report_context": {
+        "section": "Decoupling",
+        "impact": "",
+        "standard_ref": ""
+      },
+      "suppressed": false,
+      "suppression_reason": "",
+      "stages": [
+        "layout"
+      ],
+      "finding_id": "emc:DC-003:c8"
+    },
+    {
+      "category": "decoupling",
+      "severity": "warning",
+      "rule_id": "DC-003",
+      "confidence": "deterministic",
+      "title": "Decoupling cap C7 far from via",
+      "description": "C7 is 4.5mm from the nearest via (~3.1nH connection inductance). Long traces between cap and via degrade high-frequency decoupling effectiveness.",
+      "components": [
+        "C7",
+        "U1"
+      ],
+      "nets": [],
+      "recommendation": "Place a via directly adjacent to C7 pads. Use fat, short traces from cap pads to via.",
+      "detector": "emc_decoupling",
+      "summary": "Decoupling cap C7 far from via",
+      "pins": [],
+      "evidence_source": "topology",
+      "report_context": {
+        "section": "Decoupling",
+        "impact": "",
+        "standard_ref": ""
+      },
+      "suppressed": false,
+      "suppression_reason": "",
+      "stages": [
+        "layout"
+      ],
+      "finding_id": "emc:DC-003:c7"
+    },
+    {
+      "category": "decoupling",
+      "severity": "warning",
+      "rule_id": "DC-003",
+      "confidence": "deterministic",
+      "title": "Decoupling cap C3 far from via",
+      "description": "C3 is 5.4mm from the nearest via (~3.8nH connection inductance). Long traces between cap and via degrade high-frequency decoupling effectiveness.",
+      "components": [
+        "C3",
+        "U1"
+      ],
+      "nets": [],
+      "recommendation": "Place a via directly adjacent to C3 pads. Use fat, short traces from cap pads to via.",
+      "detector": "emc_decoupling",
+      "summary": "Decoupling cap C3 far from via",
+      "pins": [],
+      "evidence_source": "topology",
+      "report_context": {
+        "section": "Decoupling",
+        "impact": "",
+        "standard_ref": ""
+      },
+      "suppressed": false,
+      "suppression_reason": "",
+      "stages": [
+        "layout"
+      ],
+      "finding_id": "emc:DC-003:c3"
+    },
+    {
+      "category": "decoupling",
+      "severity": "warning",
+      "rule_id": "DC-003",
+      "confidence": "deterministic",
+      "title": "Decoupling cap C17 far from via",
+      "description": "C17 is 10.0mm from the nearest via (~7.0nH connection inductance). Long traces between cap and via degrade high-frequency decoupling effectiveness.",
+      "components": [
+        "C17",
+        "U1"
+      ],
+      "nets": [],
+      "recommendation": "Place a via directly adjacent to C17 pads. Use fat, short traces from cap pads to via.",
+      "detector": "emc_decoupling",
+      "summary": "Decoupling cap C17 far from via",
+      "pins": [],
+      "evidence_source": "topology",
+      "report_context": {
+        "section": "Decoupling",
+        "impact": "",
+        "standard_ref": ""
+      },
+      "suppressed": false,
+      "suppression_reason": "",
+      "stages": [
+        "layout"
+      ],
+      "finding_id": "emc:DC-003:c17"
+    },
+    {
+      "category": "decoupling",
+      "severity": "warning",
+      "rule_id": "DC-003",
+      "confidence": "deterministic",
+      "title": "Decoupling cap C18 far from via",
+      "description": "C18 is 40.2mm from the nearest via (~28.1nH connection inductance). Long traces between cap and via degrade high-frequency decoupling effectiveness.",
+      "components": [
+        "C18",
+        "U2"
+      ],
+      "nets": [],
+      "recommendation": "Place a via directly adjacent to C18 pads. Use fat, short traces from cap pads to via.",
+      "detector": "emc_decoupling",
+      "summary": "Decoupling cap C18 far from via",
+      "pins": [],
+      "evidence_source": "topology",
+      "report_context": {
+        "section": "Decoupling",
+        "impact": "",
+        "standard_ref": ""
+      },
+      "suppressed": false,
+      "suppression_reason": "",
+      "stages": [
+        "layout"
+      ],
+      "finding_id": "emc:DC-003:c18"
+    },
+    {
+      "category": "io_filtering",
+      "severity": "info",
+      "rule_id": "IO-001",
+      "confidence": "heuristic",
+      "title": "No EMC filtering near J2",
+      "description": "Connector J2 (K26_SOM240_2_GTH_BANK224_BOUNDARY) has no ferrite bead, CM choke, or ESD protection within 25mm. Unfiltered I/O cables are the dominant source of radiated emissions \u2014 common-mode current as low as 5 \u00b5A can exceed FCC Class B.",
+      "components": [
+        "J2"
+      ],
+      "nets": [],
+      "recommendation": "Add a ferrite bead (e.g., BLM18AG601SN1D, 600\u03a9@100MHz) on signal lines near J2. Add ESD/TVS protection for external interfaces.",
+      "detector": "emc_io_filtering",
+      "summary": "No EMC filtering near J2",
+      "pins": [],
+      "evidence_source": "heuristic_rule",
+      "report_context": {
+        "section": "Io Filtering",
+        "impact": "",
+        "standard_ref": ""
+      },
+      "fix_params": {
+        "type": "add_component",
+        "components": [
+          {
+            "type": "ferrite_bead"
+          }
+        ],
+        "basis": "EMI filter on external I/O"
+      },
+      "suppressed": false,
+      "suppression_reason": "",
+      "stages": [
+        "pre_fab"
+      ],
+      "finding_id": "emc:IO-001:j2"
+    },
+    {
+      "category": "io_filtering",
+      "severity": "error",
+      "rule_id": "IO-001",
+      "confidence": "heuristic",
+      "title": "No EMC filtering near J5",
+      "description": "Connector J5 (REGULATED_POWER_ENTRY) has no ferrite bead, CM choke, or ESD protection within 25mm. Unfiltered I/O cables are the dominant source of radiated emissions \u2014 common-mode current as low as 5 \u00b5A can exceed FCC Class B.",
+      "components": [
+        "J5"
+      ],
+      "nets": [],
+      "recommendation": "Add a ferrite bead (e.g., BLM18AG601SN1D, 600\u03a9@100MHz) on signal lines near J5. Add ESD/TVS protection for external interfaces.",
+      "detector": "emc_io_filtering",
+      "summary": "No EMC filtering near J5",
+      "pins": [],
+      "evidence_source": "heuristic_rule",
+      "report_context": {
+        "section": "Io Filtering",
+        "impact": "",
+        "standard_ref": ""
+      },
+      "fix_params": {
+        "type": "add_component",
+        "components": [
+          {
+            "type": "ferrite_bead"
+          }
+        ],
+        "basis": "EMI filter on external I/O"
+      },
+      "suppressed": false,
+      "suppression_reason": "",
+      "stages": [
+        "pre_fab"
+      ],
+      "finding_id": "emc:IO-001:j5"
+    },
+    {
+      "category": "io_filtering",
+      "severity": "info",
+      "rule_id": "IO-001",
+      "confidence": "heuristic",
+      "title": "No EMC filtering near J4",
+      "description": "Connector J4 (XC7K160T_JTAG_CONFIG_BOUNDARY) has no ferrite bead, CM choke, or ESD protection within 25mm. Unfiltered I/O cables are the dominant source of radiated emissions \u2014 common-mode current as low as 5 \u00b5A can exceed FCC Class B.",
+      "components": [
+        "J4"
+      ],
+      "nets": [],
+      "recommendation": "Add a ferrite bead (e.g., BLM18AG601SN1D, 600\u03a9@100MHz) on signal lines near J4. Add ESD/TVS protection for external interfaces.",
+      "detector": "emc_io_filtering",
+      "summary": "No EMC filtering near J4",
+      "pins": [],
+      "evidence_source": "heuristic_rule",
+      "report_context": {
+        "section": "Io Filtering",
+        "impact": "",
+        "standard_ref": ""
+      },
+      "fix_params": {
+        "type": "add_component",
+        "components": [
+          {
+            "type": "ferrite_bead"
+          }
+        ],
+        "basis": "EMI filter on external I/O"
+      },
+      "suppressed": false,
+      "suppression_reason": "",
+      "stages": [
+        "pre_fab"
+      ],
+      "finding_id": "emc:IO-001:j4"
+    },
+    {
+      "category": "io_filtering",
+      "severity": "info",
+      "rule_id": "IO-001",
+      "confidence": "heuristic",
+      "title": "No EMC filtering near J1",
+      "description": "Connector J1 (XC7K160T_DDR_GTX_BANK_BOUNDARY_NO_BGA_PINS) has no ferrite bead, CM choke, or ESD protection within 25mm. Unfiltered I/O cables are the dominant source of radiated emissions \u2014 common-mode current as low as 5 \u00b5A can exceed FCC Class B.",
+      "components": [
+        "J1"
+      ],
+      "nets": [],
+      "recommendation": "Add a ferrite bead (e.g., BLM18AG601SN1D, 600\u03a9@100MHz) on signal lines near J1. Add ESD/TVS protection for external interfaces.",
+      "detector": "emc_io_filtering",
+      "summary": "No EMC filtering near J1",
+      "pins": [],
+      "evidence_source": "heuristic_rule",
+      "report_context": {
+        "section": "Io Filtering",
+        "impact": "",
+        "standard_ref": ""
+      },
+      "fix_params": {
+        "type": "add_component",
+        "components": [
+          {
+            "type": "ferrite_bead"
+          }
+        ],
+        "basis": "EMI filter on external I/O"
+      },
+      "suppressed": false,
+      "suppression_reason": "",
+      "stages": [
+        "pre_fab"
+      ],
+      "finding_id": "emc:IO-001:j1"
+    },
+    {
+      "category": "io_filtering",
+      "severity": "info",
+      "rule_id": "IO-002",
+      "confidence": "heuristic",
+      "title": "Insufficient ground pins on J4",
+      "description": "J4 (XC7K160T_JTAG_CONFIG_BOUNDARY) has 1 ground pin(s) for 9 signal pins. Recommended: at least 3 ground pins for adequate return current path and cable shielding.",
+      "components": [
+        "J4"
+      ],
+      "nets": [],
+      "recommendation": "Ensure J4 has sufficient ground pins. For high-speed interfaces, ground pins should be distributed among signal pins, not grouped at one end.",
+      "detector": "emc_io_filtering",
+      "summary": "Insufficient ground pins on J4",
+      "pins": [],
+      "evidence_source": "heuristic_rule",
+      "report_context": {
+        "section": "Io Filtering",
+        "impact": "",
+        "standard_ref": ""
+      },
+      "suppressed": false,
+      "suppression_reason": "",
+      "stages": [
+        "pre_fab"
+      ],
+      "finding_id": "emc:IO-002:j4"
+    },
+    {
+      "category": "io_filtering",
+      "severity": "info",
+      "rule_id": "IO-002",
+      "confidence": "heuristic",
+      "title": "Insufficient ground pins on J1",
+      "description": "J1 (XC7K160T_DDR_GTX_BANK_BOUNDARY_NO_BGA_PINS) has 1 ground pin(s) for 79 signal pins. Recommended: at least 20 ground pins for adequate return current path and cable shielding.",
+      "components": [
+        "J1"
+      ],
+      "nets": [],
+      "recommendation": "Ensure J1 has sufficient ground pins. For high-speed interfaces, ground pins should be distributed among signal pins, not grouped at one end.",
+      "detector": "emc_io_filtering",
+      "summary": "Insufficient ground pins on J1",
+      "pins": [],
+      "evidence_source": "heuristic_rule",
+      "report_context": {
+        "section": "Io Filtering",
+        "impact": "",
+        "standard_ref": ""
+      },
+      "suppressed": false,
+      "suppression_reason": "",
+      "stages": [
+        "pre_fab"
+      ],
+      "finding_id": "emc:IO-002:j1"
+    },
+    {
+      "category": "clock_routing",
+      "severity": "warning",
+      "rule_id": "CK-001",
+      "confidence": "deterministic",
+      "title": "Clock /GTH_REFCLK1_N on outer layer",
+      "description": "Clock net /GTH_REFCLK1_N is 100% routed on outer layers (microstrip). Inner stripline layers provide better shielding from radiation.",
+      "components": [],
+      "nets": [
+        "/GTH_REFCLK1_N"
+      ],
+      "recommendation": "Route clock signals on inner layers (stripline) when possible.",
+      "detector": "emc_clock_routing",
+      "summary": "Clock /GTH_REFCLK1_N on outer layer",
+      "pins": [],
+      "evidence_source": "topology",
+      "report_context": {
+        "section": "Clock Routing",
+        "impact": "",
+        "standard_ref": ""
+      },
+      "suppressed": false,
+      "suppression_reason": "",
+      "stages": [
+        "layout"
+      ],
+      "finding_id": "emc:CK-001:/gth_refclk1_n"
+    },
+    {
+      "category": "clock_routing",
+      "severity": "warning",
+      "rule_id": "CK-001",
+      "confidence": "deterministic",
+      "title": "Clock /GTH_REFCLK0_P on outer layer",
+      "description": "Clock net /GTH_REFCLK0_P is 100% routed on outer layers (microstrip). Inner stripline layers provide better shielding from radiation.",
+      "components": [],
+      "nets": [
+        "/GTH_REFCLK0_P"
+      ],
+      "recommendation": "Route clock signals on inner layers (stripline) when possible.",
+      "detector": "emc_clock_routing",
+      "summary": "Clock /GTH_REFCLK0_P on outer layer",
+      "pins": [],
+      "evidence_source": "topology",
+      "report_context": {
+        "section": "Clock Routing",
+        "impact": "",
+        "standard_ref": ""
+      },
+      "suppressed": false,
+      "suppression_reason": "",
+      "stages": [
+        "layout"
+      ],
+      "finding_id": "emc:CK-001:/gth_refclk0_p"
+    },
+    {
+      "category": "clock_routing",
+      "severity": "warning",
+      "rule_id": "CK-001",
+      "confidence": "deterministic",
+      "title": "Clock /GTH_REFCLK0_N on outer layer",
+      "description": "Clock net /GTH_REFCLK0_N is 100% routed on outer layers (microstrip). Inner stripline layers provide better shielding from radiation.",
+      "components": [],
+      "nets": [
+        "/GTH_REFCLK0_N"
+      ],
+      "recommendation": "Route clock signals on inner layers (stripline) when possible.",
+      "detector": "emc_clock_routing",
+      "summary": "Clock /GTH_REFCLK0_N on outer layer",
+      "pins": [],
+      "evidence_source": "topology",
+      "report_context": {
+        "section": "Clock Routing",
+        "impact": "",
+        "standard_ref": ""
+      },
+      "suppressed": false,
+      "suppression_reason": "",
+      "stages": [
+        "layout"
+      ],
+      "finding_id": "emc:CK-001:/gth_refclk0_n"
+    },
+    {
+      "category": "clock_routing",
+      "severity": "warning",
+      "rule_id": "CK-001",
+      "confidence": "deterministic",
+      "title": "Clock /GTH_REFCLK1_P on outer layer",
+      "description": "Clock net /GTH_REFCLK1_P is 100% routed on outer layers (microstrip). Inner stripline layers provide better shielding from radiation.",
+      "components": [],
+      "nets": [
+        "/GTH_REFCLK1_P"
+      ],
+      "recommendation": "Route clock signals on inner layers (stripline) when possible.",
+      "detector": "emc_clock_routing",
+      "summary": "Clock /GTH_REFCLK1_P on outer layer",
+      "pins": [],
+      "evidence_source": "topology",
+      "report_context": {
+        "section": "Clock Routing",
+        "impact": "",
+        "standard_ref": ""
+      },
+      "suppressed": false,
+      "suppression_reason": "",
+      "stages": [
+        "layout"
+      ],
+      "finding_id": "emc:CK-001:/gth_refclk1_p"
+    },
+    {
+      "category": "clock_routing",
+      "severity": "warning",
+      "rule_id": "CK-003",
+      "confidence": "deterministic",
+      "title": "Clock /GTH_REFCLK0_N routed near connector J2",
+      "description": "Clock net /GTH_REFCLK0_N passes within 8.2mm of connector J2. Clock harmonics can couple to attached cables via proximity, increasing radiated emissions.",
+      "components": [
+        "J2"
+      ],
+      "nets": [
+        "/GTH_REFCLK0_N"
+      ],
+      "recommendation": "Route /GTH_REFCLK0_N away from J2, or add ground guard traces between the clock and connector.",
+      "detector": "emc_clock_routing",
+      "summary": "Clock /GTH_REFCLK0_N routed near connector J2",
+      "pins": [],
+      "evidence_source": "topology",
+      "report_context": {
+        "section": "Clock Routing",
+        "impact": "",
+        "standard_ref": ""
+      },
+      "suppressed": false,
+      "suppression_reason": "",
+      "stages": [
+        "layout"
+      ],
+      "finding_id": "emc:CK-003:j2"
+    },
+    {
+      "category": "clock_routing",
+      "severity": "warning",
+      "rule_id": "CK-003",
+      "confidence": "deterministic",
+      "title": "Clock /GTH_REFCLK0_P routed near connector J2",
+      "description": "Clock net /GTH_REFCLK0_P passes within 8.6mm of connector J2. Clock harmonics can couple to attached cables via proximity, increasing radiated emissions.",
+      "components": [
+        "J2"
+      ],
+      "nets": [
+        "/GTH_REFCLK0_P"
+      ],
+      "recommendation": "Route /GTH_REFCLK0_P away from J2, or add ground guard traces between the clock and connector.",
+      "detector": "emc_clock_routing",
+      "summary": "Clock /GTH_REFCLK0_P routed near connector J2",
+      "pins": [],
+      "evidence_source": "topology",
+      "report_context": {
+        "section": "Clock Routing",
+        "impact": "",
+        "standard_ref": ""
+      },
+      "suppressed": false,
+      "suppression_reason": "",
+      "stages": [
+        "layout"
+      ],
+      "finding_id": "emc:CK-003:j2#1"
+    },
+    {
+      "category": "clock_routing",
+      "severity": "warning",
+      "rule_id": "CK-003",
+      "confidence": "deterministic",
+      "title": "Clock /GTH_REFCLK1_N routed near connector J2",
+      "description": "Clock net /GTH_REFCLK1_N passes within 7.6mm of connector J2. Clock harmonics can couple to attached cables via proximity, increasing radiated emissions.",
+      "components": [
+        "J2"
+      ],
+      "nets": [
+        "/GTH_REFCLK1_N"
+      ],
+      "recommendation": "Route /GTH_REFCLK1_N away from J2, or add ground guard traces between the clock and connector.",
+      "detector": "emc_clock_routing",
+      "summary": "Clock /GTH_REFCLK1_N routed near connector J2",
+      "pins": [],
+      "evidence_source": "topology",
+      "report_context": {
+        "section": "Clock Routing",
+        "impact": "",
+        "standard_ref": ""
+      },
+      "suppressed": false,
+      "suppression_reason": "",
+      "stages": [
+        "layout"
+      ],
+      "finding_id": "emc:CK-003:j2#2"
+    },
+    {
+      "category": "clock_routing",
+      "severity": "warning",
+      "rule_id": "CK-003",
+      "confidence": "deterministic",
+      "title": "Clock /GTH_REFCLK1_P routed near connector J2",
+      "description": "Clock net /GTH_REFCLK1_P passes within 7.8mm of connector J2. Clock harmonics can couple to attached cables via proximity, increasing radiated emissions.",
+      "components": [
+        "J2"
+      ],
+      "nets": [
+        "/GTH_REFCLK1_P"
+      ],
+      "recommendation": "Route /GTH_REFCLK1_P away from J2, or add ground guard traces between the clock and connector.",
+      "detector": "emc_clock_routing",
+      "summary": "Clock /GTH_REFCLK1_P routed near connector J2",
+      "pins": [],
+      "evidence_source": "topology",
+      "report_context": {
+        "section": "Clock Routing",
+        "impact": "",
+        "standard_ref": ""
+      },
+      "suppressed": false,
+      "suppression_reason": "",
+      "stages": [
+        "layout"
+      ],
+      "finding_id": "emc:CK-003:j2#3"
+    },
+    {
+      "category": "emission_estimate",
+      "severity": "info",
+      "rule_id": "EE-001",
+      "confidence": "heuristic",
+      "title": "Board cavity resonance frequencies",
+      "description": "Board (140\u00d7110mm, \u03b5r=4.4) cavity resonances: (1,0) at 510 MHz; (0,1) at 650 MHz; (1,1) at 826 MHz; (2,0) at 1021 MHz; (2,1) at 1210 MHz. PDN impedance spikes at these frequencies. Ensure adequate decoupling at and around these frequencies.",
+      "components": [],
+      "nets": [],
+      "recommendation": "Add decoupling capacitors with SRF near these frequencies.",
+      "detector": "emc_emission_estimate",
+      "summary": "Board cavity resonance frequencies",
+      "pins": [],
+      "evidence_source": "heuristic_rule",
+      "report_context": {
+        "section": "Emission Estimate",
+        "impact": "",
+        "standard_ref": ""
+      },
+      "suppressed": false,
+      "suppression_reason": "",
+      "stages": [
+        "schematic"
+      ],
+      "finding_id": "emc:EE-001:14ba23cdf0dc"
+    }
+  ],
+  "assessments": [],
+  "per_net_scores": [
+    {
+      "net": "/GTH_REFCLK1_N",
+      "score": 94.0,
+      "finding_count": 2,
+      "rules": [
+        "CK-001",
+        "CK-003"
+      ]
+    },
+    {
+      "net": "/GTH_REFCLK0_P",
+      "score": 94.0,
+      "finding_count": 2,
+      "rules": [
+        "CK-001",
+        "CK-003"
+      ]
+    },
+    {
+      "net": "/GTH_REFCLK0_N",
+      "score": 94.0,
+      "finding_count": 2,
+      "rules": [
+        "CK-001",
+        "CK-003"
+      ]
+    },
+    {
+      "net": "/GTH_REFCLK1_P",
+      "score": 94.0,
+      "finding_count": 2,
+      "rules": [
+        "CK-001",
+        "CK-003"
+      ]
+    }
+  ],
+  "test_plan": {
+    "frequency_bands": [
+      {
+        "band": "30-88 MHz",
+        "freq_min_hz": 30000000.0,
+        "freq_max_hz": 88000000.0,
+        "risk_level": "none",
+        "source_count": 0,
+        "sources": []
+      },
+      {
+        "band": "88-216 MHz",
+        "freq_min_hz": 88000000.0,
+        "freq_max_hz": 216000000.0,
+        "risk_level": "none",
+        "source_count": 0,
+        "sources": []
+      },
+      {
+        "band": "216-960 MHz",
+        "freq_min_hz": 216000000.0,
+        "freq_max_hz": 960000000.0,
+        "risk_level": "none",
+        "source_count": 0,
+        "sources": []
+      },
+      {
+        "band": "960-40000 MHz",
+        "freq_min_hz": 960000000.0,
+        "freq_max_hz": 40000000000.0,
+        "risk_level": "none",
+        "source_count": 0,
+        "sources": []
+      }
+    ],
+    "interface_risks": [
+      {
+        "connector": "J2",
+        "value": "K26_SOM240_2_GTH_BANK224_BOUNDARY",
+        "protocol": "unknown",
+        "risk_score": 5,
+        "reasons": [
+          "No EMC filtering detected"
+        ]
+      },
+      {
+        "connector": "J5",
+        "value": "REGULATED_POWER_ENTRY",
+        "protocol": "unknown",
+        "risk_score": 5,
+        "reasons": [
+          "No EMC filtering detected"
+        ]
+      },
+      {
+        "connector": "J4",
+        "value": "XC7K160T_JTAG_CONFIG_BOUNDARY",
+        "protocol": "unknown",
+        "risk_score": 5,
+        "reasons": [
+          "No EMC filtering detected"
+        ]
+      },
+      {
+        "connector": "J1",
+        "value": "XC7K160T_DDR_GTX_BANK_BOUNDARY_NO_BGA_PINS",
+        "protocol": "unknown",
+        "risk_score": 5,
+        "reasons": [
+          "No EMC filtering detected"
+        ]
+      }
+    ],
+    "probe_points": [
+      {
+        "x": 110.0,
+        "y": 25.0,
+        "type": "crystal",
+        "ref": "Y1",
+        "reason": "Crystal/oscillator \u2014 clock harmonics source"
+      },
+      {
+        "x": 45.0,
+        "y": 28.0,
+        "type": "unfiltered_connector",
+        "ref": "J2",
+        "reason": "Unfiltered I/O \u2014 cable radiation risk"
+      },
+      {
+        "x": 125.0,
+        "y": 105.0,
+        "type": "unfiltered_connector",
+        "ref": "J5",
+        "reason": "Unfiltered I/O \u2014 cable radiation risk"
+      },
+      {
+        "x": 125.0,
+        "y": 22.0,
+        "type": "unfiltered_connector",
+        "ref": "J4",
+        "reason": "Unfiltered I/O \u2014 cable radiation risk"
+      },
+      {
+        "x": 45.0,
+        "y": 75.0,
+        "type": "unfiltered_connector",
+        "ref": "J1",
+        "reason": "Unfiltered I/O \u2014 cable radiation risk"
+      }
+    ]
+  },
+  "regulatory_coverage": {
+    "market": "us",
+    "applicable_standards": [
+      "FCC Part 15 Class B",
+      "FCC Part 15 Class B"
+    ],
+    "coverage_matrix": [
+      {
+        "standard": "FCC Part 15 Class B",
+        "test_type": "radiated",
+        "coverage": "minimal",
+        "checked_rules": [
+          "GP-001",
+          "CK-001",
+          "IO-001",
+          "EE-001"
+        ],
+        "total_applicable_rules": 23,
+        "note": "Design rule checks identify common radiation sources. Cannot predict absolute emission levels."
+      },
+      {
+        "standard": "FCC Part 15 Class B",
+        "test_type": "conducted",
+        "coverage": "indirect",
+        "checked_rules": [],
+        "total_applicable_rules": 4,
+        "note": "Switching harmonic analysis and decoupling checks. EMI filter verification not yet implemented."
+      }
+    ]
+  },
+  "category_summary": {
+    "ground_plane": {
+      "count": 1,
+      "max_severity": "info",
+      "severities": {
+        "error": 0,
+        "warning": 0,
+        "info": 1
+      },
+      "suppressed_count": 0
+    },
+    "decoupling": {
+      "count": 10,
+      "max_severity": "warning",
+      "severities": {
+        "error": 0,
+        "warning": 10,
+        "info": 0
+      },
+      "suppressed_count": 0
+    },
+    "io_filtering": {
+      "count": 6,
+      "max_severity": "error",
+      "severities": {
+        "error": 1,
+        "warning": 0,
+        "info": 5
+      },
+      "suppressed_count": 0
+    },
+    "clock_routing": {
+      "count": 8,
+      "max_severity": "warning",
+      "severities": {
+        "error": 0,
+        "warning": 8,
+        "info": 0
+      },
+      "suppressed_count": 0
+    },
+    "emission_estimate": {
+      "count": 1,
+      "max_severity": "info",
+      "severities": {
+        "error": 0,
+        "warning": 0,
+        "info": 1
+      },
+      "suppressed_count": 0
+    }
+  },
+  "board_info": {
+    "board_width_mm": 140.0,
+    "board_height_mm": 110.0,
+    "layer_count": 3,
+    "footprint_count": 29,
+    "via_count": 50,
+    "has_stackup": false,
+    "total_components": 29,
+    "total_nets": 116
+  },
+  "elapsed_s": 0.002,
+  "audience_summary": {
+    "designer": {
+      "total_findings": 26,
+      "by_severity": {
+        "error": 1,
+        "warning": 18,
+        "info": 7
+      },
+      "by_category": {
+        "ground_plane": 1,
+        "decoupling": 10,
+        "io_filtering": 6,
+        "clock_routing": 8,
+        "emission_estimate": 1
+      },
+      "top_issues": [
+        {
+          "category": "io_filtering",
+          "severity": "error",
+          "rule_id": "IO-001",
+          "confidence": "heuristic",
+          "title": "No EMC filtering near J5",
+          "description": "Connector J5 (REGULATED_POWER_ENTRY) has no ferrite bead, CM choke, or ESD protection within 25mm. Unfiltered I/O cables are the dominant source of radiated emissions \u2014 common-mode current as low as 5 \u00b5A can exceed FCC Class B.",
+          "components": [
+            "J5"
+          ],
+          "nets": [],
+          "recommendation": "Add a ferrite bead (e.g., BLM18AG601SN1D, 600\u03a9@100MHz) on signal lines near J5. Add ESD/TVS protection for external interfaces.",
+          "detector": "emc_io_filtering",
+          "summary": "No EMC filtering near J5",
+          "pins": [],
+          "evidence_source": "heuristic_rule",
+          "report_context": {
+            "section": "Io Filtering",
+            "impact": "",
+            "standard_ref": ""
+          },
+          "fix_params": {
+            "type": "add_component",
+            "components": [
+              {
+                "type": "ferrite_bead"
+              }
+            ],
+            "basis": "EMI filter on external I/O"
+          },
+          "suppressed": false,
+          "suppression_reason": "",
+          "stages": [
+            "pre_fab"
+          ],
+          "finding_id": "emc:IO-001:j5"
+        },
+        {
+          "category": "decoupling",
+          "severity": "warning",
+          "rule_id": "DC-003",
+          "confidence": "deterministic",
+          "title": "Decoupling cap C5 far from via",
+          "description": "C5 is 7.8mm from the nearest via (~5.4nH connection inductance). Long traces between cap and via degrade high-frequency decoupling effectiveness.",
+          "components": [
+            "C5",
+            "U1"
+          ],
+          "nets": [],
+          "recommendation": "Place a via directly adjacent to C5 pads. Use fat, short traces from cap pads to via.",
+          "detector": "emc_decoupling",
+          "summary": "Decoupling cap C5 far from via",
+          "pins": [],
+          "evidence_source": "topology",
+          "report_context": {
+            "section": "Decoupling",
+            "impact": "",
+            "standard_ref": ""
+          },
+          "suppressed": false,
+          "suppression_reason": "",
+          "stages": [
+            "layout"
+          ],
+          "finding_id": "emc:DC-003:c5"
+        },
+        {
+          "category": "decoupling",
+          "severity": "warning",
+          "rule_id": "DC-003",
+          "confidence": "deterministic",
+          "title": "Decoupling cap C4 far from via",
+          "description": "C4 is 8.4mm from the nearest via (~5.9nH connection inductance). Long traces between cap and via degrade high-frequency decoupling effectiveness.",
+          "components": [
+            "C4",
+            "U1"
+          ],
+          "nets": [],
+          "recommendation": "Place a via directly adjacent to C4 pads. Use fat, short traces from cap pads to via.",
+          "detector": "emc_decoupling",
+          "summary": "Decoupling cap C4 far from via",
+          "pins": [],
+          "evidence_source": "topology",
+          "report_context": {
+            "section": "Decoupling",
+            "impact": "",
+            "standard_ref": ""
+          },
+          "suppressed": false,
+          "suppression_reason": "",
+          "stages": [
+            "layout"
+          ],
+          "finding_id": "emc:DC-003:c4"
+        },
+        {
+          "category": "decoupling",
+          "severity": "warning",
+          "rule_id": "DC-003",
+          "confidence": "deterministic",
+          "title": "Decoupling cap C1 far from via",
+          "description": "C1 is 5.4mm from the nearest via (~3.8nH connection inductance). Long traces between cap and via degrade high-frequency decoupling effectiveness.",
+          "components": [
+            "C1",
+            "U1"
+          ],
+          "nets": [],
+          "recommendation": "Place a via directly adjacent to C1 pads. Use fat, short traces from cap pads to via.",
+          "detector": "emc_decoupling",
+          "summary": "Decoupling cap C1 far from via",
+          "pins": [],
+          "evidence_source": "topology",
+          "report_context": {
+            "section": "Decoupling",
+            "impact": "",
+            "standard_ref": ""
+          },
+          "suppressed": false,
+          "suppression_reason": "",
+          "stages": [
+            "layout"
+          ],
+          "finding_id": "emc:DC-003:c1"
+        },
+        {
+          "category": "decoupling",
+          "severity": "warning",
+          "rule_id": "DC-003",
+          "confidence": "deterministic",
+          "title": "Decoupling cap C6 far from via",
+          "description": "C6 is 5.0mm from the nearest via (~3.5nH connection inductance). Long traces between cap and via degrade high-frequency decoupling effectiveness.",
+          "components": [
+            "C6",
+            "U1"
+          ],
+          "nets": [],
+          "recommendation": "Place a via directly adjacent to C6 pads. Use fat, short traces from cap pads to via.",
+          "detector": "emc_decoupling",
+          "summary": "Decoupling cap C6 far from via",
+          "pins": [],
+          "evidence_source": "topology",
+          "report_context": {
+            "section": "Decoupling",
+            "impact": "",
+            "standard_ref": ""
+          },
+          "suppressed": false,
+          "suppression_reason": "",
+          "stages": [
+            "layout"
+          ],
+          "finding_id": "emc:DC-003:c6"
+        },
+        {
+          "category": "decoupling",
+          "severity": "warning",
+          "rule_id": "DC-003",
+          "confidence": "deterministic",
+          "title": "Decoupling cap C2 far from via",
+          "description": "C2 is 4.4mm from the nearest via (~3.1nH connection inductance). Long traces between cap and via degrade high-frequency decoupling effectiveness.",
+          "components": [
+            "C2",
+            "U1"
+          ],
+          "nets": [],
+          "recommendation": "Place a via directly adjacent to C2 pads. Use fat, short traces from cap pads to via.",
+          "detector": "emc_decoupling",
+          "summary": "Decoupling cap C2 far from via",
+          "pins": [],
+          "evidence_source": "topology",
+          "report_context": {
+            "section": "Decoupling",
+            "impact": "",
+            "standard_ref": ""
+          },
+          "suppressed": false,
+          "suppression_reason": "",
+          "stages": [
+            "layout"
+          ],
+          "finding_id": "emc:DC-003:c2"
+        },
+        {
+          "category": "decoupling",
+          "severity": "warning",
+          "rule_id": "DC-003",
+          "confidence": "deterministic",
+          "title": "Decoupling cap C8 far from via",
+          "description": "C8 is 6.5mm from the nearest via (~4.6nH connection inductance). Long traces between cap and via degrade high-frequency decoupling effectiveness.",
+          "components": [
+            "C8",
+            "U1"
+          ],
+          "nets": [],
+          "recommendation": "Place a via directly adjacent to C8 pads. Use fat, short traces from cap pads to via.",
+          "detector": "emc_decoupling",
+          "summary": "Decoupling cap C8 far from via",
+          "pins": [],
+          "evidence_source": "topology",
+          "report_context": {
+            "section": "Decoupling",
+            "impact": "",
+            "standard_ref": ""
+          },
+          "suppressed": false,
+          "suppression_reason": "",
+          "stages": [
+            "layout"
+          ],
+          "finding_id": "emc:DC-003:c8"
+        },
+        {
+          "category": "decoupling",
+          "severity": "warning",
+          "rule_id": "DC-003",
+          "confidence": "deterministic",
+          "title": "Decoupling cap C7 far from via",
+          "description": "C7 is 4.5mm from the nearest via (~3.1nH connection inductance). Long traces between cap and via degrade high-frequency decoupling effectiveness.",
+          "components": [
+            "C7",
+            "U1"
+          ],
+          "nets": [],
+          "recommendation": "Place a via directly adjacent to C7 pads. Use fat, short traces from cap pads to via.",
+          "detector": "emc_decoupling",
+          "summary": "Decoupling cap C7 far from via",
+          "pins": [],
+          "evidence_source": "topology",
+          "report_context": {
+            "section": "Decoupling",
+            "impact": "",
+            "standard_ref": ""
+          },
+          "suppressed": false,
+          "suppression_reason": "",
+          "stages": [
+            "layout"
+          ],
+          "finding_id": "emc:DC-003:c7"
+        },
+        {
+          "category": "decoupling",
+          "severity": "warning",
+          "rule_id": "DC-003",
+          "confidence": "deterministic",
+          "title": "Decoupling cap C3 far from via",
+          "description": "C3 is 5.4mm from the nearest via (~3.8nH connection inductance). Long traces between cap and via degrade high-frequency decoupling effectiveness.",
+          "components": [
+            "C3",
+            "U1"
+          ],
+          "nets": [],
+          "recommendation": "Place a via directly adjacent to C3 pads. Use fat, short traces from cap pads to via.",
+          "detector": "emc_decoupling",
+          "summary": "Decoupling cap C3 far from via",
+          "pins": [],
+          "evidence_source": "topology",
+          "report_context": {
+            "section": "Decoupling",
+            "impact": "",
+            "standard_ref": ""
+          },
+          "suppressed": false,
+          "suppression_reason": "",
+          "stages": [
+            "layout"
+          ],
+          "finding_id": "emc:DC-003:c3"
+        },
+        {
+          "category": "decoupling",
+          "severity": "warning",
+          "rule_id": "DC-003",
+          "confidence": "deterministic",
+          "title": "Decoupling cap C17 far from via",
+          "description": "C17 is 10.0mm from the nearest via (~7.0nH connection inductance). Long traces between cap and via degrade high-frequency decoupling effectiveness.",
+          "components": [
+            "C17",
+            "U1"
+          ],
+          "nets": [],
+          "recommendation": "Place a via directly adjacent to C17 pads. Use fat, short traces from cap pads to via.",
+          "detector": "emc_decoupling",
+          "summary": "Decoupling cap C17 far from via",
+          "pins": [],
+          "evidence_source": "topology",
+          "report_context": {
+            "section": "Decoupling",
+            "impact": "",
+            "standard_ref": ""
+          },
+          "suppressed": false,
+          "suppression_reason": "",
+          "stages": [
+            "layout"
+          ],
+          "finding_id": "emc:DC-003:c17"
+        }
+      ]
+    },
+    "reviewer": {
+      "total_findings": 19,
+      "by_category": {
+        "decoupling": 10,
+        "io_filtering": 1,
+        "clock_routing": 8
+      },
+      "top_issues": [
+        {
+          "rule_id": "IO-001",
+          "severity": "error",
+          "summary": "No EMC filtering near J5",
+          "recommendation": "Add a ferrite bead (e.g., BLM18AG601SN1D, 600\u03a9@100MHz) on signal lines near J5. Add ESD/TVS protection for external interfaces.",
+          "category": "io_filtering"
+        },
+        {
+          "rule_id": "DC-003",
+          "severity": "warning",
+          "summary": "Decoupling cap C5 far from via",
+          "recommendation": "Place a via directly adjacent to C5 pads. Use fat, short traces from cap pads to via.",
+          "category": "decoupling"
+        },
+        {
+          "rule_id": "DC-003",
+          "severity": "warning",
+          "summary": "Decoupling cap C4 far from via",
+          "recommendation": "Place a via directly adjacent to C4 pads. Use fat, short traces from cap pads to via.",
+          "category": "decoupling"
+        },
+        {
+          "rule_id": "DC-003",
+          "severity": "warning",
+          "summary": "Decoupling cap C1 far from via",
+          "recommendation": "Place a via directly adjacent to C1 pads. Use fat, short traces from cap pads to via.",
+          "category": "decoupling"
+        },
+        {
+          "rule_id": "DC-003",
+          "severity": "warning",
+          "summary": "Decoupling cap C6 far from via",
+          "recommendation": "Place a via directly adjacent to C6 pads. Use fat, short traces from cap pads to via.",
+          "category": "decoupling"
+        },
+        {
+          "rule_id": "DC-003",
+          "severity": "warning",
+          "summary": "Decoupling cap C2 far from via",
+          "recommendation": "Place a via directly adjacent to C2 pads. Use fat, short traces from cap pads to via.",
+          "category": "decoupling"
+        },
+        {
+          "rule_id": "DC-003",
+          "severity": "warning",
+          "summary": "Decoupling cap C8 far from via",
+          "recommendation": "Place a via directly adjacent to C8 pads. Use fat, short traces from cap pads to via.",
+          "category": "decoupling"
+        },
+        {
+          "rule_id": "DC-003",
+          "severity": "warning",
+          "summary": "Decoupling cap C7 far from via",
+          "recommendation": "Place a via directly adjacent to C7 pads. Use fat, short traces from cap pads to via.",
+          "category": "decoupling"
+        },
+        {
+          "rule_id": "DC-003",
+          "severity": "warning",
+          "summary": "Decoupling cap C3 far from via",
+          "recommendation": "Place a via directly adjacent to C3 pads. Use fat, short traces from cap pads to via.",
+          "category": "decoupling"
+        },
+        {
+          "rule_id": "DC-003",
+          "severity": "warning",
+          "summary": "Decoupling cap C17 far from via",
+          "recommendation": "Place a via directly adjacent to C17 pads. Use fat, short traces from cap pads to via.",
+          "category": "decoupling"
+        },
+        {
+          "rule_id": "DC-003",
+          "severity": "warning",
+          "summary": "Decoupling cap C18 far from via",
+          "recommendation": "Place a via directly adjacent to C18 pads. Use fat, short traces from cap pads to via.",
+          "category": "decoupling"
+        },
+        {
+          "rule_id": "CK-001",
+          "severity": "warning",
+          "summary": "Clock /GTH_REFCLK1_N on outer layer",
+          "recommendation": "Route clock signals on inner layers (stripline) when possible.",
+          "category": "clock_routing"
+        },
+        {
+          "rule_id": "CK-001",
+          "severity": "warning",
+          "summary": "Clock /GTH_REFCLK0_P on outer layer",
+          "recommendation": "Route clock signals on inner layers (stripline) when possible.",
+          "category": "clock_routing"
+        },
+        {
+          "rule_id": "CK-001",
+          "severity": "warning",
+          "summary": "Clock /GTH_REFCLK0_N on outer layer",
+          "recommendation": "Route clock signals on inner layers (stripline) when possible.",
+          "category": "clock_routing"
+        },
+        {
+          "rule_id": "CK-001",
+          "severity": "warning",
+          "summary": "Clock /GTH_REFCLK1_P on outer layer",
+          "recommendation": "Route clock signals on inner layers (stripline) when possible.",
+          "category": "clock_routing"
+        },
+        {
+          "rule_id": "CK-003",
+          "severity": "warning",
+          "summary": "Clock /GTH_REFCLK0_N routed near connector J2",
+          "recommendation": "Route /GTH_REFCLK0_N away from J2, or add ground guard traces between the clock and connector.",
+          "category": "clock_routing"
+        },
+        {
+          "rule_id": "CK-003",
+          "severity": "warning",
+          "summary": "Clock /GTH_REFCLK0_P routed near connector J2",
+          "recommendation": "Route /GTH_REFCLK0_P away from J2, or add ground guard traces between the clock and connector.",
+          "category": "clock_routing"
+        },
+        {
+          "rule_id": "CK-003",
+          "severity": "warning",
+          "summary": "Clock /GTH_REFCLK1_N routed near connector J2",
+          "recommendation": "Route /GTH_REFCLK1_N away from J2, or add ground guard traces between the clock and connector.",
+          "category": "clock_routing"
+        },
+        {
+          "rule_id": "CK-003",
+          "severity": "warning",
+          "summary": "Clock /GTH_REFCLK1_P routed near connector J2",
+          "recommendation": "Route /GTH_REFCLK1_P away from J2, or add ground guard traces between the clock and connector.",
+          "category": "clock_routing"
+        }
+      ]
+    },
+    "manager": {
+      "risk_level": "moderate",
+      "blocker_count": 1,
+      "warning_count": 18,
+      "stage_readiness": {
+        "schematic": "pass",
+        "layout": "needs_review",
+        "pre_fab": "needs_work",
+        "bring_up": "pass"
+      },
+      "one_liner": "1 error, 18 warnings across 3 categories. Pre-fab stage has blockers."
+    }
+  },
+  "trust_summary": {
+    "total_findings": 26,
+    "trust_level": "mixed",
+    "by_confidence": {
+      "deterministic": 19,
+      "heuristic": 7,
+      "datasheet_backed": 0
+    },
+    "by_evidence_source": {
+      "datasheet": 0,
+      "topology": 19,
+      "heuristic_rule": 7,
+      "symbol_footprint": 0,
+      "bom": 0,
+      "geometry": 0,
+      "api_lookup": 0
+    },
+    "provenance_coverage_pct": 0.0
+  },
+  "capability_mode_ref": {
+    "source": "analysis/capability_mode.json",
+    "run_id": "20260730T201957Z-5d4440"
+  }
+}

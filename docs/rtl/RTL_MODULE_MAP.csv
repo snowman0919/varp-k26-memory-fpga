@@ -1,0 +1,12 @@
+module,source_path,role,clock_domain,input_width,output_width,queue_depth,implemented_or_modeled,paper_figure
+TileScheduler,hw/src/main/scala/varp/scheduler/TileScheduler.scala,"S0–S3 job ownership, FCFS and steal selection",system,TileJob,ScheduledTile,8,implemented RTL,F01/F02
+K26WorkStealingTop,hw/src/main/scala/varp/k26/K26WorkStealingTop.scala,paper integration shell and payload identity store,system,MatVecTileCommand,MatVecTileResult,scheduler 8; store 32,implemented RTL,F01
+ComputeClusterArray,hw/src/main/scala/varp/compute/ComputeCluster.scala,one/two/four concrete compute clusters,system,per-cluster command,per-cluster result,cluster 4,implemented RTL,F01
+ComputeCluster,hw/src/main/scala/varp/compute/ComputeCluster.scala,FCFS command buffering and exact job counters,system,MatVecTileCommand,MatVecTileResult,4 input; 2 output,implemented RTL,F01/F03
+MatVecTileConsumer,hw/src/main/scala/varp/compute/ComputeCluster.scala,buffered adapter around the imported MatVec,system,16 INT8 activations + 4×16 INT8 weights,4×INT32,4 input; 2 output,implemented RTL,F01/F03
+LegacyMatVecAdapter,hw/src/main/scala/varp/compute/LegacyMatVecAdapter.scala,job-preserving adapter for DecodeMatVecInt8,system,tile command,tile result,single active command,implemented RTL,F01
+DecodeMatVecInt8,hw/src/main/scala/qk/DecodeMatVecInt8.scala,actual 16×4 signed INT8 MatVec primitive,system,16×INT8 + 4×16×INT8,4×INT32,internal pipeline,implemented RTL,F01/F03
+BundleRouter,hw/src/main/scala/varp/link/BundleRouter.scala,preferred-bundle assignment and bounded reroute,system,routed packet,1/2/4 bundle streams,transport FIFO,implemented RTL; separate plane,F01
+MultiChannelMemoryIngress,hw/src/main/scala/varp/memory/MultiChannelMemoryScheduler.scala,output-tile channel affinity,system,memory tile request,1/2/4 channel streams,8/channel,implemented RTL; separate plane,F01
+BankAwareChannelScheduler,hw/src/main/scala/varp/memory/MultiChannelMemoryScheduler.scala,row-hit-first selection with age cap,system,channel request,memory command,4,implemented RTL; PHY external,F01
+WorkStealingEvidenceTop,hw/src/main/scala/varp/evidence/WorkStealingEvidenceTop.scala,instrumented scheduler-to-real-MatVec evidence harness,system,MatVecTileCommand,MatVecTileResult + debug,scheduler 8; cluster 4,evidence-only RTL harness,F02/F03

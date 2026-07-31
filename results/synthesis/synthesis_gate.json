@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "evidence_type": "rtl-elaboration",
+  "paper_target": {
+    "top": "K26WorkStealingTop",
+    "clusters": 4,
+    "memory_channels": 4,
+    "link_bundles": 4,
+    "scheduler": "S3 locality-aware work stealing",
+    "preferred_device_rejected": "XC7A100T-2FGG676I",
+    "conditional_reference_device": "XC7K160T-2FFG676I"
+  },
+  "generated_verilog": {
+    "path": "build/k26-rtl/K26WorkStealingTop.v",
+    "sha256": "4d5f94f5d3f206a70d032df7f8a18d83a4b5a0d9d8ba92aa0dc31bef2e67b8ed",
+    "line_count": 43260
+  },
+  "tools": {
+    "vivado": null,
+    "yosys": null,
+    "nextpnr-xilinx": null,
+    "verilator": "/usr/bin/verilator"
+  },
+  "synthesis_status": "not_run",
+  "gate_status": "blocked",
+  "blocked_claims": [
+    "post-synthesis LUT/FF/BRAM/DSP utilization",
+    "post-route timing closure and maximum clock frequency",
+    "MIG pin legality for one, two, and four DDR3L x16 channels",
+    "GT placement and K26 carrier signal-integrity closure"
+  ],
+  "allowed_claims": [
+    "SpinalHDL elaboration for 1/2/4 clusters, channels, and bundles",
+    "Verilator functional regression of the integrated real MatVec path",
+    "portable RTL generation for the conditional reference device"
+  ]
+}

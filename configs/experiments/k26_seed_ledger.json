@@ -1,0 +1,8 @@
+{
+  "schema_version": "varp.k26.seed-ledger.v1",
+  "seeds": [19, 23, 29, 31, 43],
+  "process_repetitions": [0, 1, 2],
+  "randomized_jobs_per_ledger": 1000,
+  "evidence_type": "analytical-model",
+  "rule": "A seed defines the TileJob ledger; process repetition must not change that ledger."
+}

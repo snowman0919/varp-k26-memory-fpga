@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="255" viewBox="0 0 800 255">
+  <style>
+    text{font-family:"Noto Sans CJK KR","Noto Sans",sans-serif;fill:#172033}
+    .h{font-size:26px;font-weight:700}.t{font-size:20px;font-weight:700}.s{font-size:18px}
+  </style>
+  <text class="h" x="24" y="34">Figure 6 · S3 locality trade-off against oldest-steal S2</text>
+  <text class="t" x="205" y="76" text-anchor="middle">skew</text>
+  <text class="t" x="595" y="76" text-anchor="middle">mixed</text>
+  <rect x="42" y="94" width="326" height="58" rx="10" fill="#fff4df" stroke="#e89b00" stroke-width="3"/>
+  <text class="t" x="205" y="120" text-anchor="middle">remote weight −37.84%</text>
+  <text class="s" x="205" y="144" text-anchor="middle">2,443,776 → 1,519,104 B</text>
+  <rect x="432" y="94" width="326" height="58" rx="10" fill="#fff4df" stroke="#e89b00" stroke-width="3"/>
+  <text class="t" x="595" y="120" text-anchor="middle">remote weight −22.16%</text>
+  <text class="s" x="595" y="144" text-anchor="middle">3,799,040 → 2,957,312 B</text>
+  <rect x="42" y="174" width="326" height="58" rx="10" fill="#eef5fb" stroke="#1677b8" stroke-width="3"/>
+  <text class="t" x="205" y="200" text-anchor="middle">p95 −1.23% · completion +0.98%</text>
+  <text class="s" x="205" y="224" text-anchor="middle">tail improves; last job can finish later</text>
+  <rect x="432" y="174" width="326" height="58" rx="10" fill="#eef5fb" stroke="#1677b8" stroke-width="3"/>
+  <text class="t" x="595" y="200" text-anchor="middle">p95 −2.33% · completion +0.41%</text>
+  <text class="s" x="595" y="224" text-anchor="middle">tail improves; last job can finish later</text>
+  <text x="400" y="248" text-anchor="middle" font-size="16px">Orange = modeled migration bytes · blue = modeled latency · neither is board measurement</text>
+</svg>

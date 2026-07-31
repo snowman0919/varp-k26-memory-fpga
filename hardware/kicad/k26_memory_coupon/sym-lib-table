@@ -1,0 +1,4 @@
+(sym_lib_table
+  (version 7)
+  (lib (name "VARP_REF")(type "Legacy")(uri "${KIPRJMOD}/varp_reference.lib")(options "")(descr "NOT FOR FABRICATION boundary symbols"))
+)

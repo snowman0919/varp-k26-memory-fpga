@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="315" viewBox="0 0 800 315">
+  <defs>
+    <marker id="arrow2" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#1677b8"/></marker>
+    <style>
+      text{font-family:"Noto Sans CJK KR","Noto Sans",sans-serif;fill:#172033}
+      .h{font-size:24px;font-weight:700}.t{font-size:17px;font-weight:700}.s{font-size:15px}
+      .direct{fill:#e9f7f1;stroke:#159a78;stroke-width:3}.runtime{fill:#eef5fb;stroke:#1677b8;stroke-width:3}
+      .model{fill:#fff4df;stroke:#e89b00;stroke-width:3}.blocked{fill:#f1f2f4;stroke:#6b7280;stroke-width:3;stroke-dasharray:8 5}
+    </style>
+  </defs>
+  <text class="h" x="24" y="31">Figure 2 · ONNX graph and Runtime evidence boundary</text>
+
+  <rect class="direct" x="24" y="54" width="170" height="88" rx="10"/>
+  <text class="t" x="109" y="79" text-anchor="middle">Authorized artifact</text>
+  <text class="s" x="109" y="100" text-anchor="middle">model.onnx</text>
+  <text class="s" x="109" y="119" text-anchor="middle">+ external data</text>
+  <text class="s" x="109" y="136" text-anchor="middle">weights not included</text>
+
+  <line x1="194" y1="98" x2="220" y2="98" stroke="#1677b8" stroke-width="3" marker-end="url(#arrow2)"/>
+  <rect class="direct" x="226" y="54" width="170" height="88" rx="10"/>
+  <text class="t" x="311" y="79" text-anchor="middle">ONNX inspection</text>
+  <text class="s" x="311" y="100" text-anchor="middle">checker + protobuf</text>
+  <text class="s" x="311" y="119" text-anchor="middle">graph-only load</text>
+  <text class="s" x="311" y="136" text-anchor="middle">no tensor payload</text>
+
+  <line x1="396" y1="98" x2="422" y2="98" stroke="#1677b8" stroke-width="3" marker-end="url(#arrow2)"/>
+  <rect class="direct" x="428" y="54" width="154" height="88" rx="10"/>
+  <text class="t" x="505" y="79" text-anchor="middle">Graph inventory</text>
+  <text class="s" x="505" y="100" text-anchor="middle">7,837 ordered nodes</text>
+  <text class="s" x="505" y="119" text-anchor="middle">name · op · shape</text>
+  <text class="s" x="505" y="136" text-anchor="middle">initializer metadata</text>
+
+  <line x1="582" y1="98" x2="608" y2="98" stroke="#1677b8" stroke-width="3" marker-end="url(#arrow2)"/>
+  <rect class="direct" x="614" y="54" width="162" height="88" rx="10"/>
+  <text class="t" x="695" y="79" text-anchor="middle">Dense projections</text>
+  <text class="s" x="695" y="100" text-anchor="middle">183 nodes per token</text>
+  <text class="s" x="695" y="119" text-anchor="middle">104 attention</text>
+  <text class="s" x="695" y="136" text-anchor="middle">78 MLP · 1 lm_head</text>
+
+  <line x1="695" y1="142" x2="695" y2="171" stroke="#1677b8" stroke-width="3" marker-end="url(#arrow2)"/>
+  <rect class="model" x="544" y="177" width="232" height="98" rx="10"/>
+  <text class="t" x="660" y="202" text-anchor="middle">Deterministic ledger</text>
+  <text class="s" x="660" y="225" text-anchor="middle">decode-1 / decode-32</text>
+  <text class="s" x="660" y="244" text-anchor="middle">identity + byte geometry</text>
+  <text class="s" x="660" y="263" text-anchor="middle">analytical replay + 3 RTL tiles</text>
+
+  <rect class="runtime" x="24" y="177" width="332" height="98" rx="10"/>
+  <text class="t" x="190" y="200" text-anchor="middle">Separate ONNX Runtime reference</text>
+  <text class="t" x="190" y="220" text-anchor="middle">Android CPU EP</text>
+  <text class="s" x="190" y="241" text-anchor="middle">batch 1 · sequence 1 · artificial past 1</text>
+  <text class="s" x="190" y="261" text-anchor="middle">3 runs · 408.445 ms mean · not decode-32</text>
+
+  <rect class="blocked" x="370" y="177" width="154" height="98" rx="10"/>
+  <text class="t" x="447" y="202" text-anchor="middle">Do not combine</text>
+  <text x="447" y="228" text-anchor="middle" font-size="14px">ORT wall clock ≠ RTL,</text>
+  <text x="447" y="250" text-anchor="middle" font-size="14px">DRAMsim3, accelerator,</text>
+  <text x="447" y="268" text-anchor="middle" font-size="14px">or board timing</text>
+
+  <text class="s" x="400" y="299" text-anchor="middle">Green = graph-derived · blue = host functional reference</text>
+  <text class="s" x="400" y="312" text-anchor="middle">Orange = analytical/RTL ledger boundary · gray = forbidden combination</text>
+</svg>

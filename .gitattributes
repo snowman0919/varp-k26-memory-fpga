@@ -1,0 +1,18 @@
+* text=auto eol=lf
+
+*.pdf binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.mp4 binary
+*.step binary
+*.gbr binary
+*.gbl binary
+*.gbs binary
+*.gbo binary
+*.gm1 binary
+*.gtl binary
+*.gts binary
+*.gto binary
+*.drl binary

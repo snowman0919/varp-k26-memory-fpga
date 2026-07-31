@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "platform": "x86_64-linux",
+  "python": "3.11.9",
+  "pip": "24.0",
+  "setuptools": "65.5.0",
+  "java": "21.0.11",
+  "sbt_build": "1.10.1",
+  "sbt_wrapper": "2.0.4",
+  "scala": "2.12.18",
+  "spinalhdl": "1.14.2",
+  "scalatest": "3.2.19",
+  "verilator": "5.020",
+  "cmake": "4.4.0",
+  "ninja": "1.13.0",
+  "wheel": "0.45.1",
+  "dramsim3": {
+    "remote": "https://github.com/umd-memsys/DRAMsim3.git",
+    "commit": "29817593b3389f1337235d63cac515024ab8fd6e",
+    "license": "MIT",
+    "license_sha256": "afe41cc4cd7926ab3ca4ef0aae9171a65ad60d0c14539ea7a3ce6df9bb024b89",
+    "api_sha256": "d6bef9cc4422fbf8aa00283d4c2731ee06e980cd47ea9dd0f2877456fe4e3d19",
+    "reference_config": "configs/DDR3_4Gb_x8_1600.ini",
+    "reference_config_sha256": "cf97f4dc11301d070e5f83a46a24d98fc63246eb791e80cb5ce20af6924f0d25"
+  }
+}

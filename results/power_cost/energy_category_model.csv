@@ -1,0 +1,28 @@
+scenario,domain,category,unit,input_value,input_unit,energy_j,evidence_type,source_or_formula
+low,compute,INT8_MAC,per_1e9_MAC,1.000,pJ/MAC,0.001000000,analytical-range,1e9 MAC * scenario pJ/MAC; no Vivado power result
+low,link,serialized_payload,per_GiB_transport,24.000,pJ/bit,0.206158430,analytical-range,GiB*8*pJ/bit; coding/idle/retry must be added by trace
+low,DRAM,ACT,per_command_per_x8_die,0.800,corner_multiplier,0.000000000643,analytical-command-model,VDD*incremental_IDD*command_cycles*tCK; configs/dram/ddr3l_4gb_x8_1600.ini
+low,DRAM,PRE,per_command_per_x8_die,0.800,corner_multiplier,0.000000000342,analytical-command-model,VDD*incremental_IDD*command_cycles*tCK; configs/dram/ddr3l_4gb_x8_1600.ini
+low,DRAM,READ,per_command_per_x8_die,0.800,corner_multiplier,0.000000000643,analytical-command-model,VDD*incremental_IDD*command_cycles*tCK; configs/dram/ddr3l_4gb_x8_1600.ini
+low,DRAM,WRITE,per_command_per_x8_die,0.800,corner_multiplier,0.000000000470,analytical-command-model,VDD*incremental_IDD*command_cycles*tCK; configs/dram/ddr3l_4gb_x8_1600.ini
+low,DRAM,REFRESH,per_command_per_x8_die,0.800,corner_multiplier,0.000000057002,analytical-command-model,VDD*incremental_IDD*command_cycles*tCK; configs/dram/ddr3l_4gb_x8_1600.ini
+low,DRAM,idle_precharged,per_cycle_per_x8_die,0.800,corner_multiplier,0.000000000043,analytical-command-model,VDD*incremental_IDD*command_cycles*tCK; configs/dram/ddr3l_4gb_x8_1600.ini
+low,DRAM,idle_active,per_cycle_per_x8_die,0.800,corner_multiplier,0.000000000051,analytical-command-model,VDD*incremental_IDD*command_cycles*tCK; configs/dram/ddr3l_4gb_x8_1600.ini
+central,compute,INT8_MAC,per_1e9_MAC,5.000,pJ/MAC,0.005000000,analytical-range,1e9 MAC * scenario pJ/MAC; no Vivado power result
+central,link,serialized_payload,per_GiB_transport,51.200,pJ/bit,0.439804651,analytical-range,GiB*8*pJ/bit; coding/idle/retry must be added by trace
+central,DRAM,ACT,per_command_per_x8_die,1.000,corner_multiplier,0.000000000803,analytical-command-model,VDD*incremental_IDD*command_cycles*tCK; configs/dram/ddr3l_4gb_x8_1600.ini
+central,DRAM,PRE,per_command_per_x8_die,1.000,corner_multiplier,0.000000000427,analytical-command-model,VDD*incremental_IDD*command_cycles*tCK; configs/dram/ddr3l_4gb_x8_1600.ini
+central,DRAM,READ,per_command_per_x8_die,1.000,corner_multiplier,0.000000000803,analytical-command-model,VDD*incremental_IDD*command_cycles*tCK; configs/dram/ddr3l_4gb_x8_1600.ini
+central,DRAM,WRITE,per_command_per_x8_die,1.000,corner_multiplier,0.000000000587,analytical-command-model,VDD*incremental_IDD*command_cycles*tCK; configs/dram/ddr3l_4gb_x8_1600.ini
+central,DRAM,REFRESH,per_command_per_x8_die,1.000,corner_multiplier,0.000000071253,analytical-command-model,VDD*incremental_IDD*command_cycles*tCK; configs/dram/ddr3l_4gb_x8_1600.ini
+central,DRAM,idle_precharged,per_cycle_per_x8_die,1.000,corner_multiplier,0.000000000054,analytical-command-model,VDD*incremental_IDD*command_cycles*tCK; configs/dram/ddr3l_4gb_x8_1600.ini
+central,DRAM,idle_active,per_cycle_per_x8_die,1.000,corner_multiplier,0.000000000064,analytical-command-model,VDD*incremental_IDD*command_cycles*tCK; configs/dram/ddr3l_4gb_x8_1600.ini
+high,compute,INT8_MAC,per_1e9_MAC,15.000,pJ/MAC,0.015000000,analytical-range,1e9 MAC * scenario pJ/MAC; no Vivado power result
+high,link,serialized_payload,per_GiB_transport,120.000,pJ/bit,1.030792151,analytical-range,GiB*8*pJ/bit; coding/idle/retry must be added by trace
+high,DRAM,ACT,per_command_per_x8_die,1.200,corner_multiplier,0.000000000964,analytical-command-model,VDD*incremental_IDD*command_cycles*tCK; configs/dram/ddr3l_4gb_x8_1600.ini
+high,DRAM,PRE,per_command_per_x8_die,1.200,corner_multiplier,0.000000000512,analytical-command-model,VDD*incremental_IDD*command_cycles*tCK; configs/dram/ddr3l_4gb_x8_1600.ini
+high,DRAM,READ,per_command_per_x8_die,1.200,corner_multiplier,0.000000000964,analytical-command-model,VDD*incremental_IDD*command_cycles*tCK; configs/dram/ddr3l_4gb_x8_1600.ini
+high,DRAM,WRITE,per_command_per_x8_die,1.200,corner_multiplier,0.000000000705,analytical-command-model,VDD*incremental_IDD*command_cycles*tCK; configs/dram/ddr3l_4gb_x8_1600.ini
+high,DRAM,REFRESH,per_command_per_x8_die,1.200,corner_multiplier,0.000000085504,analytical-command-model,VDD*incremental_IDD*command_cycles*tCK; configs/dram/ddr3l_4gb_x8_1600.ini
+high,DRAM,idle_precharged,per_cycle_per_x8_die,1.200,corner_multiplier,0.000000000065,analytical-command-model,VDD*incremental_IDD*command_cycles*tCK; configs/dram/ddr3l_4gb_x8_1600.ini
+high,DRAM,idle_active,per_cycle_per_x8_die,1.200,corner_multiplier,0.000000000077,analytical-command-model,VDD*incremental_IDD*command_cycles*tCK; configs/dram/ddr3l_4gb_x8_1600.ini

@@ -1,0 +1,68 @@
+(kicad_sch
+	(version 20250114)
+	(generator "eeschema")
+	(generator_version "9.0")
+	(uuid "dcd5e219-77f9-4382-be12-39cce90799df")
+	(paper "A4")
+	(title_block
+		(title "Four-lane full-duplex K26 to XC7K160T link")
+		(date "2026-07-31")
+		(rev "P0 proposal_only")
+		(company "VARP K26/XC7K160T conditional reference")
+		(comment 1 "NOT FOR FABRICATION")
+		(comment 2 "No BGA or MIG pinout claim")
+	)
+	(lib_symbols)
+	(text "Two K26 refclock input pairs are exposed; clock source/jitter/rate selection unresolved."
+		(exclude_from_sim no)
+		(at 22.86 38.1 0)
+		(effects
+			(font
+				(size 1.524 1.524)
+				(thickness 0.3048)
+				(bold yes)
+			)
+			(justify left bottom)
+		)
+		(uuid "38f304c8-10d4-467e-ad92-de8086c4d3e4")
+	)
+	(text "AC coupling location, encoding, training, reset and credit protocol require implementation proof."
+		(exclude_from_sim no)
+		(at 22.86 45.72 0)
+		(effects
+			(font
+				(size 1.524 1.524)
+				(thickness 0.3048)
+				(bold yes)
+			)
+			(justify left bottom)
+		)
+		(uuid "4322d0aa-4696-4272-9ce2-033cc6f40196")
+	)
+	(text "NOT FOR FABRICATION - proposal_only."
+		(exclude_from_sim no)
+		(at 22.86 22.86 0)
+		(effects
+			(font
+				(size 1.524 1.524)
+				(thickness 0.3048)
+				(bold yes)
+			)
+			(justify left bottom)
+		)
+		(uuid "54e890a1-82e2-4c51-a450-b8ff8b2cc920")
+	)
+	(text "Lane bundle: four K26 TX pairs to K160 RX and four K160 TX pairs to K26 RX."
+		(exclude_from_sim no)
+		(at 22.86 30.48 0)
+		(effects
+			(font
+				(size 1.524 1.524)
+				(thickness 0.3048)
+				(bold yes)
+			)
+			(justify left bottom)
+		)
+		(uuid "f8b4e6ae-1404-4069-9646-d81f3b0aae6e")
+	)
+)

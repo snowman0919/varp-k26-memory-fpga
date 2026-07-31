@@ -1,0 +1,21 @@
+{
+  "schema_version": "varp.k26.scheduler-stress.v1",
+  "evidence_type": "analytical-model",
+  "cases": [
+    "full_queues",
+    "slow_channel",
+    "stalled_bundle",
+    "delayed_cluster",
+    "repeated_steal",
+    "no_eligible_steal",
+    "response_reordering",
+    "deadlock_timeout"
+  ],
+  "correctness_invariants": [
+    "input job identifiers are unique",
+    "each admitted job is dispatched at most once",
+    "each dispatched job completes at most once",
+    "all non-timeout jobs complete exactly once",
+    "stealing is restricted to stealable jobs"
+  ]
+}

@@ -1,0 +1,1364 @@
+{
+  "analyzer_type": "gerber",
+  "schema_version": "1.4.0",
+  "directory": "hardware/kicad/k26_exports/gerbers",
+  "generator": "Pcbnew 9.0.9-9.0.9~ubuntu24.04.1",
+  "layer_count": 4,
+  "board_dimensions": {
+    "width_mm": 140.1,
+    "height_mm": 110.1,
+    "area_mm2": 15425.0,
+    "source": "gbrjob"
+  },
+  "statistics": {
+    "gerber_files": 26,
+    "drill_files": 1,
+    "total_holes": 63,
+    "total_flashes": 1139,
+    "total_draws": 5533
+  },
+  "completeness": {
+    "found_layers": [
+      "B.Cu",
+      "B.Mask",
+      "B.Paste",
+      "B.SilkS",
+      "Edge.Cuts",
+      "F.Cu",
+      "F.Mask",
+      "F.Paste",
+      "F.SilkS",
+      "In1.Cu",
+      "In2.Cu"
+    ],
+    "expected_layers": [
+      "B.Cu",
+      "B.Mask",
+      "B.Paste",
+      "B.SilkS",
+      "Edge.Cuts",
+      "F.Cu",
+      "F.Mask",
+      "F.Paste",
+      "F.SilkS",
+      "In1.Cu",
+      "In2.Cu"
+    ],
+    "missing": [],
+    "extra": [],
+    "has_pth_drill": true,
+    "has_npth_drill": true,
+    "complete": true,
+    "source": "gbrjob"
+  },
+  "alignment": {
+    "aligned": false,
+    "issues": [
+      "Width varies by 15.0mm across copper/edge layers",
+      "Height varies by 27.0mm across copper/edge layers"
+    ],
+    "layer_extents": {
+      "B.Cu": {
+        "width": 125.0,
+        "height": 83.0
+      },
+      "B.Mask": {
+        "width": 10.0,
+        "height": 83.0
+      },
+      "B.Paste": {
+        "width": 0,
+        "height": 0
+      },
+      "B.SilkS": {
+        "width": 0,
+        "height": 0
+      },
+      "Edge.Cuts": {
+        "width": 140.0,
+        "height": 110.0
+      },
+      "F.Cu": {
+        "width": 125.0,
+        "height": 88.6
+      },
+      "F.Mask": {
+        "width": 110.48,
+        "height": 88.6
+      },
+      "F.Paste": {
+        "width": 91.99,
+        "height": 75.8
+      },
+      "F.SilkS": {
+        "width": 113.406,
+        "height": 105.048
+      },
+      "In1.Cu": {
+        "width": 125.0,
+        "height": 83.0
+      },
+      "In2.Cu": {
+        "width": 125.0,
+        "height": 83.0
+      },
+      "drill_mixed": {
+        "width": 125.0,
+        "height": 83.0
+      }
+    }
+  },
+  "drill_classification": {
+    "vias": {
+      "count": 50,
+      "tools": [
+        {
+          "diameter_mm": 0.3,
+          "count": 50
+        }
+      ]
+    },
+    "component_holes": {
+      "count": 13,
+      "tools": [
+        {
+          "diameter_mm": 0.65,
+          "count": 10
+        },
+        {
+          "diameter_mm": 1.3,
+          "count": 3
+        }
+      ]
+    },
+    "mounting_holes": {
+      "count": 0,
+      "tools": []
+    },
+    "classification_method": "x2_attributes"
+  },
+  "pad_summary": {
+    "smd_apertures": 191,
+    "via_apertures": 200,
+    "heatsink_apertures": 0,
+    "tht_holes": 13,
+    "smd_source": "x2_aperture_function",
+    "smd_ratio": 0.94
+  },
+  "trace_widths": {
+    "unique_widths_mm": [
+      0.2
+    ],
+    "min_trace_mm": 0.2,
+    "max_trace_mm": 0.2,
+    "width_count": 1,
+    "min_feature_mm": 0.2
+  },
+  "component_analysis": {
+    "total_unique": 29,
+    "front_side": 29,
+    "back_side": 0,
+    "component_refs": [
+      "C1",
+      "C10",
+      "C11",
+      "C12",
+      "C13",
+      "C14",
+      "C15",
+      "C16",
+      "C17",
+      "C18",
+      "C2",
+      "C3",
+      "C4",
+      "C5",
+      "C6",
+      "C7",
+      "C8",
+      "C9",
+      "J1",
+      "J2",
+      "J4",
+      "J5",
+      "R1",
+      "R2",
+      "R3",
+      "R4",
+      "U1",
+      "U2",
+      "Y1"
+    ],
+    "has_x2_data": true,
+    "pads_per_component": {
+      "C1": 2,
+      "C10": 2,
+      "C11": 2,
+      "C12": 2,
+      "C13": 2,
+      "C14": 2,
+      "C15": 2,
+      "C16": 2,
+      "C17": 2,
+      "C18": 2,
+      "C2": 2,
+      "C3": 2,
+      "C4": 2,
+      "C5": 2,
+      "C6": 2,
+      "C7": 2,
+      "C8": 2,
+      "C9": 2,
+      "J1": 80,
+      "J2": 60,
+      "J4": 10,
+      "J5": 3,
+      "R1": 2,
+      "R2": 2,
+      "R3": 2,
+      "R4": 2,
+      "U1": 96,
+      "U2": 3,
+      "Y1": 4
+    },
+    "total_pads": 300
+  },
+  "net_analysis": {
+    "total_unique": 116,
+    "named_nets": 81,
+    "unnamed_nets": 35,
+    "power_nets": [],
+    "signal_nets": [
+      "/+1V35",
+      "/+3V3",
+      "/CLK_100M",
+      "/DDR_A0",
+      "/DDR_A1",
+      "/DDR_A10_AP",
+      "/DDR_A11",
+      "/DDR_A12_BC",
+      "/DDR_A13",
+      "/DDR_A14",
+      "/DDR_A2",
+      "/DDR_A3",
+      "/DDR_A4",
+      "/DDR_A5",
+      "/DDR_A6",
+      "/DDR_A7",
+      "/DDR_A8",
+      "/DDR_A9",
+      "/DDR_BA0",
+      "/DDR_BA1",
+      "/DDR_BA2",
+      "/DDR_CAS_N",
+      "/DDR_CKE",
+      "/DDR_CK_N",
+      "/DDR_CK_P",
+      "/DDR_CS_N",
+      "/DDR_DQ0",
+      "/DDR_DQ1",
+      "/DDR_DQ10",
+      "/DDR_DQ11",
+      "/DDR_DQ12",
+      "/DDR_DQ13",
+      "/DDR_DQ14",
+      "/DDR_DQ15",
+      "/DDR_DQ2",
+      "/DDR_DQ3",
+      "/DDR_DQ4",
+      "/DDR_DQ5",
+      "/DDR_DQ6",
+      "/DDR_DQ7",
+      "/DDR_DQ8",
+      "/DDR_DQ9",
+      "/DDR_LDM",
+      "/DDR_LDQS_N",
+      "/DDR_LDQS_P",
+      "/DDR_ODT",
+      "/DDR_RAS_N",
+      "/DDR_RESET_N",
+      "/DDR_UDM",
+      "/DDR_UDQS_N",
+      "/DDR_UDQS_P",
+      "/DDR_VREF",
+      "/DDR_WE_N",
+      "/DDR_ZQ",
+      "/GND",
+      "/GTH_K160_TO_K26_L0_N",
+      "/GTH_K160_TO_K26_L0_P",
+      "/GTH_K160_TO_K26_L1_N",
+      "/GTH_K160_TO_K26_L1_P",
+      "/GTH_K160_TO_K26_L2_N",
+      "/GTH_K160_TO_K26_L2_P",
+      "/GTH_K160_TO_K26_L3_N",
+      "/GTH_K160_TO_K26_L3_P",
+      "/GTH_K26_TO_K160_L0_N",
+      "/GTH_K26_TO_K160_L0_P",
+      "/GTH_K26_TO_K160_L1_N",
+      "/GTH_K26_TO_K160_L1_P",
+      "/GTH_K26_TO_K160_L2_N",
+      "/GTH_K26_TO_K160_L2_P",
+      "/GTH_K26_TO_K160_L3_N",
+      "/GTH_K26_TO_K160_L3_P",
+      "/GTH_REFCLK0_N",
+      "/GTH_REFCLK0_P",
+      "/GTH_REFCLK1_N",
+      "/GTH_REFCLK1_P",
+      "/JTAG_TCK",
+      "/JTAG_TDI",
+      "/JTAG_TMS",
+      "/LINK_PRESENT_N",
+      "/LINK_RESET_N",
+      "/RESET_N"
+    ],
+    "total_pins": 300
+  },
+  "gerbers": [
+    {
+      "filename": "k26_memory_coupon-B_Adhesive.gba",
+      "layer_type": "unknown",
+      "units": "mm",
+      "aperture_count": 0,
+      "flash_count": 0,
+      "draw_count": 0,
+      "region_count": 0,
+      "x2_attributes": {
+        "GenerationSoftware": "KiCad,Pcbnew,9.0.9-9.0.9~ubuntu24.04.1",
+        "CreationDate": "2026-07-31T05:24:01+09:00",
+        "ProjectId": "k26_memory_coupon,6b32365f-6d65-46d6-9f72-795f636f7570,rev?",
+        "SameCoordinates": "Original",
+        "FileFunction": "Glue,Bot",
+        "FilePolarity": "Positive"
+      }
+    },
+    {
+      "filename": "k26_memory_coupon-B_Courtyard.gbr",
+      "layer_type": "unknown",
+      "units": "mm",
+      "aperture_count": 0,
+      "flash_count": 0,
+      "draw_count": 0,
+      "region_count": 0,
+      "x2_attributes": {
+        "GenerationSoftware": "KiCad,Pcbnew,9.0.9-9.0.9~ubuntu24.04.1",
+        "CreationDate": "2026-07-31T05:24:01+09:00",
+        "ProjectId": "k26_memory_coupon,6b32365f-6d65-46d6-9f72-795f636f7570,rev?",
+        "SameCoordinates": "Original",
+        "FileFunction": "Other,User"
+      }
+    },
+    {
+      "filename": "k26_memory_coupon-B_Cu.gbl",
+      "layer_type": "B.Cu",
+      "units": "mm",
+      "aperture_count": 7,
+      "flash_count": 63,
+      "draw_count": 25,
+      "region_count": 0,
+      "x2_attributes": {
+        "GenerationSoftware": "KiCad,Pcbnew,9.0.9-9.0.9~ubuntu24.04.1",
+        "CreationDate": "2026-07-31T05:24:01+09:00",
+        "ProjectId": "k26_memory_coupon,6b32365f-6d65-46d6-9f72-795f636f7570,rev?",
+        "SameCoordinates": "Original",
+        "FileFunction": "Copper,L4,Bot",
+        "FilePolarity": "Positive"
+      },
+      "aperture_analysis": {
+        "by_function": {
+          "ComponentPad": 4,
+          "ViaPad": 2,
+          "Conductor": 1
+        },
+        "by_function_flashes": {
+          "ComponentPad": 13,
+          "ViaPad": 50,
+          "Conductor": 0
+        },
+        "conductor_widths_mm": [
+          0.2
+        ],
+        "min_feature_mm": 0.2
+      },
+      "x2_component_count": 0,
+      "x2_net_count": 36,
+      "x2_pin_count": 13
+    },
+    {
+      "filename": "k26_memory_coupon-B_Fab.gbr",
+      "layer_type": "unknown",
+      "units": "mm",
+      "aperture_count": 0,
+      "flash_count": 0,
+      "draw_count": 0,
+      "region_count": 0,
+      "x2_attributes": {
+        "GenerationSoftware": "KiCad,Pcbnew,9.0.9-9.0.9~ubuntu24.04.1",
+        "CreationDate": "2026-07-31T05:24:01+09:00",
+        "ProjectId": "k26_memory_coupon,6b32365f-6d65-46d6-9f72-795f636f7570,rev?",
+        "SameCoordinates": "Original",
+        "FileFunction": "AssemblyDrawing,Bot"
+      }
+    },
+    {
+      "filename": "k26_memory_coupon-B_Mask.gbs",
+      "layer_type": "B.Mask",
+      "units": "mm",
+      "aperture_count": 4,
+      "flash_count": 13,
+      "draw_count": 0,
+      "region_count": 0,
+      "x2_attributes": {
+        "GenerationSoftware": "KiCad,Pcbnew,9.0.9-9.0.9~ubuntu24.04.1",
+        "CreationDate": "2026-07-31T05:24:01+09:00",
+        "ProjectId": "k26_memory_coupon,6b32365f-6d65-46d6-9f72-795f636f7570,rev?",
+        "SameCoordinates": "Original",
+        "FileFunction": "Soldermask,Bot",
+        "FilePolarity": "Negative"
+      },
+      "aperture_analysis": {
+        "min_feature_mm": 0.5
+      },
+      "x2_component_count": 2,
+      "x2_net_count": 0,
+      "x2_pin_count": 0
+    },
+    {
+      "filename": "k26_memory_coupon-B_Paste.gbp",
+      "layer_type": "B.Paste",
+      "units": "mm",
+      "aperture_count": 0,
+      "flash_count": 0,
+      "draw_count": 0,
+      "region_count": 0,
+      "x2_attributes": {
+        "GenerationSoftware": "KiCad,Pcbnew,9.0.9-9.0.9~ubuntu24.04.1",
+        "CreationDate": "2026-07-31T05:24:01+09:00",
+        "ProjectId": "k26_memory_coupon,6b32365f-6d65-46d6-9f72-795f636f7570,rev?",
+        "SameCoordinates": "Original",
+        "FileFunction": "Paste,Bot",
+        "FilePolarity": "Positive"
+      }
+    },
+    {
+      "filename": "k26_memory_coupon-B_Silkscreen.gbo",
+      "layer_type": "B.SilkS",
+      "units": "mm",
+      "aperture_count": 0,
+      "flash_count": 0,
+      "draw_count": 0,
+      "region_count": 0,
+      "x2_attributes": {
+        "GenerationSoftware": "KiCad,Pcbnew,9.0.9-9.0.9~ubuntu24.04.1",
+        "CreationDate": "2026-07-31T05:24:01+09:00",
+        "ProjectId": "k26_memory_coupon,6b32365f-6d65-46d6-9f72-795f636f7570,rev?",
+        "SameCoordinates": "Original",
+        "FileFunction": "Legend,Bot",
+        "FilePolarity": "Positive"
+      }
+    },
+    {
+      "filename": "k26_memory_coupon-Edge_Cuts.gm1",
+      "layer_type": "Edge.Cuts",
+      "units": "mm",
+      "aperture_count": 1,
+      "flash_count": 0,
+      "draw_count": 4,
+      "region_count": 0,
+      "x2_attributes": {
+        "GenerationSoftware": "KiCad,Pcbnew,9.0.9-9.0.9~ubuntu24.04.1",
+        "CreationDate": "2026-07-31T05:24:01+09:00",
+        "ProjectId": "k26_memory_coupon,6b32365f-6d65-46d6-9f72-795f636f7570,rev?",
+        "SameCoordinates": "Original",
+        "FileFunction": "Profile,NP"
+      },
+      "aperture_analysis": {
+        "by_function": {
+          "Profile": 1
+        },
+        "by_function_flashes": {
+          "Profile": 0
+        },
+        "min_feature_mm": 0.1
+      }
+    },
+    {
+      "filename": "k26_memory_coupon-F_Adhesive.gta",
+      "layer_type": "unknown",
+      "units": "mm",
+      "aperture_count": 0,
+      "flash_count": 0,
+      "draw_count": 0,
+      "region_count": 0,
+      "x2_attributes": {
+        "GenerationSoftware": "KiCad,Pcbnew,9.0.9-9.0.9~ubuntu24.04.1",
+        "CreationDate": "2026-07-31T05:24:01+09:00",
+        "ProjectId": "k26_memory_coupon,6b32365f-6d65-46d6-9f72-795f636f7570,rev?",
+        "SameCoordinates": "Original",
+        "FileFunction": "Glue,Top",
+        "FilePolarity": "Positive"
+      }
+    },
+    {
+      "filename": "k26_memory_coupon-F_Courtyard.gbr",
+      "layer_type": "unknown",
+      "units": "mm",
+      "aperture_count": 1,
+      "flash_count": 0,
+      "draw_count": 128,
+      "region_count": 0,
+      "x2_attributes": {
+        "GenerationSoftware": "KiCad,Pcbnew,9.0.9-9.0.9~ubuntu24.04.1",
+        "CreationDate": "2026-07-31T05:24:01+09:00",
+        "ProjectId": "k26_memory_coupon,6b32365f-6d65-46d6-9f72-795f636f7570,rev?",
+        "SameCoordinates": "Original",
+        "FileFunction": "Other,User"
+      },
+      "aperture_analysis": {
+        "min_feature_mm": 0.05
+      },
+      "x2_component_count": 29,
+      "x2_net_count": 0,
+      "x2_pin_count": 0
+    },
+    {
+      "filename": "k26_memory_coupon-F_Cu.gtl",
+      "layer_type": "F.Cu",
+      "units": "mm",
+      "aperture_count": 14,
+      "flash_count": 350,
+      "draw_count": 40,
+      "region_count": 0,
+      "x2_attributes": {
+        "GenerationSoftware": "KiCad,Pcbnew,9.0.9-9.0.9~ubuntu24.04.1",
+        "CreationDate": "2026-07-31T05:24:01+09:00",
+        "ProjectId": "k26_memory_coupon,6b32365f-6d65-46d6-9f72-795f636f7570,rev?",
+        "SameCoordinates": "Original",
+        "FileFunction": "Copper,L1,Top",
+        "FilePolarity": "Positive"
+      },
+      "aperture_analysis": {
+        "by_function": {
+          "BGAPad": 1,
+          "SMDPad": 6,
+          "ComponentPad": 4,
+          "ViaPad": 2,
+          "Conductor": 1
+        },
+        "by_function_flashes": {
+          "BGAPad": 96,
+          "SMDPad": 191,
+          "ComponentPad": 13,
+          "ViaPad": 50,
+          "Conductor": 0
+        },
+        "conductor_widths_mm": [
+          0.2
+        ],
+        "min_feature_mm": 0.2
+      },
+      "x2_component_count": 0,
+      "x2_net_count": 116,
+      "x2_pin_count": 300
+    },
+    {
+      "filename": "k26_memory_coupon-F_Fab.gbr",
+      "layer_type": "unknown",
+      "units": "mm",
+      "aperture_count": 5,
+      "flash_count": 0,
+      "draw_count": 3651,
+      "region_count": 0,
+      "x2_attributes": {
+        "GenerationSoftware": "KiCad,Pcbnew,9.0.9-9.0.9~ubuntu24.04.1",
+        "CreationDate": "2026-07-31T05:24:01+09:00",
+        "ProjectId": "k26_memory_coupon,6b32365f-6d65-46d6-9f72-795f636f7570,rev?",
+        "SameCoordinates": "Original",
+        "FileFunction": "AssemblyDrawing,Top"
+      },
+      "aperture_analysis": {
+        "min_feature_mm": 0.04
+      },
+      "x2_component_count": 29,
+      "x2_net_count": 0,
+      "x2_pin_count": 0
+    },
+    {
+      "filename": "k26_memory_coupon-F_Mask.gts",
+      "layer_type": "F.Mask",
+      "units": "mm",
+      "aperture_count": 11,
+      "flash_count": 300,
+      "draw_count": 0,
+      "region_count": 0,
+      "x2_attributes": {
+        "GenerationSoftware": "KiCad,Pcbnew,9.0.9-9.0.9~ubuntu24.04.1",
+        "CreationDate": "2026-07-31T05:24:01+09:00",
+        "ProjectId": "k26_memory_coupon,6b32365f-6d65-46d6-9f72-795f636f7570,rev?",
+        "SameCoordinates": "Original",
+        "FileFunction": "Soldermask,Top",
+        "FilePolarity": "Negative"
+      },
+      "aperture_analysis": {
+        "min_feature_mm": 0.25
+      },
+      "x2_component_count": 29,
+      "x2_net_count": 0,
+      "x2_pin_count": 0
+    },
+    {
+      "filename": "k26_memory_coupon-F_Paste.gtp",
+      "layer_type": "F.Paste",
+      "units": "mm",
+      "aperture_count": 7,
+      "flash_count": 287,
+      "draw_count": 0,
+      "region_count": 0,
+      "x2_attributes": {
+        "GenerationSoftware": "KiCad,Pcbnew,9.0.9-9.0.9~ubuntu24.04.1",
+        "CreationDate": "2026-07-31T05:24:01+09:00",
+        "ProjectId": "k26_memory_coupon,6b32365f-6d65-46d6-9f72-795f636f7570,rev?",
+        "SameCoordinates": "Original",
+        "FileFunction": "Paste,Top",
+        "FilePolarity": "Positive"
+      },
+      "aperture_analysis": {
+        "min_feature_mm": 0.25
+      },
+      "x2_component_count": 27,
+      "x2_net_count": 0,
+      "x2_pin_count": 0
+    },
+    {
+      "filename": "k26_memory_coupon-F_Silkscreen.gto",
+      "layer_type": "F.SilkS",
+      "units": "mm",
+      "aperture_count": 2,
+      "flash_count": 0,
+      "draw_count": 1685,
+      "region_count": 3,
+      "x2_attributes": {
+        "GenerationSoftware": "KiCad,Pcbnew,9.0.9-9.0.9~ubuntu24.04.1",
+        "CreationDate": "2026-07-31T05:24:01+09:00",
+        "ProjectId": "k26_memory_coupon,6b32365f-6d65-46d6-9f72-795f636f7570,rev?",
+        "SameCoordinates": "Original",
+        "FileFunction": "Legend,Top",
+        "FilePolarity": "Positive"
+      },
+      "aperture_analysis": {
+        "min_feature_mm": 0.12
+      },
+      "x2_component_count": 29,
+      "x2_net_count": 0,
+      "x2_pin_count": 0
+    },
+    {
+      "filename": "k26_memory_coupon-In1_Cu.g1",
+      "layer_type": "In1.Cu",
+      "units": "mm",
+      "aperture_count": 6,
+      "flash_count": 63,
+      "draw_count": 0,
+      "region_count": 0,
+      "x2_attributes": {
+        "GenerationSoftware": "KiCad,Pcbnew,9.0.9-9.0.9~ubuntu24.04.1",
+        "CreationDate": "2026-07-31T05:24:01+09:00",
+        "ProjectId": "k26_memory_coupon,6b32365f-6d65-46d6-9f72-795f636f7570,rev?",
+        "SameCoordinates": "Original",
+        "FileFunction": "Copper,L2,Inr",
+        "FilePolarity": "Positive"
+      },
+      "aperture_analysis": {
+        "by_function": {
+          "ComponentPad": 4,
+          "ViaPad": 2
+        },
+        "by_function_flashes": {
+          "ComponentPad": 13,
+          "ViaPad": 50
+        },
+        "min_feature_mm": 0.5
+      },
+      "x2_component_count": 2,
+      "x2_net_count": 36,
+      "x2_pin_count": 0
+    },
+    {
+      "filename": "k26_memory_coupon-In2_Cu.g2",
+      "layer_type": "In2.Cu",
+      "units": "mm",
+      "aperture_count": 6,
+      "flash_count": 63,
+      "draw_count": 0,
+      "region_count": 0,
+      "x2_attributes": {
+        "GenerationSoftware": "KiCad,Pcbnew,9.0.9-9.0.9~ubuntu24.04.1",
+        "CreationDate": "2026-07-31T05:24:01+09:00",
+        "ProjectId": "k26_memory_coupon,6b32365f-6d65-46d6-9f72-795f636f7570,rev?",
+        "SameCoordinates": "Original",
+        "FileFunction": "Copper,L3,Inr",
+        "FilePolarity": "Positive"
+      },
+      "aperture_analysis": {
+        "by_function": {
+          "ComponentPad": 4,
+          "ViaPad": 2
+        },
+        "by_function_flashes": {
+          "ComponentPad": 13,
+          "ViaPad": 50
+        },
+        "min_feature_mm": 0.5
+      },
+      "x2_component_count": 2,
+      "x2_net_count": 36,
+      "x2_pin_count": 0
+    },
+    {
+      "filename": "k26_memory_coupon-Margin.gbr",
+      "layer_type": "unknown",
+      "units": "mm",
+      "aperture_count": 0,
+      "flash_count": 0,
+      "draw_count": 0,
+      "region_count": 0,
+      "x2_attributes": {
+        "GenerationSoftware": "KiCad,Pcbnew,9.0.9-9.0.9~ubuntu24.04.1",
+        "CreationDate": "2026-07-31T05:24:01+09:00",
+        "ProjectId": "k26_memory_coupon,6b32365f-6d65-46d6-9f72-795f636f7570,rev?",
+        "SameCoordinates": "Original",
+        "FileFunction": "Other,User"
+      }
+    },
+    {
+      "filename": "k26_memory_coupon-User_1.gbr",
+      "layer_type": "unknown",
+      "units": "mm",
+      "aperture_count": 0,
+      "flash_count": 0,
+      "draw_count": 0,
+      "region_count": 0,
+      "x2_attributes": {
+        "GenerationSoftware": "KiCad,Pcbnew,9.0.9-9.0.9~ubuntu24.04.1",
+        "CreationDate": "2026-07-31T05:24:01+09:00",
+        "ProjectId": "k26_memory_coupon,6b32365f-6d65-46d6-9f72-795f636f7570,rev?",
+        "SameCoordinates": "Original",
+        "FileFunction": "Other,User"
+      }
+    },
+    {
+      "filename": "k26_memory_coupon-User_2.gbr",
+      "layer_type": "unknown",
+      "units": "mm",
+      "aperture_count": 0,
+      "flash_count": 0,
+      "draw_count": 0,
+      "region_count": 0,
+      "x2_attributes": {
+        "GenerationSoftware": "KiCad,Pcbnew,9.0.9-9.0.9~ubuntu24.04.1",
+        "CreationDate": "2026-07-31T05:24:01+09:00",
+        "ProjectId": "k26_memory_coupon,6b32365f-6d65-46d6-9f72-795f636f7570,rev?",
+        "SameCoordinates": "Original",
+        "FileFunction": "Other,User"
+      }
+    },
+    {
+      "filename": "k26_memory_coupon-User_3.gbr",
+      "layer_type": "unknown",
+      "units": "mm",
+      "aperture_count": 0,
+      "flash_count": 0,
+      "draw_count": 0,
+      "region_count": 0,
+      "x2_attributes": {
+        "GenerationSoftware": "KiCad,Pcbnew,9.0.9-9.0.9~ubuntu24.04.1",
+        "CreationDate": "2026-07-31T05:24:01+09:00",
+        "ProjectId": "k26_memory_coupon,6b32365f-6d65-46d6-9f72-795f636f7570,rev?",
+        "SameCoordinates": "Original",
+        "FileFunction": "Other,User"
+      }
+    },
+    {
+      "filename": "k26_memory_coupon-User_4.gbr",
+      "layer_type": "unknown",
+      "units": "mm",
+      "aperture_count": 0,
+      "flash_count": 0,
+      "draw_count": 0,
+      "region_count": 0,
+      "x2_attributes": {
+        "GenerationSoftware": "KiCad,Pcbnew,9.0.9-9.0.9~ubuntu24.04.1",
+        "CreationDate": "2026-07-31T05:24:01+09:00",
+        "ProjectId": "k26_memory_coupon,6b32365f-6d65-46d6-9f72-795f636f7570,rev?",
+        "SameCoordinates": "Original",
+        "FileFunction": "Other,User"
+      }
+    },
+    {
+      "filename": "k26_memory_coupon-User_Comments.gbr",
+      "layer_type": "unknown",
+      "units": "mm",
+      "aperture_count": 0,
+      "flash_count": 0,
+      "draw_count": 0,
+      "region_count": 0,
+      "x2_attributes": {
+        "GenerationSoftware": "KiCad,Pcbnew,9.0.9-9.0.9~ubuntu24.04.1",
+        "CreationDate": "2026-07-31T05:24:01+09:00",
+        "ProjectId": "k26_memory_coupon,6b32365f-6d65-46d6-9f72-795f636f7570,rev?",
+        "SameCoordinates": "Original",
+        "FileFunction": "Other,Comment"
+      }
+    },
+    {
+      "filename": "k26_memory_coupon-User_Drawings.gbr",
+      "layer_type": "unknown",
+      "units": "mm",
+      "aperture_count": 0,
+      "flash_count": 0,
+      "draw_count": 0,
+      "region_count": 0,
+      "x2_attributes": {
+        "GenerationSoftware": "KiCad,Pcbnew,9.0.9-9.0.9~ubuntu24.04.1",
+        "CreationDate": "2026-07-31T05:24:01+09:00",
+        "ProjectId": "k26_memory_coupon,6b32365f-6d65-46d6-9f72-795f636f7570,rev?",
+        "SameCoordinates": "Original",
+        "FileFunction": "OtherDrawing,Comment"
+      }
+    },
+    {
+      "filename": "k26_memory_coupon-User_Eco1.gbr",
+      "layer_type": "unknown",
+      "units": "mm",
+      "aperture_count": 0,
+      "flash_count": 0,
+      "draw_count": 0,
+      "region_count": 0,
+      "x2_attributes": {
+        "GenerationSoftware": "KiCad,Pcbnew,9.0.9-9.0.9~ubuntu24.04.1",
+        "CreationDate": "2026-07-31T05:24:01+09:00",
+        "ProjectId": "k26_memory_coupon,6b32365f-6d65-46d6-9f72-795f636f7570,rev?",
+        "SameCoordinates": "Original",
+        "FileFunction": "Other,ECO1"
+      }
+    },
+    {
+      "filename": "k26_memory_coupon-User_Eco2.gbr",
+      "layer_type": "unknown",
+      "units": "mm",
+      "aperture_count": 0,
+      "flash_count": 0,
+      "draw_count": 0,
+      "region_count": 0,
+      "x2_attributes": {
+        "GenerationSoftware": "KiCad,Pcbnew,9.0.9-9.0.9~ubuntu24.04.1",
+        "CreationDate": "2026-07-31T05:24:01+09:00",
+        "ProjectId": "k26_memory_coupon,6b32365f-6d65-46d6-9f72-795f636f7570,rev?",
+        "SameCoordinates": "Original",
+        "FileFunction": "Other,ECO2"
+      }
+    }
+  ],
+  "drills": [
+    {
+      "filename": "k26_memory_coupon.drl",
+      "type": "mixed",
+      "units": "mm",
+      "hole_count": 63,
+      "tools": {
+        "T1": {
+          "diameter_mm": 0.3,
+          "hole_count": 50,
+          "aper_function": "Plated,PTH,ViaDrill"
+        },
+        "T2": {
+          "diameter_mm": 0.65,
+          "hole_count": 10,
+          "aper_function": "Plated,PTH,ComponentDrill"
+        },
+        "T3": {
+          "diameter_mm": 1.3,
+          "hole_count": 3,
+          "aper_function": "Plated,PTH,ComponentDrill"
+        }
+      },
+      "layer_span": [
+        1,
+        4
+      ],
+      "x2_attributes": {
+        "CreationDate": "2026-07-31T05:24:02+09:00",
+        "GenerationSoftware": "Kicad,Pcbnew,9.0.9-9.0.9~ubuntu24.04.1",
+        "FileFunction": "MixedPlating,1,4"
+      }
+    }
+  ],
+  "drill_tools": {
+    "0.3mm": {
+      "diameter_mm": 0.3,
+      "count": 50,
+      "type": "mixed"
+    },
+    "0.65mm": {
+      "diameter_mm": 0.65,
+      "count": 10,
+      "type": "mixed"
+    },
+    "1.3mm": {
+      "diameter_mm": 1.3,
+      "count": 3,
+      "type": "mixed"
+    }
+  },
+  "job_file": {
+    "generator": "Pcbnew 9.0.9-9.0.9~ubuntu24.04.1",
+    "vendor": "KiCad",
+    "creation_date": "2026-07-31T05:24:01+09:00",
+    "board_width_mm": 140.1,
+    "board_height_mm": 110.1,
+    "layer_count": 4,
+    "board_thickness_mm": 1.6,
+    "finish": "None",
+    "project_name": "k26_memory_coupon",
+    "design_rules": [
+      {
+        "layers": "Outer",
+        "PadToPad": 0.2,
+        "PadToTrack": 0.2,
+        "TrackToTrack": 0.2,
+        "MinLineWidth": 0.2
+      },
+      {
+        "layers": "Inner",
+        "PadToPad": 0.2,
+        "PadToTrack": 0.2,
+        "TrackToTrack": 0.2,
+        "TrackToRegion": 0.2,
+        "RegionToRegion": 0.2
+      }
+    ],
+    "expected_files": [
+      {
+        "path": "k26_memory_coupon-F_Cu.gtl",
+        "function": "Copper,L1,Top",
+        "polarity": "Positive"
+      },
+      {
+        "path": "k26_memory_coupon-In1_Cu.g1",
+        "function": "Copper,L2,Inr",
+        "polarity": "Positive"
+      },
+      {
+        "path": "k26_memory_coupon-In2_Cu.g2",
+        "function": "Copper,L3,Inr",
+        "polarity": "Positive"
+      },
+      {
+        "path": "k26_memory_coupon-B_Cu.gbl",
+        "function": "Copper,L4,Bot",
+        "polarity": "Positive"
+      },
+      {
+        "path": "k26_memory_coupon-F_Adhesive.gta",
+        "function": "Glue,Top",
+        "polarity": "Positive"
+      },
+      {
+        "path": "k26_memory_coupon-B_Adhesive.gba",
+        "function": "Glue,Bot",
+        "polarity": "Positive"
+      },
+      {
+        "path": "k26_memory_coupon-F_Paste.gtp",
+        "function": "SolderPaste,Top",
+        "polarity": "Positive"
+      },
+      {
+        "path": "k26_memory_coupon-B_Paste.gbp",
+        "function": "SolderPaste,Bot",
+        "polarity": "Positive"
+      },
+      {
+        "path": "k26_memory_coupon-F_Silkscreen.gto",
+        "function": "Legend,Top",
+        "polarity": "Positive"
+      },
+      {
+        "path": "k26_memory_coupon-B_Silkscreen.gbo",
+        "function": "Legend,Bot",
+        "polarity": "Positive"
+      },
+      {
+        "path": "k26_memory_coupon-F_Mask.gts",
+        "function": "SolderMask,Top",
+        "polarity": "Negative"
+      },
+      {
+        "path": "k26_memory_coupon-B_Mask.gbs",
+        "function": "SolderMask,Bot",
+        "polarity": "Negative"
+      },
+      {
+        "path": "k26_memory_coupon-User_Drawings.gbr",
+        "function": "Other,User",
+        "polarity": "Positive"
+      },
+      {
+        "path": "k26_memory_coupon-User_Comments.gbr",
+        "function": "Other,User",
+        "polarity": "Positive"
+      },
+      {
+        "path": "k26_memory_coupon-User_Eco1.gbr",
+        "function": "Other,User",
+        "polarity": "Positive"
+      },
+      {
+        "path": "k26_memory_coupon-User_Eco2.gbr",
+        "function": "Other,User",
+        "polarity": "Positive"
+      },
+      {
+        "path": "k26_memory_coupon-Edge_Cuts.gm1",
+        "function": "Profile",
+        "polarity": "Positive"
+      },
+      {
+        "path": "k26_memory_coupon-F_Fab.gbr",
+        "function": "AssemblyDrawing,Top",
+        "polarity": "Positive"
+      },
+      {
+        "path": "k26_memory_coupon-B_Fab.gbr",
+        "function": "AssemblyDrawing,Bot",
+        "polarity": "Positive"
+      },
+      {
+        "path": "k26_memory_coupon-User_1.gbr",
+        "function": "Other,User",
+        "polarity": "Positive"
+      },
+      {
+        "path": "k26_memory_coupon-User_2.gbr",
+        "function": "Other,User",
+        "polarity": "Positive"
+      },
+      {
+        "path": "k26_memory_coupon-User_3.gbr",
+        "function": "Other,User",
+        "polarity": "Positive"
+      },
+      {
+        "path": "k26_memory_coupon-User_4.gbr",
+        "function": "Other,User",
+        "polarity": "Positive"
+      }
+    ],
+    "stackup": [
+      {
+        "type": "Legend",
+        "name": "Top Silk Screen"
+      },
+      {
+        "type": "SolderPaste",
+        "name": "Top Solder Paste"
+      },
+      {
+        "type": "SolderMask",
+        "name": "Top Solder Mask",
+        "thickness_mm": 0.01
+      },
+      {
+        "type": "Copper",
+        "name": "F.Cu",
+        "thickness_mm": 0.035
+      },
+      {
+        "type": "Dielectric",
+        "name": "F.Cu/In1.Cu",
+        "thickness_mm": 0.48,
+        "material": "FR4"
+      },
+      {
+        "type": "Copper",
+        "name": "In1.Cu",
+        "thickness_mm": 0.035
+      },
+      {
+        "type": "Dielectric",
+        "name": "In1.Cu/In2.Cu",
+        "thickness_mm": 0.48,
+        "material": "FR4"
+      },
+      {
+        "type": "Copper",
+        "name": "In2.Cu",
+        "thickness_mm": 0.035
+      },
+      {
+        "type": "Dielectric",
+        "name": "In2.Cu/B.Cu",
+        "thickness_mm": 0.48,
+        "material": "FR4"
+      },
+      {
+        "type": "Copper",
+        "name": "B.Cu",
+        "thickness_mm": 0.035
+      },
+      {
+        "type": "SolderMask",
+        "name": "Bottom Solder Mask",
+        "thickness_mm": 0.01
+      },
+      {
+        "type": "SolderPaste",
+        "name": "Bottom Solder Paste"
+      },
+      {
+        "type": "Legend",
+        "name": "Bottom Silk Screen"
+      }
+    ]
+  },
+  "findings": [
+    {
+      "detector": "analyze_gerbers",
+      "rule_id": "GR-002",
+      "category": "gerber_alignment",
+      "severity": "warning",
+      "confidence": "deterministic",
+      "evidence_source": "topology",
+      "summary": "Alignment: Width varies by 15.0mm across copper/edge layers",
+      "description": "Layer alignment issue: Width varies by 15.0mm across copper/edge layers",
+      "components": [],
+      "nets": [],
+      "pins": [],
+      "recommendation": "Re-export gerbers to ensure consistent layer alignment.",
+      "report_context": {
+        "section": "Gerber Alignment",
+        "impact": "Layer misregistration",
+        "standard_ref": ""
+      },
+      "stages": [
+        "pre_fab"
+      ],
+      "finding_id": "gerber:GR-002:c04c8e1252a2"
+    },
+    {
+      "detector": "analyze_gerbers",
+      "rule_id": "GR-002",
+      "category": "gerber_alignment",
+      "severity": "warning",
+      "confidence": "deterministic",
+      "evidence_source": "topology",
+      "summary": "Alignment: Height varies by 27.0mm across copper/edge layers",
+      "description": "Layer alignment issue: Height varies by 27.0mm across copper/edge layers",
+      "components": [],
+      "nets": [],
+      "pins": [],
+      "recommendation": "Re-export gerbers to ensure consistent layer alignment.",
+      "report_context": {
+        "section": "Gerber Alignment",
+        "impact": "Layer misregistration",
+        "standard_ref": ""
+      },
+      "stages": [
+        "pre_fab"
+      ],
+      "finding_id": "gerber:GR-002:c36ef6aec50b"
+    }
+  ],
+  "assessments": [],
+  "summary": {
+    "total_findings": 2,
+    "by_severity": {
+      "error": 0,
+      "warning": 2,
+      "info": 0
+    }
+  },
+  "trust_summary": {
+    "total_findings": 2,
+    "trust_level": "high",
+    "by_confidence": {
+      "deterministic": 2,
+      "heuristic": 0,
+      "datasheet_backed": 0
+    },
+    "by_evidence_source": {
+      "datasheet": 0,
+      "topology": 2,
+      "heuristic_rule": 0,
+      "symbol_footprint": 0,
+      "bom": 0,
+      "geometry": 0,
+      "api_lookup": 0
+    },
+    "provenance_coverage_pct": 0.0
+  },
+  "inputs": {
+    "source_files": [
+      "hardware/kicad/k26_exports/gerbers/k26_memory_coupon-B_Courtyard.gbr",
+      "hardware/kicad/k26_exports/gerbers/k26_memory_coupon-B_Cu.gbl",
+      "hardware/kicad/k26_exports/gerbers/k26_memory_coupon-B_Fab.gbr",
+      "hardware/kicad/k26_exports/gerbers/k26_memory_coupon-B_Mask.gbs",
+      "hardware/kicad/k26_exports/gerbers/k26_memory_coupon-B_Paste.gbp",
+      "hardware/kicad/k26_exports/gerbers/k26_memory_coupon-B_Silkscreen.gbo",
+      "hardware/kicad/k26_exports/gerbers/k26_memory_coupon-Edge_Cuts.gm1",
+      "hardware/kicad/k26_exports/gerbers/k26_memory_coupon-F_Courtyard.gbr",
+      "hardware/kicad/k26_exports/gerbers/k26_memory_coupon-F_Cu.gtl",
+      "hardware/kicad/k26_exports/gerbers/k26_memory_coupon-F_Fab.gbr",
+      "hardware/kicad/k26_exports/gerbers/k26_memory_coupon-F_Mask.gts",
+      "hardware/kicad/k26_exports/gerbers/k26_memory_coupon-F_Paste.gtp",
+      "hardware/kicad/k26_exports/gerbers/k26_memory_coupon-F_Silkscreen.gto",
+      "hardware/kicad/k26_exports/gerbers/k26_memory_coupon-In1_Cu.g1",
+      "hardware/kicad/k26_exports/gerbers/k26_memory_coupon-In2_Cu.g2",
+      "hardware/kicad/k26_exports/gerbers/k26_memory_coupon-Margin.gbr",
+      "hardware/kicad/k26_exports/gerbers/k26_memory_coupon-User_1.gbr",
+      "hardware/kicad/k26_exports/gerbers/k26_memory_coupon-User_2.gbr",
+      "hardware/kicad/k26_exports/gerbers/k26_memory_coupon-User_3.gbr",
+      "hardware/kicad/k26_exports/gerbers/k26_memory_coupon-User_4.gbr",
+      "hardware/kicad/k26_exports/gerbers/k26_memory_coupon-User_Comments.gbr",
+      "hardware/kicad/k26_exports/gerbers/k26_memory_coupon-User_Drawings.gbr",
+      "hardware/kicad/k26_exports/gerbers/k26_memory_coupon-User_Eco1.gbr",
+      "hardware/kicad/k26_exports/gerbers/k26_memory_coupon-User_Eco2.gbr",
+      "hardware/kicad/k26_exports/gerbers/k26_memory_coupon-job.gbrjob",
+      "hardware/kicad/k26_exports/gerbers/k26_memory_coupon.drl"
+    ],
+    "source_hashes": {
+      "hardware/kicad/k26_exports/gerbers/k26_memory_coupon-B_Courtyard.gbr": "2b0a68579c03214a58d395127f1a4d0305cb55bb4ef8f764595c5acadb008cf6",
+      "hardware/kicad/k26_exports/gerbers/k26_memory_coupon-B_Cu.gbl": "d94e0f607ae245d0b1183a87e60b107d5173d1d37431237cee767b6729156ae0",
+      "hardware/kicad/k26_exports/gerbers/k26_memory_coupon-B_Fab.gbr": "65f63b1fc672bf813ad66bdb4a35386f44193d7d8942de95a934682804ee6748",
+      "hardware/kicad/k26_exports/gerbers/k26_memory_coupon-B_Mask.gbs": "b44ccd7bef870853efd398faaa7e7b4588e9260dc14cebfc08bfd70f44899cf4",
+      "hardware/kicad/k26_exports/gerbers/k26_memory_coupon-B_Paste.gbp": "f8efc95013266d1acf7a020c5ffed1565e9ff111e9aa0d968c7da021cf214089",
+      "hardware/kicad/k26_exports/gerbers/k26_memory_coupon-B_Silkscreen.gbo": "5fbd1ae69cc94b26af12690ff69593da75c82f1085f85dd59e7268614bf4fd05",
+      "hardware/kicad/k26_exports/gerbers/k26_memory_coupon-Edge_Cuts.gm1": "5529ded64b4297f772568761445cbe374f4438ec774b7e748eb17f9b632614e2",
+      "hardware/kicad/k26_exports/gerbers/k26_memory_coupon-F_Courtyard.gbr": "6af444ab089307de151f9c03ababd7dd7c39fcd33219dabd789794b8d3ad7a41",
+      "hardware/kicad/k26_exports/gerbers/k26_memory_coupon-F_Cu.gtl": "62b520b4e24ae5b94b5f3f7284de6f6cf9243f954bb5f648d8f8caa8da2ecc90",
+      "hardware/kicad/k26_exports/gerbers/k26_memory_coupon-F_Fab.gbr": "4608fe9bb6711552b39d4cfe2bce8b1492b2464d668df40670080686810e87ab",
+      "hardware/kicad/k26_exports/gerbers/k26_memory_coupon-F_Mask.gts": "61e91500bb400fb6193c9800c13a510ce2fe7e83a5ccf8217a60c536940d9fd3",
+      "hardware/kicad/k26_exports/gerbers/k26_memory_coupon-F_Paste.gtp": "d29028279ec991f673108a3e1352907908b5234edf7660c2bc7cf21985db13fa",
+      "hardware/kicad/k26_exports/gerbers/k26_memory_coupon-F_Silkscreen.gto": "916ada1c77fabe8fa5f06a7f409413fa13a66d77adce94de70f6c6539704e2b1",
+      "hardware/kicad/k26_exports/gerbers/k26_memory_coupon-In1_Cu.g1": "588462995495ff5ea6a689663e9ee78006122daba70f1e2746c2a8b83ced7562",
+      "hardware/kicad/k26_exports/gerbers/k26_memory_coupon-In2_Cu.g2": "d15c45f6dc3d3721324777d9ab8ce7c5ef7f7603525d9462a65bd7e47e76e916",
+      "hardware/kicad/k26_exports/gerbers/k26_memory_coupon-Margin.gbr": "2b0a68579c03214a58d395127f1a4d0305cb55bb4ef8f764595c5acadb008cf6",
+      "hardware/kicad/k26_exports/gerbers/k26_memory_coupon-User_1.gbr": "2b0a68579c03214a58d395127f1a4d0305cb55bb4ef8f764595c5acadb008cf6",
+      "hardware/kicad/k26_exports/gerbers/k26_memory_coupon-User_2.gbr": "2b0a68579c03214a58d395127f1a4d0305cb55bb4ef8f764595c5acadb008cf6",
+      "hardware/kicad/k26_exports/gerbers/k26_memory_coupon-User_3.gbr": "2b0a68579c03214a58d395127f1a4d0305cb55bb4ef8f764595c5acadb008cf6",
+      "hardware/kicad/k26_exports/gerbers/k26_memory_coupon-User_4.gbr": "2b0a68579c03214a58d395127f1a4d0305cb55bb4ef8f764595c5acadb008cf6",
+      "hardware/kicad/k26_exports/gerbers/k26_memory_coupon-User_Comments.gbr": "81d8c0aa80142ac3a15a32ba578ae0c93543fae69ff2faad125ce7499392a8fa",
+      "hardware/kicad/k26_exports/gerbers/k26_memory_coupon-User_Drawings.gbr": "c7f3ccaf99c4190d22c8d795ba0afbb50dd61dbcdced5412254f8364ab65280a",
+      "hardware/kicad/k26_exports/gerbers/k26_memory_coupon-User_Eco1.gbr": "f8f645ac80d976d25108e4f9345b9b417a4f41337b70e1ab0e733623599f0ee0",
+      "hardware/kicad/k26_exports/gerbers/k26_memory_coupon-User_Eco2.gbr": "b0a70794c9196991c368aebe31a56abb434d0c7d53b2287f814ba0403017cd1e",
+      "hardware/kicad/k26_exports/gerbers/k26_memory_coupon-job.gbrjob": "7eb7cf1b4de99d2a5208874c79001f0461d094b7ee944c6629a9ae706856e394",
+      "hardware/kicad/k26_exports/gerbers/k26_memory_coupon.drl": "99c001bd799c46740044688688ef6387b028fb3cb1f5ebe81e41de40b7b4bc52"
+    },
+    "run_id": "20260730T201957Z-5d4440",
+    "config_hash": null,
+    "upstream_artifacts": {}
+  },
+  "compat": {
+    "minimum_consumer_version": "1.4.0",
+    "deprecated_fields": [],
+    "experimental_fields": []
+  },
+  "audience_summary": {
+    "designer": {
+      "total_findings": 2,
+      "by_severity": {
+        "error": 0,
+        "warning": 2,
+        "info": 0
+      },
+      "by_category": {
+        "gerber_alignment": 2
+      },
+      "top_issues": [
+        {
+          "detector": "analyze_gerbers",
+          "rule_id": "GR-002",
+          "category": "gerber_alignment",
+          "severity": "warning",
+          "confidence": "deterministic",
+          "evidence_source": "topology",
+          "summary": "Alignment: Width varies by 15.0mm across copper/edge layers",
+          "description": "Layer alignment issue: Width varies by 15.0mm across copper/edge layers",
+          "components": [],
+          "nets": [],
+          "pins": [],
+          "recommendation": "Re-export gerbers to ensure consistent layer alignment.",
+          "report_context": {
+            "section": "Gerber Alignment",
+            "impact": "Layer misregistration",
+            "standard_ref": ""
+          },
+          "stages": [
+            "pre_fab"
+          ],
+          "finding_id": "gerber:GR-002:c04c8e1252a2"
+        },
+        {
+          "detector": "analyze_gerbers",
+          "rule_id": "GR-002",
+          "category": "gerber_alignment",
+          "severity": "warning",
+          "confidence": "deterministic",
+          "evidence_source": "topology",
+          "summary": "Alignment: Height varies by 27.0mm across copper/edge layers",
+          "description": "Layer alignment issue: Height varies by 27.0mm across copper/edge layers",
+          "components": [],
+          "nets": [],
+          "pins": [],
+          "recommendation": "Re-export gerbers to ensure consistent layer alignment.",
+          "report_context": {
+            "section": "Gerber Alignment",
+            "impact": "Layer misregistration",
+            "standard_ref": ""
+          },
+          "stages": [
+            "pre_fab"
+          ],
+          "finding_id": "gerber:GR-002:c36ef6aec50b"
+        }
+      ]
+    },
+    "reviewer": {
+      "total_findings": 2,
+      "by_category": {
+        "gerber_alignment": 2
+      },
+      "top_issues": [
+        {
+          "rule_id": "GR-002",
+          "severity": "warning",
+          "summary": "Alignment: Width varies by 15.0mm across copper/edge layers",
+          "recommendation": "Re-export gerbers to ensure consistent layer alignment.",
+          "category": "gerber_alignment"
+        },
+        {
+          "rule_id": "GR-002",
+          "severity": "warning",
+          "summary": "Alignment: Height varies by 27.0mm across copper/edge layers",
+          "recommendation": "Re-export gerbers to ensure consistent layer alignment.",
+          "category": "gerber_alignment"
+        }
+      ]
+    },
+    "manager": {
+      "risk_level": "low",
+      "blocker_count": 0,
+      "warning_count": 2,
+      "stage_readiness": {
+        "schematic": "pass",
+        "layout": "pass",
+        "pre_fab": "needs_review",
+        "bring_up": "pass"
+      },
+      "one_liner": "2 warnings across 1 category."
+    }
+  },
+  "capability_mode_ref": {
+    "source": "analysis/capability_mode.json",
+    "run_id": "20260730T201957Z-5d4440"
+  }
+}

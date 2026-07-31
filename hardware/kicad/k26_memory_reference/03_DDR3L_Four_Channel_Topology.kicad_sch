@@ -1,0 +1,81 @@
+(kicad_sch
+	(version 20250114)
+	(generator "eeschema")
+	(generator_version "9.0")
+	(uuid "5a8c8314-d7a9-4d45-9b7e-c360cbf1bf51")
+	(paper "A4")
+	(title_block
+		(title "Four independent DDR3L x16 channel topology")
+		(date "2026-07-31")
+		(rev "P0 proposal_only")
+		(company "VARP K26/XC7K160T conditional reference")
+		(comment 1 "NOT FOR FABRICATION")
+		(comment 2 "No BGA or MIG pinout claim")
+	)
+	(lib_symbols)
+	(text "Channel rate ceiling and bank occupancy require exact Vivado MIG placement."
+		(exclude_from_sim no)
+		(at 22.86 53.34 0)
+		(effects
+			(font
+				(size 1.524 1.524)
+				(thickness 0.3048)
+				(bold yes)
+			)
+			(justify left bottom)
+		)
+		(uuid "07684a44-2ae2-4728-9828-834a3d799eb0")
+	)
+	(text "NOT FOR FABRICATION - 4 channels x 2GB = 8GB proposal."
+		(exclude_from_sim no)
+		(at 22.86 22.86 0)
+		(effects
+			(font
+				(size 1.524 1.524)
+				(thickness 0.3048)
+				(bold yes)
+			)
+			(justify left bottom)
+		)
+		(uuid "2e35d7e8-1074-4a6f-962a-5d06c0d6f0fd")
+	)
+	(text "Micron MT41K1G8 examples are obsolete; production MPN is unresolved."
+		(exclude_from_sim no)
+		(at 22.86 38.1 0)
+		(effects
+			(font
+				(size 1.524 1.524)
+				(thickness 0.3048)
+				(bold yes)
+			)
+			(justify left bottom)
+		)
+		(uuid "92265c28-ddc3-46e7-a042-2d8c4eec5faa")
+	)
+	(text "Preferred electrical organization: each x16 channel uses 2x8Gb x8 as one rank."
+		(exclude_from_sim no)
+		(at 22.86 30.48 0)
+		(effects
+			(font
+				(size 1.524 1.524)
+				(thickness 0.3048)
+				(bold yes)
+			)
+			(justify left bottom)
+		)
+		(uuid "b1db42f9-5bd9-42c1-8444-037ea81f71a4")
+	)
+	(text "Alternative 2x8Gb x16 two-rank topology adds CS/CKE/ODT and must be regenerated in MIG."
+		(exclude_from_sim no)
+		(at 22.86 45.72 0)
+		(effects
+			(font
+				(size 1.524 1.524)
+				(thickness 0.3048)
+				(bold yes)
+			)
+			(justify left bottom)
+		)
+		(uuid "e9c28b1e-0472-4a90-8571-1ec414d00056")
+	)
+)

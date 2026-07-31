@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="260" viewBox="0 0 800 260">
+  <style>
+    text{font-family:"Noto Sans CJK KR","Noto Sans",sans-serif;fill:#172033}
+    .h{font-size:26px;font-weight:700}.t{font-size:20px;font-weight:700}.s{font-size:18px}
+  </style>
+  <text class="h" x="24" y="34">Figure 4 · RTL-simulated job identity and exact-once timeline</text>
+  <line x1="112" y1="72" x2="756" y2="72" stroke="#94a3b8" stroke-width="2"/>
+  <text class="s" x="112" y="62" text-anchor="middle">cycle 0</text>
+  <text class="s" x="225" y="62" text-anchor="middle">16–18</text>
+  <text class="s" x="415" y="62" text-anchor="middle">85–86</text>
+  <text class="s" x="566" y="62" text-anchor="middle">153–154</text>
+  <text class="s" x="720" y="62" text-anchor="middle">221</text>
+  <text class="t" x="24" y="105">Dispatch</text>
+  <circle cx="215" cy="99" r="8" fill="#1677b8"/><circle cx="233" cy="99" r="8" fill="#1677b8"/><circle cx="251" cy="99" r="8" fill="#1677b8"/>
+  <text class="s" x="215" y="128" text-anchor="middle">job 1</text><text class="s" x="251" y="151" text-anchor="middle">jobs 5, 9</text>
+  <text class="t" x="24" y="188">MatVec</text>
+  <line x1="251" y1="181" x2="415" y2="181" stroke="#1677b8" stroke-width="8"/>
+  <line x1="415" y1="181" x2="566" y2="181" stroke="#1677b8" stroke-width="8"/>
+  <line x1="566" y1="181" x2="720" y2="181" stroke="#1677b8" stroke-width="8"/>
+  <circle cx="415" cy="181" r="10" fill="#d979a8"/><circle cx="566" cy="181" r="10" fill="#d979a8"/><circle cx="720" cy="181" r="10" fill="#d979a8"/>
+  <text class="s" x="415" y="214" text-anchor="middle">result job 1</text>
+  <text class="s" x="566" y="214" text-anchor="middle">result job 5</text>
+  <text class="s" x="720" y="214" text-anchor="middle">result job 9</text>
+  <rect x="168" y="220" width="464" height="34" rx="9" fill="#eef5fb" stroke="#1677b8" stroke-width="2"/>
+  <text class="t" x="400" y="244" text-anchor="middle">3 accepted = 3 dispatched = 3 completed</text>
+</svg>

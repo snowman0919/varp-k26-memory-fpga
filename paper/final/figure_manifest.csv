@@ -1,0 +1,13 @@
+paper_figure,publication_asset_id,paper_source,upstream_source,evidence_type,final_page,scope,min_final_font_pt,placement_gate
+1,F01,paper/final/figures/paper_f01_evidence_path.svg,build/publication_assets/figures/F01;data/publication/k26_system_architecture.csv,RTL-simulated + modeled + blocked,2,core paper simplified SVG; detailed F01 is supplemental,9.435,PASS
+2,F06,paper/final/figures/paper_f02_onnx_runtime_graph.svg,experiments/gemma3_1b/trace_manifest.json;experiments/gemma3_1b/projection_trace.csv,graph-derived + separate ONNX Runtime host reference,4,core paper ONNX graph/runtime boundary; detailed F06 is supplemental,9.625,PASS
+3,F02,paper/final/figures/paper_f03_policy_boundary.svg,build/publication_assets/figures/F02;data/publication/k26_scheduler_policies.csv,RTL decision/dispatch + analytical migration + blocked DMA/link/DDR,6,core paper simplified SVG; detailed F02 is supplemental,12.115,PASS
+4,waveform,paper/final/figures/paper_f04_waveform_identity.svg,evidence/waveforms/work_stealing_events.csv,RTL-simulated bounded timeline,6,core paper identity/count summary; compact event CSV is supplemental,12.115,PASS
+5,F04-subset,paper/final/figures/paper_f05_tail_latency.svg,data/publication/k26_scheduler_summary.csv,analytical model,8,core paper skew/mixed p95 subset; detailed F04 is supplemental,12.115,PASS
+6,F04-subset,paper/final/figures/paper_f06_tradeoff.svg,data/publication/k26_scheduler_summary.csv,analytical model,9,core paper S2/S3 trade-off subset; detailed F04 is supplemental,10.769,PASS
+7,F05,paper/final/figures/paper_f07_kicad_coupon_render.png,hardware/kicad/k26_memory_coupon/k26_memory_coupon.kicad_pcb;hardware/kicad/controlled_review.md,KiCad-native source render + bounded checks,11,core paper native PCB render; NOT FOR FABRICATION,N/A (native raster),PASS_RASTER_2352x1456
+,F03,,build/publication_assets/figures/F03,graph-derived + analytical + host-measured,,presentation/supplement only,,NOT_PLACED
+,T01,,build/publication_assets/figures/T01,analytical model,,presentation/supplement only,,NOT_PLACED
+,T02,,build/publication_assets/figures/T02,analytical model + not-run,,presentation/supplement only,,NOT_PLACED
+,T03,,build/publication_assets/figures/T03,mixed evidence,,presentation/supplement only,,NOT_PLACED
+,T04,,build/publication_assets/figures/T04,analytical model,,presentation/supplement only,,NOT_PLACED

@@ -1,0 +1,68 @@
+(kicad_sch
+	(version 20250114)
+	(generator "eeschema")
+	(generator_version "9.0")
+	(uuid "18a74cfc-4ed4-45c8-80e9-47433d211c15")
+	(paper "A4")
+	(title_block
+		(title "Power tree and decoupling")
+		(date "2026-07-31")
+		(rev "P0 proposal_only")
+		(company "VARP K26/XC7K160T conditional reference")
+		(comment 1 "NOT FOR FABRICATION")
+		(comment 2 "No BGA or MIG pinout claim")
+	)
+	(lib_symbols)
+	(text "XC7K160T core/aux/GT rails, K26 carrier rails, sequencing and regulator sizing unresolved."
+		(exclude_from_sim no)
+		(at 22.86 38.1 0)
+		(effects
+			(font
+				(size 1.524 1.524)
+				(thickness 0.3048)
+				(bold yes)
+			)
+			(justify left bottom)
+		)
+		(uuid "12a274a5-5544-4c18-8214-3f746036525d")
+	)
+	(text "Complete rail current, transient, PDN and thermal analysis required before layout."
+		(exclude_from_sim no)
+		(at 22.86 45.72 0)
+		(effects
+			(font
+				(size 1.524 1.524)
+				(thickness 0.3048)
+				(bold yes)
+			)
+			(justify left bottom)
+		)
+		(uuid "b7ca814d-3a9b-47ae-996b-521e04469fab")
+	)
+	(text "NOT FOR FABRICATION - proposal_only."
+		(exclude_from_sim no)
+		(at 22.86 22.86 0)
+		(effects
+			(font
+				(size 1.524 1.524)
+				(thickness 0.3048)
+				(bold yes)
+			)
+			(justify left bottom)
+		)
+		(uuid "c26ae5c0-70ee-48a8-95d6-a8b9dcc0b379")
+	)
+	(text "Coupon instantiates only +1V35/+3V3 representative decoupling and DDR VREF/ZQ."
+		(exclude_from_sim no)
+		(at 22.86 30.48 0)
+		(effects
+			(font
+				(size 1.524 1.524)
+				(thickness 0.3048)
+				(bold yes)
+			)
+			(justify left bottom)
+		)
+		(uuid "d5631fbf-7250-4297-8f12-0cba72b4e836")
+	)
+)

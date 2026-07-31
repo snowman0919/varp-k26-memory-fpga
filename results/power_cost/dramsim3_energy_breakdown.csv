@@ -1,0 +1,29 @@
+channel,category,energy_pj,evidence_type,source
+0,ACT,15746.400,DRAMsim3-simulated,results/runs/dramsim3-snapshot/dramsim_stats_ch4.json
+0,READ,82252.800,DRAMsim3-simulated,results/runs/dramsim3-snapshot/dramsim_stats_ch4.json
+0,WRITE,0.000,DRAMsim3-simulated,results/runs/dramsim3-snapshot/dramsim_stats_ch4.json
+0,REFRESH,442540.800,DRAMsim3-simulated,results/runs/dramsim3-snapshot/dramsim_stats_ch4.json
+0,idle_precharged,2477260.800,DRAMsim3-simulated,results/runs/dramsim3-snapshot/dramsim_stats_ch4.json
+0,idle_active,2520676.800,DRAMsim3-simulated,results/runs/dramsim3-snapshot/dramsim_stats_ch4.json
+0,PRE,,not-separately-reported,PRE contribution is embedded in background-state accounting
+1,ACT,15746.400,DRAMsim3-simulated,results/runs/dramsim3-snapshot/dramsim_stats_ch4.json
+1,READ,77112.000,DRAMsim3-simulated,results/runs/dramsim3-snapshot/dramsim_stats_ch4.json
+1,WRITE,0.000,DRAMsim3-simulated,results/runs/dramsim3-snapshot/dramsim_stats_ch4.json
+1,REFRESH,442540.800,DRAMsim3-simulated,results/runs/dramsim3-snapshot/dramsim_stats_ch4.json
+1,idle_precharged,2516659.200,DRAMsim3-simulated,results/runs/dramsim3-snapshot/dramsim_stats_ch4.json
+1,idle_active,2473891.200,DRAMsim3-simulated,results/runs/dramsim3-snapshot/dramsim_stats_ch4.json
+1,PRE,,not-separately-reported,PRE contribution is embedded in background-state accounting
+2,ACT,15746.400,DRAMsim3-simulated,results/runs/dramsim3-snapshot/dramsim_stats_ch4.json
+2,READ,164505.600,DRAMsim3-simulated,results/runs/dramsim3-snapshot/dramsim_stats_ch4.json
+2,WRITE,0.000,DRAMsim3-simulated,results/runs/dramsim3-snapshot/dramsim_stats_ch4.json
+2,REFRESH,442540.800,DRAMsim3-simulated,results/runs/dramsim3-snapshot/dramsim_stats_ch4.json
+2,idle_precharged,2486246.400,DRAMsim3-simulated,results/runs/dramsim3-snapshot/dramsim_stats_ch4.json
+2,idle_active,2510006.400,DRAMsim3-simulated,results/runs/dramsim3-snapshot/dramsim_stats_ch4.json
+2,PRE,,not-separately-reported,PRE contribution is embedded in background-state accounting
+3,ACT,15746.400,DRAMsim3-simulated,results/runs/dramsim3-snapshot/dramsim_stats_ch4.json
+3,READ,246758.400,DRAMsim3-simulated,results/runs/dramsim3-snapshot/dramsim_stats_ch4.json
+3,WRITE,0.000,DRAMsim3-simulated,results/runs/dramsim3-snapshot/dramsim_stats_ch4.json
+3,REFRESH,442540.800,DRAMsim3-simulated,results/runs/dramsim3-snapshot/dramsim_stats_ch4.json
+3,idle_precharged,2501452.800,DRAMsim3-simulated,results/runs/dramsim3-snapshot/dramsim_stats_ch4.json
+3,idle_active,2491948.800,DRAMsim3-simulated,results/runs/dramsim3-snapshot/dramsim_stats_ch4.json
+3,PRE,,not-separately-reported,PRE contribution is embedded in background-state accounting

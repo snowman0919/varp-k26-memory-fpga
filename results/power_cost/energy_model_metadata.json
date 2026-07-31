@@ -1,0 +1,64 @@
+{
+  "schema_version": "varp.power-cost.energy.v1",
+  "generated_on": "2026-07-31",
+  "classification": "estimated/modelled; never measured",
+  "vivado_status": "blocked_missing_executable_device_files_and_license",
+  "compute_model": {
+    "range_pj_per_int8_mac": [
+      1.0,
+      5.0,
+      15.0
+    ],
+    "status": "sensitivity input; not an FPGA characterization"
+  },
+  "link_model": {
+    "range_pj_per_transport_bit": [
+      24.0,
+      51.2,
+      120.0
+    ],
+    "status": "sensitivity input; not a K26-to-Kintex link measurement",
+    "gemma_join_accounting": "base modeled link bytes plus scheduler-specific remote-weight, activation-retransmission, and partial-sum steal overhead",
+    "endpoint_multiplier": 2.0,
+    "central_anchor": "AMD WP389 example: 80 mW PMA at 3.125 Gb/s = 25.6 pJ/bit for one 7-series transceiver PMA; central transport scenario uses a conservative two-endpoint multiplier",
+    "official_power_method": "AMD UG440 XPE transceiver sheet predesign estimate; AMD UG1090 PDM early estimate and Vivado Power Report after implementation"
+  },
+  "dram_model": {
+    "electrical_input": "configs/dram/ddr3l_4gb_x8_1600.ini",
+    "range_multiplier": [
+      0.8,
+      1.0,
+      1.2
+    ],
+    "status": "command-category analytical model for the locked 4Gb x8 profile; not a qualified 8Gb target-die power model"
+  },
+  "sources": [
+    {
+      "url": "https://docs.amd.com/r/en-US/ug1090-k26-thermal-design/Power-Estimation",
+      "access_date": "2026-07-31",
+      "evidence_type": "manufacturer_method"
+    },
+    {
+      "url": "https://docs.amd.com/r/en-US/ug440-xilinx-power-estimator",
+      "access_date": "2026-07-31",
+      "evidence_type": "manufacturer_method"
+    },
+    {
+      "url": "https://docs.amd.com/api/khub/documents/DuQSn1wHkzfV~xx8Hxb7pA/content",
+      "access_date": "2026-07-31",
+      "evidence_type": "manufacturer_example"
+    },
+    {
+      "document": "Micron 4Gb x8 DDR3L datasheet, revision R 09/18",
+      "sha256": "aa71e4a25901da402147abc017818e5d52fa214c88d73f6090c229edd558be7b",
+      "evidence_type": "hashed manufacturer datasheet; bytes not redistributed"
+    }
+  ],
+  "blocked_metrics": [
+    "post-route FPGA power",
+    "SAIF-calibrated compute energy",
+    "implemented endpoint-pair link energy",
+    "measured board energy",
+    "refresh/idle-inclusive Gemma memory J/token without a command trace"
+  ]
+}

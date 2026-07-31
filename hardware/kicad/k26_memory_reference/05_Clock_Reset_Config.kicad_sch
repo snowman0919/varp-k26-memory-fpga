@@ -1,0 +1,55 @@
+(kicad_sch
+	(version 20250114)
+	(generator "eeschema")
+	(generator_version "9.0")
+	(uuid "4aa8b83e-ca25-4570-9c44-f5bb04d6c048")
+	(paper "A4")
+	(title_block
+		(title "Clock reset and configuration")
+		(date "2026-07-31")
+		(rev "P0 proposal_only")
+		(company "VARP K26/XC7K160T conditional reference")
+		(comment 1 "NOT FOR FABRICATION")
+		(comment 2 "No BGA or MIG pinout claim")
+	)
+	(lib_symbols)
+	(text "100MHz board clock, GTH refclocks, power-on reset, PROGRAM_B_N, INIT_B_N and DONE."
+		(exclude_from_sim no)
+		(at 22.86 30.48 0)
+		(effects
+			(font
+				(size 1.524 1.524)
+				(thickness 0.3048)
+				(bold yes)
+			)
+			(justify left bottom)
+		)
+		(uuid "d0b8665a-4f2d-4c63-ba9c-0f8d8f92cde1")
+	)
+	(text "Clock-tree jitter, reset sequencing and configuration flash MPN remain unresolved."
+		(exclude_from_sim no)
+		(at 22.86 38.1 0)
+		(effects
+			(font
+				(size 1.524 1.524)
+				(thickness 0.3048)
+				(bold yes)
+			)
+			(justify left bottom)
+		)
+		(uuid "f114da13-b230-4c4f-9558-018ffa913c3e")
+	)
+	(text "NOT FOR FABRICATION - proposal_only."
+		(exclude_from_sim no)
+		(at 22.86 22.86 0)
+		(effects
+			(font
+				(size 1.524 1.524)
+				(thickness 0.3048)
+				(bold yes)
+			)
+			(justify left bottom)
+		)
+		(uuid "f11fae3c-a1a7-4d7d-9ef9-529fff8ecb09")
+	)
+)

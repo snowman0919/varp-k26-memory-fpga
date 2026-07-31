@@ -1,0 +1,6 @@
+order,stage,evidence,status
+1,Y700 workload,existing measured input,input
+2,K26 target,AMD datasheets,verified_by_datasheet
+3,virtual prototype,RTL structure + analytical model,mixed evidence
+4,scheduler experiments,630 analytical-model rows,analytical-model
+5,KiCad reference,optional native reports,not for fabrication

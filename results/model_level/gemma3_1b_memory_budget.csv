@@ -1,0 +1,5 @@
+context_tokens,external_data_bytes,source_float32_projection_bytes,modeled_int8_projection_bytes,float32_kv_cache_bytes,modeled_resident_bytes,memory_capacity_bytes,fits_8gib_modeled_partition,evidence_type,claim_boundary
+1,5207504384,3999006720,999751680,53248,999804928,8589934592,True,graph-derived+capacity-arithmetic,"This is capacity arithmetic, not placement, bandwidth, MIG closure, or runtime peak-memory evidence."
+32,5207504384,3999006720,999751680,1703936,1001455616,8589934592,True,graph-derived+capacity-arithmetic,"This is capacity arithmetic, not placement, bandwidth, MIG closure, or runtime peak-memory evidence."
+512,5207504384,3999006720,999751680,27262976,1027014656,8589934592,True,graph-derived+capacity-arithmetic,"This is capacity arithmetic, not placement, bandwidth, MIG closure, or runtime peak-memory evidence."
+32768,5207504384,3999006720,999751680,1744830464,2744582144,8589934592,True,graph-derived+capacity-arithmetic,"This is capacity arithmetic, not placement, bandwidth, MIG closure, or runtime peak-memory evidence."

@@ -1,0 +1,68 @@
+(kicad_sch
+	(version 20250114)
+	(generator "eeschema")
+	(generator_version "9.0")
+	(uuid "1c7e0aec-6e5e-41b8-8394-041d7d93dcb1")
+	(paper "A4")
+	(title_block
+		(title "XC7K160T-2FFG676I bank boundary")
+		(date "2026-07-31")
+		(rev "P0 proposal_only")
+		(company "VARP K26/XC7K160T conditional reference")
+		(comment 1 "NOT FOR FABRICATION")
+		(comment 2 "No BGA or MIG pinout claim")
+	)
+	(lib_symbols)
+	(text "Reserve four controllers plus GTX/refclock/config/JTAG before schematic freeze."
+		(exclude_from_sim no)
+		(at 22.86 45.72 0)
+		(effects
+			(font
+				(size 1.524 1.524)
+				(thickness 0.3048)
+				(bold yes)
+			)
+			(justify left bottom)
+		)
+		(uuid "0fbe7b30-a6da-48eb-8e1e-da0668e0c59a")
+	)
+	(text "NOT FOR FABRICATION - proposal_only - conditionally_feasible."
+		(exclude_from_sim no)
+		(at 22.86 22.86 0)
+		(effects
+			(font
+				(size 1.524 1.524)
+				(thickness 0.3048)
+				(bold yes)
+			)
+			(justify left bottom)
+		)
+		(uuid "59feacac-74e5-4cfe-a9a6-696aa99e51bf")
+	)
+	(text "Eight 50-pin SelectIO banks and eight GTX lanes are package resources, not placed pins."
+		(exclude_from_sim no)
+		(at 22.86 30.48 0)
+		(effects
+			(font
+				(size 1.524 1.524)
+				(thickness 0.3048)
+				(bold yes)
+			)
+			(justify left bottom)
+		)
+		(uuid "de627339-bd60-46c7-a5a4-f04664c36c74")
+	)
+	(text "No FFG676 BGA balls are assigned here. MIG-generated XDC is the only allowed source."
+		(exclude_from_sim no)
+		(at 22.86 38.1 0)
+		(effects
+			(font
+				(size 1.524 1.524)
+				(thickness 0.3048)
+				(bold yes)
+			)
+			(justify left bottom)
+		)
+		(uuid "fba528b0-070e-4b40-99d4-08f5edbad1b0")
+	)
+)

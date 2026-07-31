@@ -1,0 +1,13 @@
+channels,link_width_bits,completion_cycles_median,p95_cycles_median,status,source_subset,evidence_type
+1,32,,,not_run,,not-run
+1,64,,,not_run,,not-run
+1,128,574770.0,533791.65,modeled,channels,analytical-model
+1,256,,,not_run,,not-run
+2,32,,,not_run,,not-run
+2,64,,,not_run,,not-run
+2,128,475730.0,436030.45,modeled,channels,analytical-model
+2,256,,,not_run,,not-run
+4,32,1579937.0,1424374.15,modeled,link_width,analytical-model
+4,64,801732.0,723411.35,modeled,link_width,analytical-model
+4,128,434075.0,394375.44999999995,modeled,link_width,analytical-model
+4,256,274960.0,254613.39999999997,modeled,link_width,analytical-model

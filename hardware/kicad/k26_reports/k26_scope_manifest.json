@@ -1,0 +1,30 @@
+{
+  "status": "NOT FOR FABRICATION",
+  "decision": "XC7K160T-2FFG676I conditionally_feasible",
+  "scope": "proposal_only connector/bank-boundary reference and routed coupon",
+  "native_results": {
+    "coupon_erc_errors": 0,
+    "coupon_erc_warnings": 0,
+    "reference_erc_errors": 0,
+    "reference_erc_warnings": 0,
+    "coupon_drc_violations": 0,
+    "schematic_parity_issues": 0,
+    "coupon_components": 29,
+    "coupon_schematic_nets": 116,
+    "coupon_footprints": 29,
+    "coupon_pcb_nets_including_net_zero": 117,
+    "track_segments": 65,
+    "vias": 50,
+    "zones": 1,
+    "routed_gth_and_refclock_nets": 20
+  },
+  "unresolved": [
+    "exact XC7K160T FFG676 BGA and MIG-generated pin placement",
+    "four-controller Vivado placement and timing closure",
+    "production DDR3L MPN and rank organization",
+    "GTX quad/refclock placement and SI link budget",
+    "complete power tree, sequencing, PDN and thermal design",
+    "stackup, impedance, skew and return-path design",
+    "configuration, JTAG, protection and manufacturing test"
+  ]
+}
