@@ -76,11 +76,19 @@ class PublicRepositoryContractTest(unittest.TestCase):
     def test_generated_and_legacy_trees_are_not_tracked(self) -> None:
         tracked = source_inventory()
         forbidden = (
-            "publication_assets/", "paper/revisions/",
-            "paper/reviews/", "hardware/kicad/k26_exports/",
+            "publication_assets/", "paper/reviews/", "hardware/kicad/k26_exports/",
             "hw/src/main/scala/varp/cosim/", "src/varp/g10",
         )
         self.assertFalse([path for path in tracked if path.startswith(forbidden)])
+        revision_roots = {
+            path.split("/", 3)[2]
+            for path in tracked
+            if path.startswith("paper/revisions/") and len(path.split("/", 3)) >= 3
+        }
+        self.assertEqual(
+            revision_roots,
+            {"v11-r1", "v11-r2", "v11-r3", "v11-r4", "v11-r5", "v11-final"},
+        )
 
     def test_source_archive_manifest_integrity(self) -> None:
         manifest = ROOT / "source_manifest.txt"
