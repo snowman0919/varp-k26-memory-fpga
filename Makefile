@@ -39,7 +39,11 @@ publication-index:
 	$(PYTHON) publication_tools/generate_publication_and_presentation.py
 	$(PYTHON) publication_tools/validate_publication_and_presentation.py
 
-figures flows presentation: publication-index
+figures flows: publication-index
+
+presentation: publication-index animations
+	$(PYTHON) presentation/tools/build_editable_deck.py
+	$(PYTHON) presentation/tools/validate_editable_deck.py
 
 animations:
 	$(PYTHON) presentation/tools/generate_animations.py

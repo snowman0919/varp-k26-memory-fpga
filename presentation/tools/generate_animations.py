@@ -49,7 +49,7 @@ def main() -> int:
         still = ASSETS / f"{stem}_frame.png"
         shutil.copy2(source, mp4)
         run(ffmpeg, "-y", "-i", str(mp4), "-vf", "fps=12,scale=960:-2:flags=lanczos", "-loop", "0", str(gif))
-        run(ffmpeg, "-y", "-ss", str(frame_time), "-i", str(mp4), "-frames:v", "1", str(still))
+        run(ffmpeg, "-y", "-ss", str(frame_time), "-i", str(mp4), "-frames:v", "1", "-update", "1", str(still))
     return 0
 
 
