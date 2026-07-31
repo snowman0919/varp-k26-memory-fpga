@@ -1,0 +1,7 @@
+schema_version,source,aggregation,workload,scheduler,queue_wait_mean_cycles,remote_weight_bytes,link_bundle_utilization_mean,ddr_channel_utilization_mean,total_completion_cycles
+varp.k26.presentation-metric.v1,results/experiments/scheduler_controlled.csv,median of five seeds; process_repetition=0,skew,S1,127919.034,0.0,0.2460892369499002,0.22838987501312885,306837.0
+varp.k26.presentation-metric.v1,results/experiments/scheduler_controlled.csv,median of five seeds; process_repetition=0,skew,S2,107652.349,2443776.0,0.2985445627429966,0.27727233613129837,253424.0
+varp.k26.presentation-metric.v1,results/experiments/scheduler_controlled.csv,median of five seeds; process_repetition=0,skew,S3,105069.228,1519104.0,0.29738418213549106,0.27599555767095035,255897.0
+varp.k26.presentation-metric.v1,results/experiments/scheduler_controlled.csv,median of five seeds; process_repetition=0,mixed,S1,195912.791,0.0,0.28679013907677936,0.27338076282980855,513745.0
+varp.k26.presentation-metric.v1,results/experiments/scheduler_controlled.csv,median of five seeds; process_repetition=0,mixed,S2,171464.443,3799040.0,0.3408345921537511,0.32489827265934584,432283.0
+varp.k26.presentation-metric.v1,results/experiments/scheduler_controlled.csv,median of five seeds; process_repetition=0,mixed,S3,167334.29,2957312.0,0.3394275182860105,0.32355698899959684,434075.0

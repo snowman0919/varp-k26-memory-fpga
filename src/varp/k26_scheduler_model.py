@@ -229,6 +229,7 @@ def run_model(
     seed: int,
     workload: str,
     process_repetition: int = 0,
+    event_sink: list[dict[str, Any]] | None = None,
 ) -> dict[str, Any]:
     """Run the event-driven scheduler and return manuscript-facing metrics."""
 
@@ -513,6 +514,31 @@ def run_model(
                 "compute_cycles": compute_cycles,
                 "stolen": int(stolen),
             }
+            if event_sink is not None:
+                event_sink.append(
+                    {
+                        "schema_version": "varp.k26.scheduler-event.v1",
+                        "evidence_type": "analytical-model",
+                        "scheduler": config.scheduler,
+                        "workload": workload,
+                        "seed": seed,
+                        "job_id": job.job_id,
+                        "home_cluster": job.home_cluster,
+                        "dispatch_cluster": cluster,
+                        "stolen": int(stolen),
+                        "arrival_cycle": job.arrival_timestamp,
+                        "dispatch_cycle": now,
+                        "queue_wait_cycles": now - job.arrival_timestamp,
+                        "link_start_cycle": link_start,
+                        "link_end_cycle": link_end,
+                        "memory_start_cycle": memory_start,
+                        "memory_end_cycle": memory_start + memory_cycles,
+                        "compute_start_cycle": data_ready,
+                        "compute_end_cycle": finish,
+                        "preferred_channel": channel,
+                        "preferred_link_bundle": bundle,
+                    }
+                )
             heapq.heappush(
                 completions,
                 (finish, job.job_id, cluster, job, details),

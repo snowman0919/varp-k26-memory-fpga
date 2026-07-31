@@ -117,6 +117,34 @@ class K26SchedulerModelTests(unittest.TestCase):
             {k: v for k, v in second.items() if k not in excluded},
         )
 
+    def test_optional_event_sink_records_source_trace_without_changing_metrics(self) -> None:
+        jobs = self.jobs("skew", count=40, seed=23)
+        events = []
+        traced = run_model(
+            jobs,
+            ModelConfig(scheduler="S3"),
+            seed=23,
+            workload="skew",
+            event_sink=events,
+        )
+        untraced = run_model(
+            jobs,
+            ModelConfig(scheduler="S3"),
+            seed=23,
+            workload="skew",
+        )
+        self.assertEqual(traced, untraced)
+        self.assertEqual(len(events), 40)
+        self.assertEqual({event["job_id"] for event in events}, set(range(40)))
+        self.assertTrue(
+            all(
+                event["arrival_cycle"] <= event["dispatch_cycle"]
+                <= event["compute_start_cycle"]
+                < event["compute_end_cycle"]
+                for event in events
+            )
+        )
+
     def test_oldest_eligible_stealing_and_locality_scoring(self) -> None:
         jobs = self.jobs("skew")
         s1 = self.simulate(jobs, scheduler="S1")

@@ -43,6 +43,7 @@ figures flows presentation: publication-index
 
 animations:
 	$(PYTHON) presentation/tools/generate_animations.py
+	$(PYTHON) presentation/tools/generate_conference_figures.py
 
 study:
 	$(PYTHON) scripts/build_study_pack.py

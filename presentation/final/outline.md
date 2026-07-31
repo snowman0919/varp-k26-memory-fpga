@@ -1,6 +1,6 @@
 # VARP K26–Memory FPGA — 10분 기술 컨퍼런스 발표 아웃라인
 
-상태: 사용자 중심 메시지 반영 완료, 아웃라인 및 source-asset mapping 승인 대기
+상태: 아웃라인 및 dark conference style 승인 완료, 이미지 backend 확인 대기
 형식: 16:9 · 10장 · 한국어 중심 · 10분
 청중: FPGA/컴퓨터구조/온디바이스 AI 기술 컨퍼런스 청중
 
@@ -14,7 +14,7 @@
 
 화면에는 짧은 제목, 한 줄 결론, 핵심 Figure만 남긴다. 아래의 설명 포인트는 최종 speaker notes로 이동하며 슬라이드 본문에 그대로 노출하지 않는다.
 
-## Slide 1 — 정적 큐가 만든 Tail을 훔쳐라 (0:35)
+## Slide 1 — Work Stealing으로 줄이는 Tail Latency (0:35)
 
 - **화면 결론:** Gemma 3 1B decode의 병목을 ‘대역폭’이 아니라 ‘작업 배치와 tail’의 문제로 다시 본다.
 - **발표 설명 포인트:** K26 compute SoC + external Memory FPGA, Multi-Queue FCFS, locality-aware Work Stealing.
@@ -72,6 +72,8 @@
 - **Required images:**
   - `results/experiments/scheduler_controlled.csv`와 scheduler event semantics로 생성할 `assets/s1_s3_execution_timeline.png`; strict input asset. Analytical timeline임을 작은 qualifier로 유지하고 임의의 RTL timing처럼 표현하지 않는다.
 
+    ![S1 versus S3 CSV-backed execution timeline](assets/s1_s3_execution_timeline.png)
+
 ## Slide 7 — Tail Latency −18% (1:20)
 
 - **화면 결론:** Full-overlap 분석에서 S3는 S1 대비 skew p95 18.12%, mixed p95 17.59%를 줄였다.
@@ -91,6 +93,9 @@
 - **역할:** trade-off / bottleneck transition.
 - **Required images:**
   - `results/experiments/scheduler_controlled.csv`에서 생성할 `assets/bottleneck_shift.png`; strict input asset. Queue/link/DDR 지표의 단위와 analytical qualifier를 보존한다.
+
+    ![CSV-backed bottleneck shift](assets/bottleneck_shift.png)
+
   - P95/completion/remote-byte 원 수치 교차검증용 strict evidence asset.
 
     ![S2 S3 tradeoff](../../paper/final/figures/paper_f06_tradeoff.svg)
@@ -105,6 +110,10 @@
   - 실제 board geometry와 silkscreen을 그대로 보존하는 strict input asset.
 
     ![Native KiCad reference coupon](../../paper/final/figures/paper_f07_kicad_coupon_render.png)
+
+  - Native manifest에서 생성한 validation-scope inset; strict input asset. 최종 슬라이드의 작은 inset으로 사용하며 `NOT FOR FABRICATION`을 보존한다.
+
+    ![KiCad validation scope inset](assets/kicad_validation_scope_inset.png)
 
 ## Slide 10 — 기여: Tail을 줄일 조건을 찾았다 (0:50)
 
@@ -122,10 +131,10 @@
 | 3 | `paper_f01_evidence_path.svg` | 실제 RTL module/dataflow 구조 |
 | 4 | `work_stealing_sequence_frame.png` | 실제 Manim 알고리즘 시퀀스 |
 | 5 | `paper_f02_onnx_runtime_graph.svg` | 실제 Gemma graph→ledger 방법 |
-| 6 | `s1_s3_execution_timeline.png` (아웃라인 승인 후 생성) | S1/S3 동일 축 실행 비교 |
+| 6 | `s1_s3_execution_timeline.png` + `s1_s3_timeline_events.csv` | S1/S3 동일 축 실행 비교 |
 | 7 | `paper_f05_tail_latency.svg` | p95/p99 핵심 결과 |
-| 8 | `bottleneck_shift.png` (아웃라인 승인 후 생성) + `paper_f06_tradeoff.svg` | queue/link/memory 병목 변화와 trade-off |
-| 9 | `paper_f07_kicad_coupon_render.png` | native KiCad physical reference |
+| 8 | `bottleneck_shift.png` + `bottleneck_shift_source.csv` + `paper_f06_tradeoff.svg` | queue/link/memory 병목 변화와 trade-off |
+| 9 | `paper_f07_kicad_coupon_render.png` + `kicad_validation_scope_inset.png` | native KiCad physical reference + 검증 범위 |
 
 ## 확정된 디자인 제약
 
