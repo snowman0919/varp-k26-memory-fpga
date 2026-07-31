@@ -23,6 +23,7 @@ from pptx import Presentation
 from pptx.dml.color import RGBColor
 from pptx.enum.shapes import MSO_CONNECTOR, MSO_SHAPE
 from pptx.enum.text import MSO_ANCHOR, PP_ALIGN
+from pptx.enum.text import MSO_AUTO_SIZE
 from pptx.util import Inches, Pt
 from reportlab import rl_config
 from reportlab.pdfgen import canvas as pdf_canvas
@@ -165,24 +166,31 @@ class SlideCanvas:
         self.draw.polygon(points, fill=rgb(fill))
 
     def text(self, value: str, x: float, y: float, w: float, h: float, *, size: float = 22, color: str = WHITE, bold: bool = False, align: str = "left", valign: str = "top", margin: float = 0) -> None:
+        # Insert deterministic line breaks with the same font metrics used by
+        # the PNG renderer.  PowerPoint/LibreOffice therefore never decide a
+        # different wrap point, which was the main source of overflow in v1.
+        face = font(size, bold)
+        wrapped = wrap_for_width(self.draw, value, face, max(1, round((w - margin * 2) * 0.90)))
+        line_count = max(1, wrapped.count("\n") + 1)
+        h = max(h, line_count * size * 2 * 1.08 + margin * 2 + 4)
+        if y + h > H:
+            y = H - h
         box = self.slide.shapes.add_textbox(inch(x), inch(y), inch(w), inch(h))
         frame = box.text_frame
         frame.clear()
-        frame.word_wrap = True
+        frame.word_wrap = False
+        frame.auto_size = MSO_AUTO_SIZE.TEXT_TO_FIT_SHAPE
         frame.margin_left = frame.margin_right = frame.margin_top = frame.margin_bottom = inch(margin)
         frame.vertical_anchor = {"top": MSO_ANCHOR.TOP, "middle": MSO_ANCHOR.MIDDLE, "bottom": MSO_ANCHOR.BOTTOM}[valign]
         paragraph = frame.paragraphs[0]
         paragraph.alignment = {"left": PP_ALIGN.LEFT, "center": PP_ALIGN.CENTER, "right": PP_ALIGN.RIGHT}[align]
         paragraph.space_before = paragraph.space_after = Pt(0)
         run = paragraph.add_run()
-        run.text = value
+        run.text = wrapped
         run.font.name = PPT_FONT
         run.font.size = Pt(size)
         run.font.bold = bold
         run.font.color.rgb = ppt_rgb(color)
-
-        face = font(size, bold)
-        wrapped = wrap_for_width(self.draw, value, face, max(1, round(w - margin * 2)))
         bbox = self.draw.multiline_textbbox((0, 0), wrapped, font=face, spacing=round(size * 0.35), align=align)
         text_h = bbox[3] - bbox[1]
         py = y + margin
@@ -234,21 +242,21 @@ class SlideMeta:
 
 
 SLIDE_META = (
-    SlideMeta("Work Stealing으로 줄이는 Tail Latency", "OPENING", "정적 로컬 큐의 지역성은 유지하되, 치우친 작업은 유휴 클러스터로 재배치한다.", "0:35", """기억할 문장: 지역성을 지키는 정적 큐도 작업이 치우치면 Tail latency를 키울 수 있습니다.
+    SlideMeta("정적 큐의 Tail을 줄이는 Work Stealing", "RESEARCH QUESTION", "Gemma 3 1B 작업에서 Tail 감소와 원격 이동 비용이 교차하는 조건을 묻는다.", "0:35", """기억할 문장: 이 논문은 Work Stealing이 항상 빠르다는 주장이 아니라, 실제 LLM 작업에서 언제 Tail 감소가 이동 비용보다 큰지를 묻습니다.
 
 오늘 말씀드릴 질문은 단순히 메모리 대역폭이 중요한가가 아닙니다. 실제 Gemma 3 1B 작업을 여러 연산 클러스터에 나눌 때, 정적 소유권 때문에 일부 큐가 길어지고 다른 클러스터가 쉬는 상황을 어떻게 줄일 것인가입니다.
 
 제안 구조는 K26 연산 SoC와 외부 Memory FPGA를 결합하고, Multi-Queue FCFS 위에 지역성 비용을 고려한 Work Stealing을 적용합니다. 핵심은 무조건 작업을 옮기는 것이 아니라, Tail을 줄이는 이득이 링크·메모리 이동 비용보다 큰 조건을 찾는 것입니다.
 
 먼저 정적 큐에서 왜 Tail이 생기는지 보겠습니다."""),
-    SlideMeta("왜 정적 큐가 Tail을 만드는가", "PROBLEM", "지역성은 유지되지만 작업이 치우치면 일부 클러스터가 놀고 p95가 길어진다.", "0:55", """기억할 문장: 정적 로컬 큐는 지역성을 지키지만 부하 균형을 보장하지 않습니다.
+    SlideMeta("연구 질문: 지역성과 부하 균형을 함께 얻을 수 있는가", "MOTIVATION", "정적 소유권의 locality 이점과 queue skew의 Tail 비용을 함께 측정해야 한다.", "0:55", """기억할 문장: 연구 공백은 locality와 load balance를 따로 보는 것이 아니라 p95·p99와 원격 byte를 같은 작업에서 연결하는 데 있습니다.
 
 S1 정적 로컬 큐에서는 각 TileJob이 home cluster의 FCFS 큐에 들어갑니다. 이 방식은 원격 가중치 이동을 만들지 않는 장점이 있지만, skew가 생기면 Cluster 0의 큐만 길어지고 나머지 클러스터는 할 일이 없어집니다.
 
 평균 지연만 보면 이 현상이 약하게 보일 수 있습니다. 하지만 사용자 체감과 시스템의 느린 요청을 결정하는 p95와 p99에서는 긴 queue wait가 그대로 드러납니다. 따라서 이 연구의 목표는 평균 처리량보다 Tail을 줄이면서 이동 비용을 통제하는 것입니다.
 
 이 문제를 풀기 위해 계산 소유권과 메모리 친화도를 분리한 구조를 설계했습니다."""),
-    SlideMeta("K26 Compute × Memory FPGA", "ARCHITECTURE", "계산 소유권과 메모리 채널 친화도를 TileJob 단위로 분리한다.", "1:10", """기억할 문장: 이 구조는 계산할 위치와 데이터를 가져올 위치를 TileJob에서 분리합니다.
+    SlideMeta("연구 대상 구조와 구현 경계", "SYSTEM MODEL", "K26의 계산 소유권과 Memory FPGA의 데이터 친화도를 TileJob에서 분리한다.", "1:10", """기억할 문장: 논문의 시스템 모델은 계산 위치와 데이터 위치를 분리하지만, 닫힌 DDR 응답 경로까지 구현했다고 주장하지 않습니다.
 
 왼쪽 K26에는 TileScheduler, payload store, 네 개의 compute cluster와 signed INT8 16×4 MatVec가 있습니다. TileJob은 작업 identity, K/N 범위, weight·activation 주소, preferred channel과 link bundle을 보존합니다.
 
@@ -257,7 +265,7 @@ S1 정적 로컬 큐에서는 각 TileJob이 home cluster의 FCFS 큐에 들어�
 현재 runnable RTL은 scheduler에서 payload store와 MatVec 결과까지입니다. DDR response와 link receive의 완전한 폐루프는 다음 검증 단계이며, 오늘의 중심은 이 구조 위에서 scheduling 조건을 분석한 결과입니다.
 
 이제 유휴 클러스터가 어떤 규칙으로 작업을 가져오는지 보겠습니다."""),
-    SlideMeta("유휴 클러스터가 일을 훔치는 5단계", "MECHANISM", "S3는 오래된 작업 중 이동 비용을 감수할 가치가 있는 타일만 선택한다.", "1:15", """기억할 문장: S3 지역성 인식 Work Stealing은 가장 오래된 작업이 아니라 이득이 남는 작업을 훔칩니다.
+    SlideMeta("지역성 비용을 반영한 Work Stealing", "METHOD", "S3는 job age에서 원격 이동 비용을 뺀 점수가 양수인 작업만 훔친다.", "1:15", """기억할 문장: S3는 가장 오래된 작업을 그대로 가져오지 않고, 대기 이득에서 데이터 이동 비용을 뺀 선택을 합니다.
 
 첫째, local queue가 비면 cluster가 유휴 상태임을 확인합니다. 둘째, 다른 victim queue에서 실행 가능한 작업을 탐색합니다. 셋째, job age에서 원격 weight, activation, reduction owner와 bundle mismatch 비용을 뺀 locality score를 계산합니다.
 
@@ -268,16 +276,16 @@ S1 정적 로컬 큐에서는 각 TileJob이 home cluster의 FCFS 큐에 들어�
 이 다섯 단계는 정책 개념을 설명합니다. 분석 모델은 victim queue의 모든 eligible job을 탐색하지만 현재 RTL은 victim head만 검사하며 ownership과 score 정의도 다릅니다. 따라서 model과 RTL이 알고리즘적으로 동일하다고 해석하면 안 됩니다.
 
 정책을 비교하려면 실제 모델 작업을 동일한 TileJob ledger로 만들어야 합니다."""),
-    SlideMeta("실제 Gemma 작업을 TileJob으로 바꾼다", "EXPERIMENT", "실제 graph에서 5,856개 작업을 만들고, 조건 분석용 스트레스 작업과 분리한다.", "1:00", """기억할 문장: Gemma replay와 조건 분석용 치우침 스트레스는 서로 다른 작업 집합입니다.
+    SlideMeta("실제 Gemma graph에서 평가 작업을 만든다", "WORKLOAD", "실제 projection 순서를 보존한 5,856개 TileJob과 조건 탐색용 stress를 분리한다.", "1:00", """기억할 문장: 실제 Gemma replay는 연구의 현실성을, 별도 synthetic stress는 효과가 발생하는 조건을 검증합니다.
 
 해시로 고정한 Gemma 3 1B ONNX graph에는 7,837개 node가 있습니다. 여기서 attention의 q·k·v·o, MLP의 gate·up·down, lm_head를 필터링하면 token당 183개 projection이 됩니다.
 
-Decode-32 조건에서는 183 곱하기 32, 즉 5,856개의 coarse TileJob ledger를 만듭니다. 이 Gemma replay에서 S3의 p95와 p99는 S1보다 각각 15.07%, 14.61% 낮았습니다.
+Decode-32 조건에서는 183 곱하기 32, 즉 5,856개의 coarse TileJob ledger를 만듭니다. 이 ledger로 실제 Gemma replay를 만들고, 별도 stress로 효과 조건을 분리해 확인했습니다.
 
 다음 세 슬라이드는 이 한 개 replay를 반복하지 않습니다. 정책이 유효한 조건을 보기 위해 별도로 생성한 1,000-job 치우침 스트레스와 5개 seed를 사용합니다. 모든 비교에서 input, dispatch, completion ID가 같고 중복과 누락이 0인지 확인했습니다.
 
 다음 슬라이드는 전체 2,000개 event를 축소한 그림이 아니라, 실제 차이가 시작되는 동일 시간 구간을 확대합니다."""),
-    SlideMeta("놀고 있던 연산 클러스터가 Tail을 줄인다", "TIMELINE", "정적 할당에서는 작업이 Cluster 0에 몰리지만, Work Stealing은 유휴 클러스터에 타일을 재배치한다.", "1:05", """기억할 문장: 제어된 치우침 스트레스에서 S3는 S1의 유휴 클러스터를 실제 steal 작업으로 채웁니다.
+    SlideMeta("동일 조건에서 S1과 S3의 실행을 비교한다", "EXPERIMENT DESIGN", "같은 job stream에서 정책만 바꾸면 유휴 구간이 steal 실행으로 전환된다.", "1:05", """기억할 문장: 공정한 비교를 위해 같은 job identity와 resource 조건을 고정하고 scheduler 정책만 바꿨습니다.
 
 여기부터는 Gemma replay와 별개의 synthetic scheduler 실험입니다. 각 workload는 1,000 job이고 seed 19, 23, 29, 31, 43을 사용합니다. full-overlap analytical model이며 물리 cycle이 아닙니다. 타임라인은 seed 23의 S1과 S3, 총 2,000개 event 중 동일한 41k에서 43k 구간을 확대했습니다.
 
@@ -286,30 +294,34 @@ S1에서는 Cluster 0만 파란 로컬 작업을 처리하고 Cluster 1부터 3�
 전체 5개 seed 중앙값에서 skew p95는 S1 대비 18.12% 줄었습니다. 그 대가로 S3에는 약 1.45 MiB의 원격 가중치 이동이 생깁니다. 즉 유휴를 줄인 효과와 이동 비용을 함께 봐야 합니다.
 
 이제 p95뿐 아니라 p99도 같은 방향인지 확인하겠습니다."""),
-    SlideMeta("Tail은 얼마나 줄었나", "RESULT", "작업 치우침 조건에서 p95와 p99가 모두 약 18% 감소했다.", "1:20", """기억할 문장: S3의 효과는 p95 한 점이 아니라 p99까지 같은 방향으로 나타납니다.
+    SlideMeta("실제 Gemma replay에서도 Tail이 감소했다", "RESULT", "실제 replay의 p95·p99 감소를 확인하고 별도 stress로 효과 조건을 분리했다.", "1:20", """기억할 문장: 실제 Gemma replay의 감소와 synthetic skew의 조건 분석이 같은 방향을 보이지만, 두 수치를 같은 실험으로 합치면 안 됩니다.
 
-Gemma replay와 별개의 1,000-job synthetic skew workload에서 5개 seed 중앙값을 보겠습니다. full-overlap analytical model이며 물리 timing이 아닙니다. p95는 S1의 285.3k cycle에서 S3의 233.6k cycle로 18.12% 감소했습니다. p99는 302.2k에서 247.3k cycle로 18.16% 감소했습니다.
+먼저 실제 Gemma decode-32 graph-derived ledger의 analytical replay입니다. 5,856개 coarse TileJob에서 S3는 S1보다 p95를 15.07%, p99를 14.61% 줄였습니다. 이 값은 실제 graph order와 tensor byte에서 파생됐지만 시간은 보드 측정이 아니라 분석 모델입니다.
+
+아래 보조 수치인 18.12%는 별도의 1,000-job synthetic skew, 5개 seed 중앙값입니다. 실제 replay와 동일한 실험으로 합치는 값이 아니라, queue skew가 Tail 감소의 조건임을 확인하는 stress 결과입니다.
 
 Mixed workload에서도 p95는 17.59% 줄고 p99도 감소합니다. 반면 balanced와 channel-hotspot에서는 stealing할 불균형이 없거나 memory channel 자체가 병목이어서 S3의 이득이 나타나지 않습니다.
 
-따라서 결론은 S3가 항상 빠르다는 것이 아닙니다. 정적 ownership 때문에 queue skew가 Tail을 지배하는 조건에서 효과가 있다는 것입니다.
+따라서 결론은 S3가 항상 빠르다는 것이 아닙니다. 실제 graph-derived replay에서 방향성을 확인하고, 별도 stress로 정적 ownership의 queue skew가 효과 조건임을 분리해 확인했다는 것입니다.
 
 그렇다면 줄어든 queue wait의 비용이 어디로 이동하는지 보겠습니다."""),
-    SlideMeta("Work Stealing은 병목을 없애지 않고 이동시킨다", "TRADE-OFF", "큐 대기는 줄어들지만 원격 가중치 이동으로 링크와 메모리 부담이 증가한다.", "0:55", """기억할 문장: Tail 감소는 공짜가 아니라 원격 이동과 resource pressure로 지불합니다.
+    SlideMeta("Tail 감소의 비용은 원격 이동이다", "TRADE-OFF", "S3는 S2보다 원격 가중치를 줄이지만 마지막 completion은 조금 늦어진다.", "0:55", """기억할 문장: 지역성 점수는 원격 이동을 줄이지만, 보수적인 선택 때문에 전체 완료시간은 소폭 늘 수 있습니다.
 
 이 수치도 Gemma replay가 아니라 같은 synthetic skew, 5-seed 중앙값, full-overlap analytical model에서 나옵니다. 왼쪽은 S3와 S1의 비교로 p95가 18.12% 감소합니다. 실제 평균 queue wait 감소율은 17.86%이므로 p95와 같은 지표로 해석하면 안 됩니다. 가운데는 S3와 S2의 비교로 remote weight가 37.84% 줄어듭니다.
 
 오른쪽도 S3와 S2의 비교입니다. 더 보수적인 선택 때문에 마지막 completion은 0.98% 길어집니다. 즉 세 수치는 비교 기준이 서로 다릅니다. S1은 정적 baseline이고, S2는 locality를 고려하지 않는 stealing baseline입니다.
 
+그리고 service composition을 sequential 경계로 바꾸면 synthetic skew의 S2/S3 p95 순위가 뒤집힙니다. 따라서 S3의 S2 대비 Tail 우위는 서비스 중첩 가정에 조건부입니다.
+
 이 결과는 queue wait가 줄어든 대신 link와 memory service가 더 중요해졌음을 보여줍니다. 다음 단계는 이 비용을 실제 보드 인터페이스에서 계측하는 것입니다."""),
-    SlideMeta("알고리즘을 실제 보드 인터페이스로 내렸다", "PHYSICAL", "K26과 Memory FPGA 사이의 링크를 실제 KiCad 객체와 라우팅 쿠폰으로 구체화했다.", "0:55", """기억할 문장: 물리 reference는 실제 KiCad 객체지만 아직 제작 가능한 보드는 아닙니다.
+    SlideMeta("물리 참조 설계로 다음 검증 범위를 고정했다", "BOUNDED PHYSICAL EVIDENCE", "Native KiCad coupon으로 링크와 제한 검증 범위를 고정했다.", "0:55", """기억할 문장: KiCad coupon의 역할은 제품 보드를 보여주는 것이 아니라 다음 물리 검증의 인터페이스와 범위를 고정하는 것입니다.
 
 가운데 큰 이미지는 native KiCad source에서 렌더한 validation coupon입니다. 오른쪽 확대는 K26–Memory FPGA 연결 경계, 기준 클록 차동 경로, 대표 routed coupon 영역을 실제 render에서 잘라 보여줍니다.
 
 현재 coupon에는 29 footprints, 20개의 routed GTH/refclock nets가 있고 선언한 제한 범위에서 ERC와 routed-subset DRC가 0입니다. 그러나 전체 보드에는 55 unrouted nets가 남아 있고, MIG pin placement, SI/PI, PDN, thermal과 timing closure는 수행하지 않았습니다.
 
 따라서 이 이미지는 알고리즘을 어떤 인터페이스로 내려갈지 구체화한 reference coupon입니다. 제작 가능성을 주장하지 않고, 다음 검증의 대상과 범위를 명확히 한 것입니다."""),
-    SlideMeta("조건을 찾았고, 다음은 폐루프 검증이다", "CONTRIBUTION", "실제 작업 부하·스케줄러·물리 참조를 연결해 Work Stealing이 유효한 조건을 제시했다.", "0:50", """기억할 문장: 이 연구의 기여는 Work Stealing의 승리가 아니라 유효 조건과 비용을 함께 밝힌 것입니다.
+    SlideMeta("기여와 한계: 조건부 효과를 규명했다", "CONCLUSION", "실제 workload·스케줄러·제한 물리 근거를 하나의 주장 사슬로 연결했다.", "0:50", """기억할 문장: 이 논문의 기여는 Work Stealing의 보편적 우월성이 아니라 효과가 생기는 조건과 아직 남은 검증을 함께 제시한 것입니다.
 
 실제 Gemma graph에서 TileJob 변환을 정의했고, 별도의 제어된 스트레스에서 Tail과 이동 비용 조건을 분석했으며, 그 구조를 K26–Memory FPGA RTL과 KiCad 참조 설계까지 연결했습니다.
 
@@ -326,17 +338,17 @@ def add_header(c: SlideCanvas, meta: SlideMeta) -> None:
 
 
 def metric(c: SlideCanvas, x: int, y: int, label: str, value: str, color: str, w: int = 420) -> None:
-    c.text(value, x, y, w, 70, size=36, color=color, bold=True, align="center")
-    c.text(label, x, y + 66, w, 40, size=18, color=MUTED, align="center")
+    c.text(value, x, y, w, 82, size=36, color=color, bold=True, align="center")
+    c.text(label, x, y + 86, w, 42, size=18, color=MUTED, align="center")
 
 
 def slide_1(c: SlideCanvas) -> None:
     c.image_file(ASSETS / "cover_background.png", 0, 0, W, H, mode="cover")
     c.rect(0, 0, 1120, H, BG, alpha=70)
     c.rect(88, 245, 70, 8, CYAN)
-    c.text("Work Stealing으로 줄이는\nTail Latency", 88, 282, 980, 230, size=43, bold=True)
-    c.text("Gemma 3 1B 기반 K26–Memory FPGA 가속기 구조", 92, 542, 900, 58, size=23, color="#C8D5E3")
-    c.text("정적 큐의 지역성을 유지하면서, 치우친 작업은 유휴 클러스터로 재배치한다", 92, 624, 870, 92, size=21, color=MUTED)
+    c.text("정적 큐의 Tail을 줄이는\nWork Stealing", 88, 282, 980, 230, size=43, bold=True)
+    c.text("Gemma 3 1B · K26–Memory FPGA 논문", 92, 550, 1000, 58, size=22, color="#C8D5E3")
+    c.text("연구 질문  |  Tail 감소는 언제 이동 비용보다 큰가?", 92, 630, 1000, 58, size=22, color=CYAN, bold=True)
     c.text("최윤혁 · 한국디지털미디어고등학교", 92, 940, 760, 42, size=18, color="#8298AE")
 
 
@@ -346,11 +358,11 @@ def slide_2(c: SlideCanvas) -> None:
     lane_y = [360, 470, 580, 690]
     queues = [9, 2, 1, 1]
     for cluster, (y, count) in enumerate(zip(lane_y, queues)):
-        c.text(f"클러스터 {cluster}", 100, y - 8, 170, 48, size=18, color=WHITE, bold=True)
-        c.line(280, y + 18, 790, y + 18, GRID, width=2)
+        c.text(f"클러스터 {cluster}", 100, y - 8, 205, 48, size=19, color=WHITE, bold=True)
+        c.line(315, y + 18, 790, y + 18, GRID, width=2)
         for index in range(count):
             color = BLUE if cluster == 0 else GRAY
-            c.rect(292 + index * 50, y - 3, 40, 42, color, radius=7)
+            c.rect(327 + index * 50, y - 3, 40, 42, color, radius=7)
         if cluster > 0:
             c.text("유휴", 650, y - 4, 120, 40, size=17, color=AMBER, bold=True, align="right")
     c.chevron(840, 488, 120, 86, CYAN)
@@ -362,7 +374,7 @@ def slide_2(c: SlideCanvas) -> None:
         c.line(*p1, *p2, BLUE, width=4)
     c.line(1590, 315, 1590, 760, CYAN, width=2)
     c.text("p95", 1524, 735, 132, 46, size=22, color=CYAN, bold=True, align="center")
-    c.text("지역성 유지 ≠ 부하 균형", 1060, 840, 670, 66, size=30, color=AMBER, bold=True, align="center")
+    c.text("연구 공백  |  실제 LLM graph · p95/p99 · 원격 byte를 한 조건에서 연결", 1000, 832, 820, 92, size=22, color=AMBER, bold=True, align="center")
 
 
 def slide_3(c: SlideCanvas) -> None:
@@ -378,10 +390,10 @@ def slide_3(c: SlideCanvas) -> None:
         y = 560 + (idx // 2) * 120
         c.rect(x, y, 285, 82, BG3, stroke=BLUE, stroke_width=2, radius=16)
         c.text(f"클러스터 {idx}\nMatVec", x + 12, y + 14, 261, 56, size=15, color=WHITE, bold=True, align="center", valign="middle")
-    c.text("요청·제어  →", 795, 445, 220, 46, size=18, color=CYAN, bold=True, align="center")
-    c.text("←  가중치 응답", 795, 535, 220, 46, size=18, color=TEAL, bold=True, align="center")
-    c.text("4-bundle 링크", 795, 615, 220, 40, size=16, color=WHITE, bold=True, align="center")
-    c.text("응답 폐루프 미구현", 795, 675, 220, 36, size=14, color=AMBER, align="center")
+    c.text("요청·제어 →", 780, 445, 250, 46, size=18, color=CYAN, bold=True, align="center")
+    c.text("← 가중치 응답", 780, 535, 250, 46, size=18, color=TEAL, bold=True, align="center")
+    c.text("4-bundle 링크", 780, 615, 250, 40, size=16, color=WHITE, bold=True, align="center")
+    c.text("응답 폐루프 미구현", 780, 675, 250, 36, size=14, color=AMBER, align="center")
     c.text("Memory FPGA", 1070, 260, 650, 48, size=24, color=TEAL, bold=True)
     c.rect(1050, 330, 760, 510, BG2, stroke="#28594F", stroke_width=2, radius=24)
     c.rect(1100, 380, 660, 88, BG3, stroke=TEAL, stroke_width=2, radius=16)
@@ -389,35 +401,15 @@ def slide_3(c: SlideCanvas) -> None:
     for idx in range(4):
         x = 1110 + idx * 160
         c.rect(x, 550, 132, 185, BG3, stroke=BLUE if idx % 2 == 0 else TEAL, stroke_width=2, radius=14)
-        c.text(f"DDR3L\nCH {idx}", x + 8, 598, 116, 76, size=19, bold=True, align="center", valign="middle")
+        c.text(f"DDR3L\nCH {idx}", x + 8, 598, 116, 76, size=17, bold=True, align="center", valign="middle")
     c.text("TileJob = 계산 소유권 + 데이터 친화도", 430, 902, 1060, 62, size=25, color=WHITE, bold=True, align="center")
 
 
 def slide_4(c: SlideCanvas) -> None:
     add_header(c, SLIDE_META[3])
-    c.text("S3 지역성 인식 Work Stealing", 120, 250, 740, 46, size=23, color=CYAN, bold=True)
-    nodes = [
-        ("1", "큐 불균형", "한쪽 큐만 증가"),
-        ("2", "피해 큐 탐색", "실행 가능한 작업 검색"),
-        ("3", "지역성 점수", "대기 시간 - 이동 비용"),
-        ("4", "타일 이동", "유휴 클러스터에 재배치"),
-        ("5", "완료 확인", "정확히 한 번 완료"),
-    ]
-    xs = [135, 485, 835, 1185, 1535]
-    y = 480
-    for index, (num, title, sub) in enumerate(nodes):
-        c.circle(xs[index], y, 112, BG3, stroke=CYAN if index in (2, 3) else BLUE, stroke_width=3)
-        c.text(num, xs[index], y + 18, 112, 70, size=32, color=CYAN if index in (2, 3) else BLUE, bold=True, align="center", valign="middle")
-        c.text(title, xs[index] - 70, y + 145, 252, 44, size=21, color=WHITE, bold=True, align="center")
-        c.text(sub, xs[index] - 90, y + 195, 292, 68, size=16, color=MUTED, align="center")
-        if index < len(nodes) - 1:
-            c.chevron(xs[index] + 150, y + 35, 125, 46, TEAL if index >= 1 else BLUE)
-    c.rect(130, 820, 400, 70, BG2, stroke=BLUE, stroke_width=2, radius=14)
-    c.text("과부하 큐 · J0  J1  J2  J3", 150, 837, 360, 38, size=15, color=BLUE, bold=True, align="center")
-    c.chevron(580, 828, 220, 54, CYAN)
-    c.rect(850, 820, 370, 70, BG2, stroke=TEAL, stroke_width=2, radius=14)
-    c.text("유휴 클러스터 ← J2", 870, 837, 330, 38, size=17, color=TEAL, bold=True, align="center")
-    c.text("S2: 가장 오래된 작업\nS3: 이동 비용까지 고려", 1280, 816, 510, 78, size=16, color=MUTED, align="center", valign="middle")
+    c.image_file(ASSETS / "work_stealing_sequence_frame.png", 120, 235, 1680, 660, mode="contain")
+    c.line(260, 938, 1660, 938, GRID, width=2)
+    c.text("score = job age - remote weight - activation/reduction - bundle mismatch", 180, 960, 1560, 48, size=20, color=CYAN, bold=True, align="center")
 
 
 def slide_5(c: SlideCanvas) -> None:
@@ -430,7 +422,7 @@ def slide_5(c: SlideCanvas) -> None:
     xs = [150, 720, 1290]
     for index, (value, label, color) in enumerate(items):
         c.circle(xs[index] + 80, 375, 260, BG2, stroke=color, stroke_width=3)
-        c.text(value, xs[index] + 95, 438, 230, 80, size=44, color=color, bold=True, align="center")
+        c.text(value, xs[index] + 95, 438, 230, 80, size=40, color=color, bold=True, align="center")
         c.text(label, xs[index] + 40, 655, 340, 55, size=21, color=WHITE, bold=True, align="center")
         if index < 2:
             c.chevron(xs[index] + 420, 475, 120, 62, MUTED)
@@ -449,8 +441,8 @@ def load_events() -> list[dict[str, str]]:
 def timeline_panel(c: SlideCanvas, x: int, y: int, w: int, title: str, policy: str, events: list[dict[str, str]]) -> dict[int, tuple[float, float]]:
     start, end = 41_000, 43_000
     c.text(title, x, y, w, 44, size=22, color=CYAN if policy == "S3" else BLUE, bold=True)
-    c.text("동일 2k cycle 구간", x, y + 40, w, 32, size=15, color=MUTED, align="right")
-    lane_top = y + 95
+    c.text("동일 2k cycle 구간", x, y + 58, w, 32, size=15, color=MUTED, align="right")
+    lane_top = y + 105
     chosen: list[dict[str, str]] = []
     if policy == "S1":
         chosen = [row for row in events if row["scheduler"] == "S1" and start <= int(row["dispatch_cycle"]) < end][:5]
@@ -497,9 +489,9 @@ def timeline_panel(c: SlideCanvas, x: int, y: int, w: int, title: str, policy: s
 def slide_6(c: SlideCanvas) -> None:
     add_header(c, SLIDE_META[5])
     events = load_events()
-    c.text("실험 B · 제어된 치우침 스트레스 · 1,000개 작업 · 분석 모델", 470, 238, 980, 32, size=15, color=AMBER, bold=True, align="center")
-    c.text("회색선 큐 대기  ·  어두운 색 데이터 준비  ·  밝은 끝 연산  ·  청록 훔친 작업", 470, 266, 980, 32, size=14, color=MUTED, align="center")
-    left_x, right_x, panel_y, panel_w = 90, 1010, 300, 820
+    c.text("동일 1,000-job stream · 동일 자원 · 정책만 변경", 420, 230, 1080, 42, size=19, color=AMBER, bold=True, align="center")
+    c.text("회색 큐 대기 · 어두운 데이터 준비 · 밝은 연산 · 청록 훔친 작업", 410, 275, 1100, 34, size=14, color=MUTED, align="center")
+    left_x, right_x, panel_y, panel_w = 90, 1010, 315, 820
     timeline_panel(c, left_x, panel_y, panel_w, "S1 정적 로컬 큐", "S1", events)
     positions = timeline_panel(c, right_x, panel_y, panel_w, "S3 지역성 인식 Work Stealing", "S3", events)
     c.chevron(910, 415, 78, 76, CYAN)
@@ -528,13 +520,24 @@ def median_rows(workload: str, policies: tuple[str, ...]) -> dict[str, dict[str,
     return output
 
 
+def gemma_replay_rows() -> dict[str, dict[str, float]]:
+    with (ROOT / "experiments" / "gemma3_1b" / "scheduler_replay.csv").open(encoding="utf-8", newline="") as stream:
+        rows = list(csv.DictReader(stream))
+    fields = ("p95_tile_latency_cycles", "p99_tile_latency_cycles")
+    output: dict[str, dict[str, float]] = {}
+    for policy in ("S1", "S3"):
+        row = next(row for row in rows if row["decode_tokens"] == "32" and row["scheduler"] == policy)
+        output[policy] = {field: float(row[field]) for field in fields}
+    return output
+
+
 def slide_7(c: SlideCanvas) -> None:
     add_header(c, SLIDE_META[6])
-    data = median_rows("skew", ("S1", "S3"))
+    data = gemma_replay_rows()
     groups = [("p95", "p95_tile_latency_cycles", 440), ("p99", "p99_tile_latency_cycles", 1150)]
-    baseline_max = 330_000
+    baseline_max = 1_500_000_000
     for label, field, cx in groups:
-        c.text(label, cx - 220, 280, 440, 46, size=24, color=WHITE, bold=True, align="center")
+        c.text(label, cx - 220, 300, 440, 46, size=24, color=WHITE, bold=True, align="center")
         for index, policy in enumerate(("S1", "S3")):
             value = data[policy][field]
             bar_h = value / baseline_max * 470
@@ -542,17 +545,18 @@ def slide_7(c: SlideCanvas) -> None:
             y = 810 - bar_h
             color = GRAY if policy == "S1" else CYAN
             c.rect(x, y, 120, bar_h, color, radius=12)
-            c.text(policy, x, 830, 120, 40, size=20, color=color, bold=True, align="center")
-            c.text(f"{value / 1000:.1f}k", x - 30, y - 56, 180, 44, size=21, color=WHITE, bold=True, align="center")
+            c.text(policy, x, 815, 120, 40, size=20, color=color, bold=True, align="center")
         reduction = (data["S1"][field] - data["S3"][field]) / data["S1"][field] * 100
-        metric(c, cx - 215, 895, f"{label} 감소", f"-{reduction:.2f}%", CYAN, 430)
+        c.text(f"-{reduction:.2f}%", cx - 215, 870, 430, 64, size=36, color=CYAN, bold=True, align="center")
     c.line(950, 300, 950, 990, GRID, width=2)
-    c.text("실험 B · 제어된 치우침 스트레스 · 1,000개 작업 · 5개 seed 중앙값 · 분석 모델", 430, 245, 1060, 36, size=15, color=AMBER, bold=True, align="center")
+    c.text("실제 Gemma projection ledger · 5,856 jobs · 분석 replay", 430, 235, 1060, 36, size=18, color=AMBER, bold=True, align="center")
+    c.rect(570, 970, 780, 55, BG2, stroke=TEAL, stroke_width=2, radius=18)
+    c.text("별도 skew stress: p95  -18.12%", 590, 974, 740, 44, size=18, color=TEAL, bold=True, align="center")
 
 
 def slide_8(c: SlideCanvas) -> None:
     add_header(c, SLIDE_META[7])
-    c.text("실험 B · 제어된 치우침 스트레스 · 1,000개 작업 · 5개 seed 중앙값 · 분석 모델", 430, 258, 1060, 36, size=15, color=AMBER, bold=True, align="center")
+    c.text("합성 skew · 1,000 jobs · 5-seed 중앙값 · 분석 모델", 340, 252, 1240, 44, size=20, color=AMBER, bold=True, align="center")
     stages = [
         ("1", "Tail 감소", "-18.12%", "p95 · S3 vs S1", BLUE),
         ("2", "원격 이동 최적화", "-37.84%", "가중치 · S3 vs S2", CYAN),
@@ -573,6 +577,7 @@ def slide_8(c: SlideCanvas) -> None:
     c.text("원격 가중치 이동", 690, 815, 410, 48, size=22, color=CYAN, bold=True, align="center")
     c.chevron(1110, 820, 160, 48, CYAN)
     c.text("링크·메모리 부담", 1280, 815, 420, 48, size=22, color=TEAL, bold=True, align="center")
+    c.text("Sequential 경계에서는 skew의 S2/S3 p95 순위 역전", 260, 930, 1400, 46, size=20, color=AMBER, bold=True, align="center")
 
 
 def prepare_kicad_crops() -> tuple[Path, Path, Path]:
@@ -632,11 +637,11 @@ def slide_9(c: SlideCanvas) -> None:
         if index == 1:
             c.line(1488, y + 66, 1680, y + 66, CYAN, width=3)
             c.line(1488, y + 78, 1680, y + 78, AMBER, width=3)
-            c.text("N", 1460, y + 54, 28, 25, size=11, color=CYAN, bold=True, align="center")
-            c.text("P", 1460, y + 68, 28, 25, size=11, color=AMBER, bold=True, align="center")
+            c.text("N", 1460, y + 36, 30, 30, size=13, color=CYAN, bold=True, align="center")
+            c.text("P", 1460, y + 86, 30, 30, size=13, color=AMBER, bold=True, align="center")
         c.text(label, 1370, y + 156, 440, 38, size=17, color=WHITE, bold=True, align="center")
         c.line(1290, y + 75, 1360, y + 75, CYAN, width=2)
-    badges = [("풋프린트 29개", BLUE, 300), ("GTH/refclk 배선 20개", TEAL, 390), ("쿠폰 ERC 0 · 부분 DRC 0", CYAN, 420)]
+    badges = [("풋프린트 29개", BLUE, 300), ("GTH/refclk 배선 20개", TEAL, 390), ("ERC 0 · 부분 DRC 0", CYAN, 420)]
     x = 120
     for label, color, width in badges:
         c.rect(x, 930, width, 54, BG2, stroke=color, stroke_width=2, radius=20)
@@ -661,8 +666,7 @@ def slide_10(c: SlideCanvas) -> None:
         if index < 2:
             c.chevron(xs[index] + 400, 455, 120, 60, color)
     c.line(170, 800, 1750, 800, GRID, width=2)
-    c.text("다음 검증", 160, 842, 210, 42, size=20, color=AMBER, bold=True)
-    c.text("DDR 응답  →  Link 수신  →  Weight FIFO  →  MatVec 폐루프", 360, 830, 1300, 62, size=26, color=WHITE, bold=True, align="center")
+    c.text("다음 검증  |  DDR 응답 → Link 수신 → Weight FIFO → MatVec", 230, 840, 1460, 62, size=24, color=WHITE, bold=True, align="center")
     c.text("현재: analytical/RTL-bounded · 보드 성능·전력은 미측정", 450, 930, 1020, 46, size=17, color=MUTED, align="center")
 
 
@@ -681,11 +685,11 @@ def write_source_index() -> None:
         (1, "없음", "assets/cover_background.png", "image_gen + build_editable_deck.py", "두 연산 모듈 사이의 추상적 데이터 이동을 장식적으로 표현", "실제 칩·회로·구현 완료 상태"),
         (2, "results/experiments/scheduler_controlled.csv", "편집 가능한 queue/tail 도형", "build_editable_deck.py", "정적 ownership에서 skew와 idle이 생길 수 있음", "실제 보드 p95 또는 물리 queue timing"),
         (3, "없음", "paper_f01_evidence_path.svg; RTL sources", "build_editable_deck.py", "TileScheduler/payload store/compute cluster와 독립 memory/link plane 구조", "닫힌 DDR→link→MatVec payload loop"),
-        (4, "없음", "work_stealing_sequence.mp4/.gif; scheduler source", "manim_scenes.py; build_editable_deck.py", "S3의 victim search·locality score·exact-once 정책 개념", "분석 모델의 all-eligible search와 RTL victim-head 검사, ownership, scoring을 알고리즘적으로 동일시하거나 새 알고리즘 최적성·보드 성능으로 해석"),
+        (4, "없음", "work_stealing_sequence.mp4/.gif; work_stealing_storyboard.png; scheduler source", "manim_scenes.py; generate_animations.py; build_editable_deck.py", "S3의 victim search·locality score·exact-once 정책 개념", "분석 모델의 all-eligible search와 RTL victim-head 검사, ownership, scoring을 알고리즘적으로 동일시하거나 새 알고리즘 최적성·보드 성능으로 해석"),
         (5, "experiments/gemma3_1b/projection_trace.csv; experiments/gemma3_1b/scheduler_replay.csv", "편집 가능한 7,837→183→5,856 pipeline", "generate_trace.py; build_editable_deck.py", "실제 graph inventory와 graph-derived decode-32 replay; S1 대비 S3 p95 -15.07%, p99 -14.61%", "전체 모델 RTL 실행, ORT timing, 또는 다음 synthetic stress와 동일한 ledger"),
-        (6, "results/experiments/scheduler_controlled.csv; assets/s1_s3_timeline_events.csv", "편집 가능한 41k–43k 확대 타임라인", "generate_conference_figures.py; build_editable_deck.py", "Gemma replay와 별개의 synthetic skew 1,000-job seed 23 full-overlap analytical event에서 S1 idle, S3 J172/J162/J143 이동, queue/data/compute 구간", "Gemma replay event, RTL cycle, 물리 link/DDR timing, 또는 compute가 dispatch 직후 시작했다는 해석"),
-        (7, "results/experiments/scheduler_controlled.csv", "편집 가능한 p95/p99 막대", "build_editable_deck.py", "별도 synthetic skew 1,000-job, seed 19/23/29/31/43, repetition 0, full-overlap analytical model 중앙값에서 S1 대비 S3 p95/p99 감소", "Gemma replay 수치, 측정된 K26 latency, sequential-service 결과, 또는 모든 workload의 우월성"),
-        (8, "results/experiments/scheduler_controlled.csv; assets/bottleneck_shift_source.csv", "편집 가능한 3단계 trade-off", "generate_conference_figures.py; build_editable_deck.py", "같은 synthetic skew 5-seed full-overlap 중앙값에서 S1 대비 p95, S2 대비 remote/completion 절충", "p95 -18.12%를 queue-wait -17.86%와 동일시하거나 서로 다른 baseline 수치를 하나의 동일 비교로 해석"),
+        (6, "results/experiments/scheduler_controlled.csv; assets/s1_s3_timeline_events.csv", "편집 가능한 41k–43k 확대 타임라인; scheduler_timeline.mp4/.gif", "generate_conference_figures.py; manim_scenes.py; build_editable_deck.py", "Gemma replay와 별개의 synthetic skew 1,000-job seed 23 full-overlap analytical event에서 S1 idle, S3 J172/J162/J143 이동, queue/data/compute 구간", "Gemma replay event, RTL cycle, 물리 link/DDR timing, 또는 compute가 dispatch 직후 시작했다는 해석"),
+        (7, "experiments/gemma3_1b/scheduler_replay.csv; results/experiments/scheduler_controlled.csv", "편집 가능한 Gemma p95/p99 막대; tail_latency_results.mp4/.gif", "manim_scenes.py; build_editable_deck.py", "실제 graph-derived decode-32 replay의 S1 대비 S3 p95 -15.07%, p99 -14.61%; 별도 synthetic skew p95 -18.12%는 조건 일치 보조값", "두 data layer를 동일 실험으로 합치거나 측정 K26 latency·보편적 우월성으로 해석"),
+        (8, "results/experiments/scheduler_controlled.csv; assets/bottleneck_shift_source.csv", "편집 가능한 3단계 trade-off; bottleneck_migration.mp4/.gif", "generate_conference_figures.py; manim_scenes.py; build_editable_deck.py", "같은 synthetic skew 5-seed full-overlap 중앙값에서 S1 대비 p95, S2 대비 remote/completion 절충", "p95 -18.12%를 queue-wait -17.86%와 동일시하거나 서로 다른 baseline 수치를 하나의 동일 비교로 해석"),
         (9, "없음", "paper_f07_kicad_coupon_render.png; assets/kicad_top_render.png; k26_scope_manifest.json; 실제 render crops", "kicad-cli pcb render; verify_k26_kicad.py; build_editable_deck.py", "Native KiCad reference coupon, board 좌표 기반 GTH_REFCLK0 P/N 두 segment 강조, coupon ERC 0과 routed-subset DRC 0 범위", "제작 가능 보드, 전체-board DRC 0, SI/PI/PDN/thermal closure"),
         (10, "없음", "docs/architecture.md; docs/evidence.md", "build_editable_deck.py", "기여·현재 한계·다음 integration gate 요약", "완성 accelerator, 보드 성능·전력, full 3B 실행"),
     ]
@@ -693,7 +697,7 @@ def write_source_index() -> None:
     for row in rows:
         lines.append("| " + " | ".join(str(value).replace("|", "\\|") for value in row) + " |")
     (FINAL / "slide_source_index.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
-    (FINAL / "qa_evidence_index.md").write_text("# Presentation QA Evidence Index\n\n슬라이드별 claim/source/허용·금지 해석은 [`slide_source_index.md`](slide_source_index.md)를 따른다. 세 역할의 최종 검토는 [`independent_review.md`](independent_review.md), 발표 질의응답은 [`../../study/10_qna_bank.md`](../../study/10_qna_bank.md)를 사용한다.\n", encoding="utf-8")
+    (FINAL / "qa_evidence_index.md").write_text("# Presentation QA Evidence Index\n\n슬라이드별 claim/source/허용·금지 해석은 [`slide_source_index.md`](slide_source_index.md)를 따른다. 객체 경계·가로/세로 overflow·텍스트 박스 교차 검사는 [`layout_audit.json`](layout_audit.json), 세 역할의 최종 검토는 [`independent_review.md`](independent_review.md), 발표 질의응답은 [`../../study/10_qna_bank.md`](../../study/10_qna_bank.md)를 사용한다.\n", encoding="utf-8")
     (FINAL / "demo_script.md").write_text("# 10-minute run of show\n\n" + "\n".join(f"- {meta.duration} · Slide {index}: {meta.title}" for index, meta in enumerate(SLIDE_META, 1)) + "\n\n전체 발표 대본은 [`speaker_notes.md`](speaker_notes.md)에 있다.\n", encoding="utf-8")
 
 
@@ -717,7 +721,7 @@ def build_contact_sheet(paths: list[Path]) -> Path:
 def build_pdf(paths: list[Path]) -> None:
     page_size = (960, 540)
     pdf = pdf_canvas.Canvas(str(PDF_PATH), pagesize=page_size, pageCompression=1)
-    pdf.setTitle("VARP K26–Memory FPGA — Work Stealing으로 줄이는 Tail Latency")
+    pdf.setTitle("VARP K26–Memory FPGA — 정적 큐의 Tail을 줄이는 Work Stealing")
     pdf.setAuthor("CHOI YUNHYUK")
     pdf.setCreator("presentation/tools/build_editable_deck.py")
     pdf.setDateFormatter(lambda *_: "D:20260731000000+09'00'")
@@ -752,7 +756,7 @@ def main() -> int:
     prs = Presentation()
     prs.slide_width = Inches(13.333333)
     prs.slide_height = Inches(7.5)
-    prs.core_properties.title = "Work Stealing으로 줄이는 Tail Latency"
+    prs.core_properties.title = "정적 큐의 Tail을 줄이는 Work Stealing"
     prs.core_properties.author = "CHOI YUNHYUK"
     prs.core_properties.creator = "presentation/tools/build_editable_deck.py"
     prs.core_properties.created = datetime(2026, 7, 31, 0, 0, 0)

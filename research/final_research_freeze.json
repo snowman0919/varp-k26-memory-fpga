@@ -1,0 +1,52 @@
+{
+  "status": "PASS",
+  "purpose": "presentation prerequisite; no new experiment added",
+  "graph_nodes": 7837,
+  "projections_per_token": 183,
+  "decode_32_tile_jobs": 5856,
+  "controlled_rows": 780,
+  "controlled_seeds": [
+    19,
+    23,
+    29,
+    31,
+    43
+  ],
+  "bounded_rtl_parity": "3/3",
+  "bounded_steal_to_matvec": "3 accepted = 3 dispatched = 3 completed",
+  "gemma_decode_32": {
+    "s3_vs_s1_p95_pct": -15.07,
+    "s3_vs_s1_p99_pct": -14.61
+  },
+  "synthetic_skew": {
+    "s3_vs_s1_p95_pct": -18.12,
+    "s3_vs_s1_p99_pct": -18.16,
+    "s3_vs_s2_remote_weight_pct": -37.84,
+    "s3_vs_s2_completion_pct": 0.98
+  },
+  "kicad": {
+    "status": "NOT FOR FABRICATION",
+    "footprints": 29,
+    "routed_gth_refclk_nets": 20,
+    "bounded_erc_drc": "0/0"
+  },
+  "presentation_claim_boundary": {
+    "direct_or_bounded": [
+      "actual graph inventory",
+      "three actual-weight RTL parity tiles",
+      "three steal-to-MatVec events",
+      "native KiCad coupon checks"
+    ],
+    "modeled": [
+      "S0-S3 latency",
+      "remote traffic",
+      "completion and energy/cost sensitivity"
+    ],
+    "not_claimed": [
+      "measured board performance",
+      "closed DDR-link-MatVec payload loop",
+      "fabrication readiness",
+      "full-model RTL inference"
+    ]
+  }
+}

@@ -4,11 +4,13 @@
 from __future__ import annotations
 
 from pathlib import Path
+import json
 import re
 import sys
 import zipfile
 
 from PIL import Image
+from PIL import ImageFont
 from pptx import Presentation
 from pptx.enum.shapes import MSO_SHAPE_TYPE
 from pypdf import PdfReader
@@ -19,17 +21,20 @@ FINAL = ROOT / "presentation" / "final"
 PPTX = FINAL / "presentation.pptx"
 PDF = FINAL / "presentation.pdf"
 EXPECTED_TITLES = [
-    "Work Stealing으로 줄이는 Tail Latency",
-    "왜 정적 큐가 Tail을 만드는가",
-    "K26 Compute × Memory FPGA",
-    "유휴 클러스터가 일을 훔치는 5단계",
-    "실제 Gemma 작업을 TileJob으로 바꾼다",
-    "놀고 있던 연산 클러스터가 Tail을 줄인다",
-    "Tail은 얼마나 줄었나",
-    "Work Stealing은 병목을 없애지 않고 이동시킨다",
-    "알고리즘을 실제 보드 인터페이스로 내렸다",
-    "조건을 찾았고, 다음은 폐루프 검증이다",
+    "정적 큐의 Tail을 줄이는 Work Stealing",
+    "연구 질문: 지역성과 부하 균형을 함께 얻을 수 있는가",
+    "연구 대상 구조와 구현 경계",
+    "지역성 비용을 반영한 Work Stealing",
+    "실제 Gemma graph에서 평가 작업을 만든다",
+    "동일 조건에서 S1과 S3의 실행을 비교한다",
+    "실제 Gemma replay에서도 Tail이 감소했다",
+    "Tail 감소의 비용은 원격 이동이다",
+    "물리 참조 설계로 다음 검증 범위를 고정했다",
+    "기여와 한계: 조건부 효과를 규명했다",
 ]
+
+FONT_REGULAR = "/usr/share/fonts/truetype/nanum/NanumSquareR.ttf"
+FONT_BOLD = "/usr/share/fonts/truetype/nanum/NanumSquareB.ttf"
 
 
 def fail(message: str) -> None:
@@ -45,8 +50,19 @@ def main() -> int:
         FINAL / "slide_contact_sheet.png",
         FINAL / "assets" / "work_stealing_sequence.mp4",
         FINAL / "assets" / "work_stealing_sequence.gif",
+        FINAL / "assets" / "work_stealing_storyboard.png",
         FINAL / "assets" / "tile_dataflow.mp4",
         FINAL / "assets" / "tile_dataflow.gif",
+        FINAL / "assets" / "scheduler_timeline.mp4",
+        FINAL / "assets" / "scheduler_timeline.gif",
+        FINAL / "assets" / "tail_latency_results.mp4",
+        FINAL / "assets" / "tail_latency_results.gif",
+        FINAL / "assets" / "bottleneck_migration.mp4",
+        FINAL / "assets" / "bottleneck_migration.gif",
+        FINAL / "presentation.mp4",
+        FINAL / "presentation.gif",
+        FINAL / "animation_manifest.md",
+        ROOT / "research" / "final_research_freeze.json",
     ]
     for path in required:
         if not path.is_file() or path.stat().st_size == 0:
@@ -65,6 +81,10 @@ def main() -> int:
 
     notes_markers = 0
     total_pictures = 0
+    checked_text_shapes = 0
+    checked_text_runs = 0
+    minimum_font_pt = 999.0
+    slide_w, slide_h = prs.slide_width, prs.slide_height
     for index, (slide, expected_title) in enumerate(zip(prs.slides, EXPECTED_TITLES), 1):
         texts = [shape.text for shape in slide.shapes if getattr(shape, "has_text_frame", False)]
         normalized = [text.replace("\n", " ") for text in texts]
@@ -76,25 +96,71 @@ def main() -> int:
         notes_markers += 1
         pictures = sum(shape.shape_type == MSO_SHAPE_TYPE.PICTURE for shape in slide.shapes)
         total_pictures += pictures
-        if index not in (1, 9) and pictures:
+        if index not in (1, 4, 9) and pictures:
             fail(f"slide {index}: unexpected raster picture")
+        if index == 4 and pictures != 1:
+            fail(f"slide 4: expected one Manim still, got {pictures}")
         if index == 9 and pictures != 4:
             fail(f"slide 9: expected main KiCad render plus three crops, got {pictures}")
+
+        tolerance = 2 * 914400 / 144
+        for shape in slide.shapes:
+            if shape.left < -tolerance or shape.top < -tolerance or shape.left + shape.width > slide_w + tolerance or shape.top + shape.height > slide_h + tolerance:
+                fail(f"slide {index}: shape outside canvas: {shape.name}")
+            if not getattr(shape, "has_text_frame", False) or not shape.text.strip():
+                continue
+            checked_text_shapes += 1
+            for paragraph in shape.text_frame.paragraphs:
+                for run in paragraph.runs:
+                    if not run.text.strip() or run.font.size is None:
+                        continue
+                    size_pt = run.font.size.pt
+                    checked_text_runs += 1
+                    minimum_font_pt = min(minimum_font_pt, size_pt)
+                    if size_pt < 11.5:
+                        fail(f"slide {index}: text below 12 pt: {run.text!r} {size_pt:.1f}")
+                    face = ImageFont.truetype(FONT_BOLD if run.font.bold else FONT_REGULAR, max(10, round(size_pt * 2)))
+                    width_px = shape.width / 914400 * 144
+                    for line in run.text.splitlines() or [run.text]:
+                        measured = face.getlength(line)
+                        if measured > width_px * 0.96:
+                            fail(f"slide {index}: horizontal text overflow risk in {shape.name}: {line!r}")
+            line_count = max(1, shape.text.count("\n") + 1)
+            sizes = [run.font.size.pt for p in shape.text_frame.paragraphs for run in p.runs if run.font.size]
+            if sizes:
+                needed_px = line_count * max(sizes) * 2 * 1.08
+                height_px = shape.height / 914400 * 144
+                if needed_px > height_px * 1.05:
+                    fail(f"slide {index}: vertical text overflow risk in {shape.name}")
+
+        text_shapes = [shape for shape in slide.shapes if getattr(shape, "has_text_frame", False) and shape.text.strip()]
+        for left_index, left in enumerate(text_shapes):
+            for right in text_shapes[left_index + 1 :]:
+                overlap_left = max(left.left, right.left)
+                overlap_top = max(left.top, right.top)
+                overlap_right = min(left.left + left.width, right.left + right.width)
+                overlap_bottom = min(left.top + left.height, right.top + right.height)
+                if overlap_right <= overlap_left or overlap_bottom <= overlap_top:
+                    continue
+                overlap_area = (overlap_right - overlap_left) * (overlap_bottom - overlap_top)
+                smaller_area = min(left.width * left.height, right.width * right.height)
+                if overlap_area / smaller_area > 0.05:
+                    fail(f"slide {index}: overlapping text boxes: {left.name} / {right.name}")
 
         screen_text = " ".join(normalized)
         required_screen_text = {
             5: ("Gemma replay", "합성 스트레스", "별도 작업 집합"),
-            6: ("제어된 치우침 스트레스", "큐 대기", "데이터 준비", "밝은 끝 연산"),
-            7: ("제어된 치우침 스트레스", "5개 seed 중앙값", "분석 모델"),
-            8: ("Tail 감소", "p95 · S3 vs S1", "완료시간 · S3 vs S2"),
-            9: ("기준 클록 차동쌍", "쿠폰 ERC 0", "부분 DRC 0", "NOT FOR FABRICATION"),
+            6: ("동일 1,000-job stream", "큐 대기", "데이터 준비", "밝은 연산"),
+            7: ("실제 Gemma projection ledger", "별도 skew stress", "-15.07%", "-14.61%", "-18.12%"),
+            8: ("Tail 감소", "p95 · S3 vs S1", "완료시간 · S3 vs S2", "S2/S3 p95 순위 역전"),
+            9: ("기준 클록 차동쌍", "ERC 0", "부분 DRC 0", "NOT FOR FABRICATION"),
         }
         for phrase in required_screen_text.get(index, ()):
             if phrase not in screen_text:
                 fail(f"slide {index}: required screen qualifier missing: {phrase}")
 
-    if total_pictures != 5:
-        fail(f"expected five raster pictures in whole deck, got {total_pictures}")
+    if total_pictures != 6:
+        fail(f"expected six scoped raster pictures in whole deck, got {total_pictures}")
 
     reader = PdfReader(str(PDF))
     if len(reader.pages) != 10:
@@ -128,9 +194,27 @@ def main() -> int:
         if header not in source_index:
             fail(f"source index missing column: {header}")
 
+    audit = {
+        "status": "PASS",
+        "slides": len(prs.slides),
+        "aspect_ratio": "16:9",
+        "rendered_png_size": [1920, 1080],
+        "checked_text_shapes": checked_text_shapes,
+        "checked_text_runs": checked_text_runs,
+        "minimum_font_pt": minimum_font_pt,
+        "out_of_bounds_shapes": 0,
+        "horizontal_text_overflow_risks": 0,
+        "vertical_text_overflow_risks": 0,
+        "overlapping_text_box_pairs": 0,
+        "scoped_raster_pictures": total_pictures,
+        "speaker_note_memory_sentences": notes_markers,
+        "duration_seconds": seconds,
+    }
+    (FINAL / "layout_audit.json").write_text(json.dumps(audit, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
     print(
         "validated: 10 slides, 16:9, 10 notes, 10:00 timing, "
-        "10 PDF pages, 10 PNGs, editable visuals with five scoped raster images"
+        "10 PDF pages, 10 PNGs, bounded text geometry, editable visuals with six scoped raster images"
     )
     return 0
 

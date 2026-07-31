@@ -8,13 +8,13 @@ date: 2026-07-31
 
 # 초록
 
-온디바이스 LLM 복호화는 투영 가중치를 반복해서 읽으므로 정적 작업 소유권에서 생긴 큐·메모리 불균형이 꼬리 지연을 지배할 수 있다. 본 연구는 실제 Gemma 3 1B 그래프에서 작업 목록을 만들고, K26 연산 소유권과 외부 Memory FPGA의 채널 친화도를 분리한 후보 구조에서 정적 S1과 지역성 인지 워크 스틸링 S3를 동일 조건으로 감사한다. 완전 중첩 서비스 모델에서 S3는 skew와 mixed의 p95를 S1보다 18.12%와 17.59% 낮추고 S2보다 원격 가중치 전송량을 37.84%와 22.16% 줄였지만, 순차 서비스에서는 skew의 S2/S3 순위가 뒤집혔다. Gemma 3 1B의 context-32K 용량 모델 2.4301 GiB는 명목 K26 로컬 4 GB에도 들어가므로 외부 8 GiB 채택은 용량이 아니라 로컬 메모리 대역폭·경합·전력 검증에 달려 있으며, 본 방법은 그 채택 조건과 다음 실험을 명확히 선택하게 한다.
+온디바이스 LLM 복호화는 투영 가중치를 반복해서 읽으므로 정적 작업 소유권에서 생긴 큐·메모리 불균형이 꼬리 지연을 지배할 수 있다. 본 연구는 실제 Gemma 3 1B 그래프에서 작업 목록을 만들고, K26 연산 소유권과 외부 Memory FPGA의 채널 친화도를 분리한 후보 구조에서 정적 S1과 지역성 인지 워크 스틸링 S3를 동일 조건으로 감사한다. 실제 graph-derived decode-32 replay에서 S3는 S1보다 p95와 p99를 각각 15.07%와 14.61% 낮췄다. 이 replay와 분리한 1,000-job synthetic stress의 완전 중첩 서비스 모델에서는 skew와 mixed의 p95가 18.12%와 17.59% 낮아지고 S2 대비 원격 가중치 전송량이 37.84%와 22.16% 줄었지만, 순차 서비스에서는 skew의 S2/S3 순위가 뒤집혔다. Gemma 3 1B의 context-32K 용량 모델 2.4301 GiB는 명목 K26 로컬 4 GB에도 들어가므로 외부 8 GiB 채택은 용량이 아니라 로컬 메모리 대역폭·경합·전력 검증에 달려 있으며, 본 방법은 그 채택 조건과 다음 실험을 명확히 선택하게 한다.
 
 **핵심어:** Gemma 3 1B, Kria K26, Memory FPGA, 다채널 DDR3L, Work Stealing, SpinalHDL, KiCad
 
 # Abstract
 
-On-device LLM decoding repeatedly streams projection weights, so queue and memory imbalance under static ownership can dominate tail latency. We derive a job ledger from the actual Gemma 3 1B graph and audit static S1 against locality-aware work stealing S3 on a candidate architecture that separates K26 compute ownership from external Memory FPGA channel affinity. Under a full-overlap service model, S3 reduces p95 latency by 18.12% and 17.59% on skew and mixed workloads and reduces remote-weight bytes against S2 by 37.84% and 22.16%, while a sequential service boundary reverses the skew S2/S3 ordering. Because the 2.4301-GiB context-32K capacity model fits nominal K26 local 4 GB, external 8 GiB remains conditional on local-memory bandwidth, contention, and power validation; the method identifies the adoption gates and next experiments.
+On-device LLM decoding repeatedly streams projection weights, so queue and memory imbalance under static ownership can dominate tail latency. We derive a job ledger from the actual Gemma 3 1B graph and audit static S1 against locality-aware work stealing S3 on a candidate architecture that separates K26 compute ownership from external Memory FPGA channel affinity. In the graph-derived decode-32 replay, S3 reduces p95 and p99 against S1 by 15.07% and 14.61%. In a separate 1,000-job synthetic stress under a full-overlap service model, S3 reduces p95 by 18.12% and 17.59% on skew and mixed workloads and reduces remote-weight bytes against S2 by 37.84% and 22.16%, while a sequential service boundary reverses the skew S2/S3 ordering. Because the 2.4301-GiB context-32K capacity model fits nominal K26 local 4 GB, external 8 GiB remains conditional on local-memory bandwidth, contention, and power validation; the method identifies the adoption gates and next experiments.
 
 **Keywords:** Gemma 3 1B, Kria K26, Memory FPGA, multi-channel DDR3L, work stealing, SpinalHDL
 
@@ -248,7 +248,7 @@ Sequential sensitivity에서도 S3는 S1보다 낮지만 S2와의 p95 순위는 
 
 ## C. Q3 — Actual Gemma ledger에서도 같은 방향인가?
 
-**답:** decode-1에서는 아니지만 decode-32 분석 모델에서는 같은 tail·전송량 방향이 나타난다. Decode-1에서 S1 projection은 220.126 ms, S3는 220.863 ms로 S3가 0.34% 길다. Decode-32에서는 S1 7.341 s, S3 6.335 s로 S3가 13.70% 짧다. S3 p95 job latency는 1.223×10⁹→1.039×10⁹ cycle로 15.08% 낮고, remote weight는 S2 4.855 GB에서 S3 2.830 GB로 41.71% 감소한다.
+**답:** decode-1에서는 아니지만 decode-32 분석 모델에서는 같은 tail·전송량 방향이 나타난다. Decode-1에서 S1 projection은 220.126 ms, S3는 220.863 ms로 S3가 0.34% 길다. Decode-32에서는 S1 7.341 s, S3 6.335 s로 S3가 13.70% 짧다. S3 p95 job latency는 1.223×10⁹→1.039×10⁹ cycle로 15.07% 낮고, remote weight는 S2 4.855 GB에서 S3 2.830 GB로 41.72% 감소한다.
 
 Host non-projection fallback 6.550 s를 선형 외삽해 합친 decode-32 hybrid total은 S1 13.891 s, S3 12.885 s, Oracle 11.819 s다. 표 7은 decode-1과 decode-32를 context-32K 용량 조건과 구별해 비교한다.
 
@@ -313,7 +313,7 @@ Native 0건은 routing 완료를 뜻하지 않는다. 독립 분석기는 55개 
 
 # X. 결론
 
-**관측.** 실제 Gemma 3 1B ONNX graph에서 유도한 동일 작업 목록으로 정책을 비교했을 때, S3는 skew와 mixed에서 static S1의 p95를 약 18% 낮추고 S2보다 remote-weight byte를 줄였다. Balanced와 hotspot에서는 이득이 없고 S2보다 completion이 조금 길었다. Decode-32에서도 같은 방향이 나타났지만 서비스 경계와 비대칭 S0 회계에 민감한 분석 모델 결과다.
+**관측.** 실제 Gemma 3 1B ONNX graph에서 유도한 decode-32 작업 목록에서는 S3가 static S1보다 p95와 p99를 각각 15.07%와 14.61% 낮췄다. 같은 Gemma replay에서 S3는 S2보다 remote-weight byte를 41.72% 줄였고 completion도 2.68% 짧았다. 이 replay와 분리한 1,000-job synthetic stress에서는 skew와 mixed의 S1 대비 p95가 각각 18.12%와 17.59% 낮아졌고, skew에서 S3는 S2보다 remote-weight byte를 37.84% 줄이는 대신 completion이 0.98% 길었다. Balanced와 hotspot에서는 이득이 없었으며, synthetic 결과의 S2/S3 순위는 서비스 경계에 민감했다. 모든 시간 결과는 보드 측정이 아니라 분석 모델이다.
 
 **채택·보류.** S3는 static ownership의 불균형을 완화할 후속 RTL 후보로 채택한다. 외부 Memory FPGA와 중앙·분산 queue의 물리 선택은 보류한다. 실제 dispatch→DMA/DDR→MatVec 통합, 동적 non-stealing 비교, Vivado timing·power, local 4 GB 대비 대역폭·경합·전력 측정이 모두 통과하면 외부 Memory FPGA와 S3를 함께 채택할 수 있다.
 
