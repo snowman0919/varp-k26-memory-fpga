@@ -1,145 +1,90 @@
-# VARP K26–Memory FPGA — 10분 기술 컨퍼런스 발표 아웃라인
+# VARP K26–Memory FPGA — 10분 논문 발표 아웃라인
 
-상태: 아웃라인 및 dark conference style 승인 완료, 이미지 backend 확인 대기
-형식: 16:9 · 10장 · 한국어 중심 · 10분
-청중: FPGA/컴퓨터구조/온디바이스 AI 기술 컨퍼런스 청중
+형식: 16:9 · 10장 · 한국어 · 10:00
+발표 성격: 제품 설명회가 아닌 연구 논문의 기술 컨퍼런스 발표
+연구 동결 선행조건: `research/final_research_freeze.json` = PASS
 
-## 고정 중심 메시지
+## 중심 연구 문장
 
-> Gemma 3 1B 작업 부하를 기준으로 K26 연산 SoC와 외부 Memory FPGA를 결합한 가속기 구조를 설계하고, Multi-Queue FCFS와 locality-aware Work Stealing이 정적 큐의 부하 불균형과 tail latency를 완화하는 조건을 분석하였다.
+정적 로컬 큐는 데이터 지역성을 유지하지만 작업이 치우치면 일부 연산 클러스터가 유휴 상태에 빠진다. 지역성 인식 Work Stealing은 이동 비용보다 이득이 큰 작업을 재배치해 Tail latency를 줄일 수 있으며, 본 연구는 그 효과가 발생하는 조건과 link/memory 비용을 실제 Gemma 3 1B 작업·분석 모델·제한 RTL·KiCad 근거로 추적한다.
 
-## 발표 리듬
+## 논문 발표 서사
 
-`문제 제기 → 시스템 아키텍처 → Work Stealing 동작 원리 → 실험 설계 → 핵심 결과 → 물리 참조 설계 → 기여와 한계`
+`연구 질문 → 시스템 모델 → workload·방법 → 공정한 비교 → 결과 → 비용·민감도 → 제한 구현 근거 → 기여·한계`
 
-화면에는 짧은 제목, 한 줄 결론, 핵심 Figure만 남긴다. 아래의 설명 포인트는 최종 speaker notes로 이동하며 슬라이드 본문에 그대로 노출하지 않는다.
+### Slide 1 — 정적 큐의 Tail을 줄이는 Work Stealing (0:35)
 
-## Slide 1 — Work Stealing으로 줄이는 Tail Latency (0:35)
+- 역할: 논문 제목과 연구 질문.
+- 기억할 점: “언제 Tail 감소가 원격 이동 비용보다 큰가?”
+- Visual: 장식적 K26–Memory FPGA 배경. 실제 회로·수치는 생성 이미지에 맡기지 않는다.
 
-- **화면 결론:** Gemma 3 1B decode의 병목을 ‘대역폭’이 아니라 ‘작업 배치와 tail’의 문제로 다시 본다.
-- **발표 설명 포인트:** K26 compute SoC + external Memory FPGA, Multi-Queue FCFS, locality-aware Work Stealing.
-- **Visual:** 어두운 캔버스 위 K26와 Memory FPGA 사이에 흐르는 weight tiles; 한쪽 queue만 길어진 장면.
-- **역할:** cover / research hook.
-- **Required images:** 없음. 구조를 과장하지 않는 개념 시각화만 사용.
+### Slide 2 — 연구 질문: 지역성과 부하 균형을 함께 얻을 수 있는가 (0:55)
 
-## Slide 2 — 평균은 괜찮아도 Tail은 길다 (0:55)
+- 역할: 문제와 연구 공백.
+- 기억할 점: static ownership은 locality를 보존하지만 queue skew의 p95/p99를 보장하지 않는다.
+- Visual: 과부하 queue·유휴 cluster·긴 tail을 하나의 시선 흐름으로 연결.
+- 연구 공백: 실제 LLM graph, Tail percentile, remote byte를 같은 조건에서 감사.
 
-- **화면 결론:** Static local queue는 locality를 지키지만 skew가 생기면 일부 cluster가 놀고 p95가 늘어난다.
-- **발표 설명 포인트:** S1의 home ownership, queue imbalance, idle cluster, 평균보다 p95/p99가 중요한 이유.
-- **Visual:** 동일 시간축 위 ‘긴 queue + idle cluster’ 대비; 마지막 5%의 지연을 cyan highlight.
-- **역할:** problem framing / imbalance visualization.
-- **Required images:** 없음. `results/experiments/scheduler_controlled.csv`의 skew 조건을 근거로 한 간결한 concept figure.
+### Slide 3 — 연구 대상 구조와 구현 경계 (1:10)
 
-## Slide 3 — K26 Compute × Memory FPGA (1:10)
+- 역할: 논문이 평가하는 시스템 모델.
+- 기억할 점: 계산 소유권과 데이터 친화도를 TileJob에서 분리.
+- Visual: 실제 RTL module map에 맞춘 K26 compute plane과 외부 Memory FPGA plane.
+- 경계: scheduler→payload store→MatVec는 제한 구현, DDR response→link receive→weight FIFO 폐루프는 미통합.
 
-- **화면 결론:** 계산 소유권과 메모리 channel affinity를 분리해 tile 단위로 스케줄링한다.
-- **발표 설명 포인트:** 4 compute clusters, TileScheduler/payload store/16×4 MatVec, 4-channel DDR3L 후보, 4-bundle link.
-- **Visual:** 실제 RTL module map을 기반으로 좌→우 TileJob dataflow를 강조한 architecture hero diagram.
-- **역할:** system architecture.
-- **Required images:**
-  - 실제 compute/memory/link plane과 연결 경계를 보존하는 strict input asset. 최종 슬라이드는 보고서 범례를 복제하지 않고, 실제 모듈명과 화살표를 중심으로 dark conference style에 통합한다.
+### Slide 4 — 지역성 비용을 반영한 Work Stealing (1:15)
 
-    ![Actual RTL architecture boundary](../../paper/final/figures/paper_f01_evidence_path.svg)
+- 역할: 제안 방법.
+- 기억할 점: `score = age − 이동 비용`, 양수인 eligible job만 이동.
+- Visual: Manim `work_stealing_sequence.mp4/.gif`의 최종 프레임.
+- 주의: 분석 모델은 all-eligible search, RTL은 victim-head 검사로 의미가 동일하지 않다.
 
-## Slide 4 — Idle Cluster가 일을 훔치는 5단계 (1:15)
+### Slide 5 — 실제 Gemma graph에서 평가 작업을 만든다 (1:00)
 
-- **화면 결론:** S3는 가장 오래된 job이 아니라, age 대비 이동 비용이 이득인 eligible job을 훔친다.
-- **발표 설명 포인트:** imbalance → victim search → locality score → steal → exact-once completion.
-- **Visual:** Manim 시퀀스의 최종 dark frame을 중심으로 단계별 motion cue를 유지.
-- **역할:** algorithm / process.
-- **Required images:**
-  - Manim으로 생성한 Work Stealing 정지 프레임; strict input asset. Queue/job identity와 단계 의미를 보존한다.
+- 역할: workload 구성과 외적 타당성.
+- 기억할 점: 7,837 graph nodes → token당 183 projections → decode-32 5,856 TileJobs.
+- Visual: graph inventory에서 deterministic ledger로 가는 한 방향 pipeline.
+- 구분: 실제 Gemma replay와 synthetic stress는 별도 data layer.
 
-    ![Work Stealing sequence frame](assets/work_stealing_sequence_frame.png)
+### Slide 6 — 동일 조건에서 S1과 S3의 실행을 비교한다 (1:05)
 
-## Slide 5 — 실제 Graph에서 5,856개 TileJob으로 (1:00)
+- 역할: 공정한 평가 설계와 대표 실행 사건.
+- 기억할 점: job stream·resource·seed를 고정하고 scheduler만 변경.
+- Visual: 원본 CSV 기반 41k–43k 확대 timeline. queue wait, data preparation, compute, idle, stolen job을 구분.
+- Motion: `scheduler_timeline.mp4/.gif`.
 
-- **화면 결론:** 실제 Gemma graph에서 projection ledger를 만들고, 동일 job stream으로 정책만 바꿔 비교했다.
-- **발표 설명 포인트:** 7,837 graph nodes, 183 projections/token, decode-32=5,856 jobs, 동일 seed/stream/correctness gate.
-- **Visual:** ONNX graph → projection filter → deterministic ledger → S0/S1/S2/S3 replay의 한 방향 pipeline.
-- **역할:** experiment design / method.
-- **Required images:**
-  - Graph inventory와 projection ledger 수치를 보존하는 strict input asset. ORT boundary 설명은 notes로 이동하고 figure의 핵심 pipeline만 사용한다.
+### Slide 7 — 실제 Gemma replay에서도 Tail이 감소했다 (1:20)
 
-    ![Gemma graph to scheduler flow](../../paper/final/figures/paper_f02_onnx_runtime_graph.svg)
+- 역할: 논문의 핵심 결과.
+- 기억할 점: 실제 Gemma decode-32 p95 −15.07%, p99 −14.61%; 별도 skew p95 −18.12%.
+- Visual: p95/p99 paired bars와 `tail_latency_results.mp4/.gif`.
+- 금지: 실제 replay와 synthetic stress를 동일 실험으로 합치거나 보드 측정으로 표현.
 
-## Slide 6 — S1은 기다리고, S3는 재배치한다 (1:05)
+### Slide 8 — Tail 감소의 비용은 원격 이동이다 (0:55)
 
-- **화면 결론:** 같은 skew workload에서 S3는 idle 구간을 steal 실행으로 바꿔 tail을 앞당긴다.
-- **발표 설명 포인트:** S1 local wait, S3 victim dispatch, cluster별 실행 구간, remote movement의 추가 비용.
-- **Visual:** 위 S1·아래 S3의 동일 축 swimlane/Gantt; queue wait·link/memory wait·compute를 색으로 분리.
-- **역할:** comparison / execution timeline.
-- **Required images:**
-  - `results/experiments/scheduler_controlled.csv`와 scheduler event semantics로 생성할 `assets/s1_s3_execution_timeline.png`; strict input asset. Analytical timeline임을 작은 qualifier로 유지하고 임의의 RTL timing처럼 표현하지 않는다.
+- 역할: trade-off와 조건 민감도.
+- 기억할 점: synthetic skew에서 S3 vs S2 remote weight −37.84%, completion +0.98%.
+- Visual: queue Tail → remote movement → completion의 3단계와 `bottleneck_migration.mp4/.gif`.
+- 주의: p95는 S3 vs S1, remote/completion은 S3 vs S2로 기준이 다르다.
 
-    ![S1 versus S3 CSV-backed execution timeline](assets/s1_s3_execution_timeline.png)
+### Slide 9 — 물리 참조 설계로 다음 검증 범위를 고정했다 (0:55)
 
-## Slide 7 — Tail Latency −18% (1:20)
+- 역할: 제한된 물리 근거.
+- 기억할 점: 알고리즘의 완성을 주장하는 제품 보드가 아니라 interface validation coupon.
+- Visual: native KiCad render 60–70%와 링크·refclk·routed coupon 확대.
+- Badge: 29 footprints, 20 routed GTH/refclk nets, 제한 범위 ERC/DRC 0/0.
+- Qualifier: `NOT FOR FABRICATION`.
 
-- **화면 결론:** Full-overlap 분석에서 S3는 S1 대비 skew p95 18.12%, mixed p95 17.59%를 줄였다.
-- **발표 설명 포인트:** p95와 p99를 함께 읽기, balanced/hotspot에서는 이득 없음, 동일 1,000-job stream과 seed 5개 중앙값.
-- **Visual:** skew/mixed의 S1↔S3 p95/p99 dumbbell 또는 paired bars; 18.12%와 17.59%만 크게 강조.
-- **역할:** key result / data evidence.
-- **Required images:**
-  - 수치·축·policy mapping을 보존하는 strict input asset.
+### Slide 10 — 기여와 한계: 조건부 효과를 규명했다 (0:50)
 
-    ![Tail latency result](../../paper/final/figures/paper_f05_tail_latency.svg)
+- 역할: 논문 기여·한계·다음 실험.
+- 기여: graph-derived workload, Tail/traffic 공동 감사, 제한 RTL·물리 근거 연결.
+- 한계: analytical timing, 모델/RTL scheduler semantics 불일치, 미통합 DDR→link→MatVec 폐루프.
+- 다음 검증: 실제 K26 local-memory baseline과 닫힌 payload path에서 latency·traffic·power 측정.
 
-## Slide 8 — 병목은 Queue에서 Link·Memory로 이동한다 (0:55)
+## 시각자료 목록
 
-- **화면 결론:** Stealing은 idle을 줄이는 대신 remote traffic을 만들며, locality score가 그 비용을 제한한다.
-- **발표 설명 포인트:** S2→S3 remote weight bytes −37.84%/−22.16%, completion +0.98%/+0.41%, link/memory utilization과 queue wait의 관계.
-- **Visual:** 왼쪽 queue wait 감소, 가운데 remote bytes, 오른쪽 link/memory pressure로 이어지는 bottleneck-shift plot.
-- **역할:** trade-off / bottleneck transition.
-- **Required images:**
-  - `results/experiments/scheduler_controlled.csv`에서 생성할 `assets/bottleneck_shift.png`; strict input asset. Queue/link/DDR 지표의 단위와 analytical qualifier를 보존한다.
-
-    ![CSV-backed bottleneck shift](assets/bottleneck_shift.png)
-
-  - P95/completion/remote-byte 원 수치 교차검증용 strict evidence asset.
-
-    ![S2 S3 tradeoff](../../paper/final/figures/paper_f06_tradeoff.svg)
-
-## Slide 9 — 알고리즘을 보드 경계까지 내리다 (0:55)
-
-- **화면 결론:** Native KiCad reference design으로 물리 연결 대상을 구체화했지만 아직 제작 단계는 아니다.
-- **발표 설명 포인트:** K26/Memory/GTH coupon, 실제 board source, bounded ERC/DRC, 55 unrouted nets.
-- **Visual:** KiCad 3D render를 화면의 75% 이상 사용하고 작은 하단 qualifier만 배치.
-- **역할:** physical reference design / visual proof.
-- **Required images:**
-  - 실제 board geometry와 silkscreen을 그대로 보존하는 strict input asset.
-
-    ![Native KiCad reference coupon](../../paper/final/figures/paper_f07_kicad_coupon_render.png)
-
-  - Native manifest에서 생성한 validation-scope inset; strict input asset. 최종 슬라이드의 작은 inset으로 사용하며 `NOT FOR FABRICATION`을 보존한다.
-
-    ![KiCad validation scope inset](assets/kicad_validation_scope_inset.png)
-
-## Slide 10 — 기여: Tail을 줄일 조건을 찾았다 (0:50)
-
-- **화면 결론:** 실제 Gemma workload·RTL scheduler·물리 reference를 연결해, Work Stealing이 유효한 조건과 다음 검증 단계를 제시했다.
-- **발표 설명 포인트:** 기여 3개—graph-derived ledger, locality-aware policy trade-off, hardware integration roadmap.
-- **한계 한 줄:** 현재 결과는 analytical/RTL-bounded이며 board 성능·전력과 닫힌 DDR→link→MatVec loop는 아직 검증 전.
-- **Visual:** 3개의 큰 기여 키워드와 다음 단계 화살표 하나; 증거 등급 표나 행정형 카드 레이아웃 금지.
-- **역할:** contribution / limitation / Q&A entry.
-- **Required images:** 없음.
-
-## Source-asset mapping
-
-| Slide | Strict source asset | 역할 |
-|---:|---|---|
-| 3 | `paper_f01_evidence_path.svg` | 실제 RTL module/dataflow 구조 |
-| 4 | `work_stealing_sequence_frame.png` | 실제 Manim 알고리즘 시퀀스 |
-| 5 | `paper_f02_onnx_runtime_graph.svg` | 실제 Gemma graph→ledger 방법 |
-| 6 | `s1_s3_execution_timeline.png` + `s1_s3_timeline_events.csv` | S1/S3 동일 축 실행 비교 |
-| 7 | `paper_f05_tail_latency.svg` | p95/p99 핵심 결과 |
-| 8 | `bottleneck_shift.png` + `bottleneck_shift_source.csv` + `paper_f06_tradeoff.svg` | queue/link/memory 병목 변화와 trade-off |
-| 9 | `paper_f07_kicad_coupon_render.png` + `kicad_validation_scope_inset.png` | native KiCad physical reference + 검증 범위 |
-
-## 확정된 디자인 제약
-
-- Dark conference mode: `#07111F`–`#0B1627` 배경, cyan/teal/blue 포인트, 흰색 핵심 텍스트.
-- 한 슬라이드 한 메시지. 화면 텍스트는 제목·한 줄 결론·figure label만 사용.
-- 긴 문장, 보고서형 설명, 다중 카드 dashboard, 흰 배경 evidence matrix를 사용하지 않음.
-- Figure를 크게 쓰고, 세부 정의·수치 조건·한계는 speaker notes로 이동.
-- 분석 수치는 작은 `Analytical model` qualifier를 유지하되 발표의 전면 주제로 만들지 않음.
+- Manim: `tile_dataflow`, `work_stealing_sequence`, `scheduler_timeline`, `tail_latency_results`, `bottleneck_migration` 각 MP4/GIF/정지 프레임.
+- CSV 기반 editable visuals: S1/S3 timeline, Gemma p95/p99 bars, bottleneck trade-off.
+- Native physical evidence: KiCad 3D render와 실제 routed/refclk crop.
+- 전체 motion preview: `presentation.mp4`, `presentation.gif`.

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Render and package the two Manim assets required by the final deck."""
+"""Render and package the Manim evidence narratives used by the final deck."""
 
 from __future__ import annotations
 
@@ -15,8 +15,11 @@ ASSETS = ROOT / "presentation" / "final" / "assets"
 MEDIA = ROOT / "presentation" / "final" / ".work" / "manim"
 
 JOBS = (
-    ("WorkStealingSequence", "work_stealing_sequence", 7.7),
+    ("WorkStealingSequence", "work_stealing_sequence", 10.5),
     ("TileDataflow", "tile_dataflow", 7.0),
+    ("SchedulerTimeline", "scheduler_timeline", 8.0),
+    ("TailLatencyResults", "tail_latency_results", 6.8),
+    ("BottleneckMigration", "bottleneck_migration", 5.8),
 )
 
 
@@ -50,6 +53,17 @@ def main() -> int:
         shutil.copy2(source, mp4)
         run(ffmpeg, "-y", "-i", str(mp4), "-vf", "fps=12,scale=960:-2:flags=lanczos", "-loop", "0", str(gif))
         run(ffmpeg, "-y", "-ss", str(frame_time), "-i", str(mp4), "-frames:v", "1", "-update", "1", str(still))
+    run(
+        ffmpeg,
+        "-y",
+        "-i",
+        str(ASSETS / "work_stealing_sequence.mp4"),
+        "-vf",
+        "fps=0.4,scale=760:-2:flags=lanczos,tile=2x2:nb_frames=4:padding=12:margin=12:color=#07111F",
+        "-frames:v",
+        "1",
+        str(ASSETS / "work_stealing_storyboard.png"),
+    )
     return 0
 
 

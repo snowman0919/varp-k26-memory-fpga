@@ -1,0 +1,19 @@
+{
+  "status": "PASS",
+  "slides": 10,
+  "aspect_ratio": "16:9",
+  "rendered_png_size": [
+    1920,
+    1080
+  ],
+  "checked_text_shapes": 142,
+  "checked_text_runs": 142,
+  "minimum_font_pt": 12.0,
+  "out_of_bounds_shapes": 0,
+  "horizontal_text_overflow_risks": 0,
+  "vertical_text_overflow_risks": 0,
+  "overlapping_text_box_pairs": 0,
+  "scoped_raster_pictures": 6,
+  "speaker_note_memory_sentences": 10,
+  "duration_seconds": 600
+}

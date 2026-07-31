@@ -1,7 +1,7 @@
 PYTHON ?= python3
 PYTHONPATH := $(CURDIR)/src
 
-.PHONY: setup doctor test model-trace paper-experiments power-cost rtl-test \
+.PHONY: setup doctor test model-trace paper-experiments power-cost rtl-test research-reproduce research-freeze \
 	kicad-gate figures flows paper presentation animations setup-presentation study publication-index evidence-index \
 	reproduce reproduce-paper release source-archive-test github-archive-test \
 	clean clean-rtl distclean
@@ -41,13 +41,19 @@ publication-index:
 
 figures flows: publication-index
 
-presentation: publication-index animations
+research-reproduce: doctor test rtl-test paper-experiments power-cost kicad-gate publication-index paper evidence-index
+
+research-freeze: research-reproduce
+	$(PYTHON) scripts/validate_research_freeze.py
+
+presentation: research-freeze animations
 	$(PYTHON) presentation/tools/build_editable_deck.py
+	$(PYTHON) presentation/tools/generate_visual_summary.py
 	$(PYTHON) presentation/tools/validate_editable_deck.py
 
 animations:
-	$(PYTHON) presentation/tools/generate_animations.py
 	$(PYTHON) presentation/tools/generate_conference_figures.py
+	$(PYTHON) presentation/tools/generate_animations.py
 
 study:
 	$(PYTHON) scripts/build_study_pack.py
@@ -58,7 +64,7 @@ paper: publication-index
 evidence-index:
 	$(PYTHON) scripts/build_release.py --index-only
 
-reproduce: doctor test rtl-test paper-experiments power-cost kicad-gate publication-index paper evidence-index
+reproduce: research-reproduce
 	$(PYTHON) scripts/verify_clean_source.py
 
 reproduce-paper: reproduce
