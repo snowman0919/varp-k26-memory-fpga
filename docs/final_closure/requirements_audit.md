@@ -16,29 +16,29 @@ archive, PDF timeout, README, study, release, secret scan Gate는 그대로 유�
 
 | 구분 | 최종 요구 | 현재 상태 | 완료 조건 |
 |---|---|---|---|
-| 연구 중심 | K26 연산부와 확장형 Memory FPGA 공급부의 공동설계 | FAIL | Work Stealing을 수단으로 내리고 구조·채택 조건을 본문 중심에 배치 |
-| 닫힌 데이터 경로 | 작업→DMA→메모리 응답→링크→연산 입력 FIFO→MatVec | 진행 중 | 실제 Gemma 대표 타일 3개의 ID·byte·cycle·결과 일치 RTL trace |
-| 실험 인과 | 원격 이동 비용이 링크 서비스 시간에 반영 | 진행 중 | 기본/추가 전송 byte와 cycle을 분리하고 전 실험 재실행 |
-| Gemma 의존성 | layer와 autoregressive token 장벽 | 진행 중 | qkv→o→gate/up→down→다음 layer, lm_head→다음 token 적용 |
-| 작업 단위 | 투영 하나가 아닌 출력 타일 | 진행 중 | 실제 K/N 형상에서 full-K, N≤1024 분석 타일 생성 |
-| 배치 민감도 | 초기 배치 효과와 작업 훔치기 효과 분리 | 진행 중 | 원래 규칙·라운드로빈·크기 균형·채널 친화 비교 |
-| K26-local 기준선 | 외부 메모리 채택 임계값 | 미착수 | 용량·대역폭·경합·에너지의 동일 조건 모델 기준선 |
-| KiCad | 정확한 범위의 인터페이스 참조 설계 | FAIL | 현재 쿠폰을 대표 라우팅 실험으로 재분류하고 경계 신호 계약 보강 |
-| 비용·에너지 | DRAM 부품 비용과 모델 추정만 사용 | 부분 충족 | 전체 가격·실측 전력 표현 금지, 민감도와 제외 항목 명시 |
-| 논문 | 독립 국문 v11 최종본, 약 10쪽 | FAIL | v11-r1~r5와 v11-final, 5회 검토·변경 기록·PDF |
-| 논문 언어 | 자연스러운 한국어, 내부 감사 문체 제거 | FAIL | 금지 영어 표현 감사와 용어 통일표 통과 |
-| 발표 | 12~14장, 9:20~9:50, 목차와 진행 표시 | FAIL | PPTX/PDF/notes/source index/PNG/contact sheet |
-| Manim | 설명 기능이 있는 영상 3개 이상 | 부분 충족 | 데이터 흐름·작업 재분배·타임라인·병목 비용 영상과 fallback frame |
-| 발표 편집성 | 텍스트·도형·그래프 편집 가능 | 부분 충족 | 수치 Figure를 SVG/PPT 도형으로 유지하고 전체 이미지화 금지 |
-| Q&A | 80개 이상, v11 연구 중심 | 부분 충족 | 필수 질문 포함, 정확한 파일명과 whiteboard 문서 |
-| 공개 인덱스 | 논문·슬라이드·표·그림·영상·Q&A 한곳 연결 | FAIL | `conference_package/INDEX.md`와 슬라이드/논문 출처 인덱스 |
-| README | 한국어 최소 공개 진입점 | FAIL | 한 문장·구조 그림·기여·Quick start·Paper·Presentation·Study |
-| 저장소 정리 | Release ZIP과 대형 미디어를 main에서 제거 | FAIL | 추적 파일 제거, Release asset 업로드, main에는 소스·소형 still 유지 |
-| GitHub | `conference-final`, 최종 commit/tag/release | 진행 중 | 원격 브랜치·tag·release URL과 checksum 검증 |
-| Actions | 오류 없는 공개 자동화 | 부분 충족 | 실패 workflow 삭제 유지 또는 지원 도구만 쓰는 최소 CI 통과 |
-| 보안 | 비밀정보·내부 토큰 0건 | PASS | 최종 archive 재검사에서도 0건 |
-| 독립 검토 | 최소 5회 | 진행 중 | 각 review와 대응 change log를 v11 revision에 보존 |
-| 최종 검증 | make 계약·fresh archive·시각 QA | 미착수 | 모든 명령 성공, PDF/PPT overflow·겹침 0건 |
+| 연구 중심 | K26 연산부와 확장형 Memory FPGA 공급부의 공동설계 | **PASS** | 논문·발표 모두 구조의 필요성, 동작, 효과 조건과 채택 조건을 중심으로 재구성 |
+| 닫힌 데이터 경로 | 작업→DMA→메모리 응답→링크→연산 입력 FIFO→MatVec | **PASS(논리 경로)** | 실제 Gemma 대표 타일 3개의 ID·byte·cycle·결과 일치 RTL trace 보존; 물리 GTH/MIG/CDC는 미완료로 명시 |
+| 실험 인과 | 원격 이동 비용이 링크 서비스 시간에 반영 | **PASS** | 기본/추가 전송 byte와 cycle을 분리하고 통제 실험 전부 재실행 |
+| Gemma 의존성 | layer와 autoregressive token 장벽 | **PASS** | qkv→o→gate/up→down→다음 layer와 lm_head→다음 token 장벽 적용 |
+| 작업 단위 | 투영 하나가 아닌 출력 타일 | **PASS** | 실제 K/N 형상에서 full-K, N≤1024 분석 타일 생성; 802 TileJobs/token |
+| 배치 민감도 | 초기 배치 효과와 작업 훔치기 효과 분리 | **PASS** | source rule·round robin·size aware·channel affinity 비교 |
+| K26-local 기준선 | 외부 메모리 채택 임계값 | **PASS** | 동일 조건 용량·대역폭 민감도에서 K26-local을 우선 기준선으로 판정 |
+| KiCad | 정확한 범위의 인터페이스 참조 설계 | **PASS(제한 쿠폰)** | K26–Memory FPGA 경계, GTH/refclk, 대표 DDR3L 라우팅 쿠폰과 ERC/DRC 범위를 명시; 제작 가능 보드 주장은 금지 |
+| 비용·에너지 | DRAM 부품 비용과 모델 추정만 사용 | **PASS(모델 범위)** | DRAM die 비용·분석 에너지 민감도만 제시하고 FPGA 가격·전체 BOM·실측 전력은 제외 |
+| 논문 | 독립 국문 v11 최종본, 약 10쪽 | **PASS** | 제출본 8쪽·기술보고서 10쪽, v11-r1~r5와 v11-final 및 검토·변경 기록 보존 |
+| 논문 언어 | 자연스러운 한국어, 내부 감사 문체 제거 | **PASS** | 최종 언어 검토와 PDF 텍스트 감사를 통과 |
+| 발표 | 12~14장, 9:20~9:50, 목차와 진행 표시 | **PASS** | 14장, 목표 580초·낭독 추정 574.3초, PPTX/PDF/notes/source index/PNG/contact sheet |
+| Manim | 설명 기능이 있는 영상 3개 이상 | **PASS** | 데이터 흐름·작업 재분배·타임라인·꼬리 지연·병목 이동 영상과 정지 fallback 생성 |
+| 발표 편집성 | 텍스트·도형·그래프 편집 가능 | **PASS** | 14장 검증, 4개 내장 영상, 텍스트·도형 중심 구성; 전체 슬라이드 이미지화 없음 |
+| Q&A | 80개 이상, v11 연구 중심 | **PASS** | 연구 중심 89문항과 31쪽 학습 자료 PDF 완성 |
+| 공개 인덱스 | 논문·슬라이드·표·그림·영상·Q&A 한곳 연결 | **PASS** | `conference_package/INDEX.md`와 슬라이드별 출처·해석 경계 연결 |
+| README | 한국어 최소 공개 진입점 | **PASS** | 구조·핵심 결과·Quick start·재현 명령·산출물 경로를 간결하게 제공 |
+| 저장소 정리 | Release ZIP과 대형 미디어를 main에서 제거 | **PASS** | ZIP·대형 MP4/GIF 추적 제거 및 `.gitignore`; 로컬 Release 자산은 유지 |
+| GitHub | `conference-final`, 최종 commit/tag/release | **진행 중** | 로컬 커밋 완료; 브랜치·PR 푸시 후 공개 tag/release는 보안 경보 해소 뒤 게시 |
+| Actions | 오류 없는 공개 자동화 | **PASS** | 실패하던 공개 workflow를 삭제했고 현재 `.github/workflows` 추적 파일 0개 |
+| 보안 | 비밀정보·내부 토큰 0건 | **BLOCKED(과거 이력)** | 현재 산출물·기존 Release 자산은 0건이나 과거 PDF 커밋의 Vault 토큰 경보 #1이 열려 있음; 폐기·교체 후 `revoked` 해소 필요 |
+| 독립 검토 | 최소 5회 | **PASS** | 가속기 기여·인과·한국어 가독성·하드웨어 시각·발표/Q&A·최종 언어의 6회 검토와 대응 기록 보존 |
+| 최종 검증 | make 계약·fresh archive·시각 QA | **진행 중** | unit/RTL/paper/presentation Gate 통과; source archive와 release checksum 최종 검증 예정 |
 
 ## 현재 금지 주장
 
@@ -51,10 +51,11 @@ archive, PDF timeout, README, study, release, secret scan Gate는 그대로 유�
 - 모든 조건에서 우월한 작업 훔치기
 - 의존성을 무시한 기존 32-token pooled 결과를 실제 decode-32로 해석
 
-## P0 수정 순서
+## P0 처리 결과
 
-1. 닫힌 논리 RTL 경로와 실제 타일 trace를 통과시킨다.
-2. 원격 전송 비용과 의존성·token 장벽을 반영해 실험을 재산출한다.
-3. K26-local 및 초기 배치 기준선을 추가한다.
-4. 연구 동결 문서와 Figure source를 새 결과로 바꾼다.
-5. 그 뒤에만 v11 논문과 12~14장 발표를 만든다.
+1. 닫힌 논리 RTL 경로와 실제 타일 trace: 완료.
+2. 원격 전송 비용·의존성·token 장벽 반영 실험: 완료.
+3. K26-local 및 초기 배치 기준선: 완료.
+4. 연구 동결 문서와 Figure source 교체: 완료.
+5. 연구 동결 이후 v11 논문·14장 발표 생성: 완료.
+6. 남은 P0: 과거 Vault 토큰 폐기·교체 및 GitHub secret-scanning 경보 #1 해소.
