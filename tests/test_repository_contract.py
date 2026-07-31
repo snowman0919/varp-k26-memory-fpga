@@ -102,11 +102,13 @@ class PublicRepositoryContractTest(unittest.TestCase):
         for token in ("64 MAC/cycle", "65 request-to-done cycles", "65×"):
             self.assertIn(token, calibration)
 
-    def test_architecture_denies_unimplemented_end_to_end_path(self) -> None:
+    def test_architecture_separates_closed_logical_and_open_physical_paths(self) -> None:
         architecture = (ROOT / "docs/architecture.md").read_text(encoding="utf-8")
-        self.assertIn("three independent functional planes", architecture)
-        self.assertIn("There is therefore no implemented path", architecture)
-        self.assertIn("DDR PHY", architecture)
+        self.assertIn("ClosedLoopVirtualPrototypeTop", architecture)
+        self.assertIn("닫힌 논리 데이터 경로", architecture)
+        self.assertIn("GT serializer", architecture)
+        self.assertIn("MIG", architecture)
+        self.assertIn("NOT FOR FABRICATION", architecture)
 
     def test_release_and_paper_portability_guards(self) -> None:
         release = (ROOT / "scripts/build_release.py").read_text(encoding="utf-8")
@@ -139,8 +141,8 @@ class PublicRepositoryContractTest(unittest.TestCase):
         readme = (ROOT / "README.md").read_text(encoding="utf-8")
         self.assertIn("https://github.com/snowman0919/varp-k26-memory-fpga", citation)
         self.assertNotIn("varp-k26-memory-fpga-" + "paper10", citation)
-        self.assertIn("GitHub's automatic **Download ZIP**", readme)
-        self.assertIn("official Release `VARP_K26_Source.zip`", readme)
+        self.assertIn("자동 **Download ZIP**", readme)
+        self.assertIn("`VARP_K26_Source.zip`", readme)
 
     def test_paper_contains_onnx_flow_and_native_kicad_render(self) -> None:
         manuscript = (ROOT / "paper/final/submission_manuscript.md").read_text(
@@ -150,10 +152,10 @@ class PublicRepositoryContractTest(unittest.TestCase):
             ROOT / "publication_tools/generate_publication_and_presentation.py"
         ).read_text(encoding="utf-8")
         for token in (
-            "ONNX Runtime Android CPU Execution Provider",
+            "7,837개 노드",
             "paper_f02_onnx_runtime_graph.svg",
             "paper_f07_kicad_coupon_render.png",
-            "k26_memory_coupon.kicad_pcb",
+            "hardware/kicad",
         ):
             self.assertIn(token, manuscript)
         render = ROOT / "paper/final/figures/paper_f07_kicad_coupon_render.png"

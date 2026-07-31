@@ -1,0 +1,25 @@
+{
+  "capacity_fact": "Gemma 3 1B modeled INT8 context-32K budget fits nominal K26 4GB; external 8GB is an expansion/isolation candidate, not a capacity requirement for this workload.",
+  "external_aggregate_memory_gbps": [
+    3.2,
+    6.4,
+    12.8
+  ],
+  "external_link_width_bits_per_bundle": [
+    64,
+    128,
+    256
+  ],
+  "local_effective_memory_gbps": [
+    4.8,
+    9.6,
+    14.4
+  ],
+  "output": "results/model_level/k26_local_external_sensitivity.csv",
+  "placements": [
+    "source_rule",
+    "size_aware"
+  ],
+  "rows": 16,
+  "schema_version": "varp.k26.local-external-sensitivity.v1"
+}

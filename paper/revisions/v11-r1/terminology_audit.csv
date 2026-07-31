@@ -1,0 +1,7 @@
+term,status,replacement
+graph-derived,REVISE,실제 모델 그래프에서 추출한
+replay,REVISE,작업 목록 재생 실험
+synthetic stress,REVISE,합성 부하 실험
+tail latency,REVISE,꼬리 지연
+evidence chain,REMOVE,재현 가능한 설계 흐름
+adoption gate,REMOVE,채택 조건

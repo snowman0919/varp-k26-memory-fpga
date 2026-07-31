@@ -1,61 +1,54 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="800" height="315" viewBox="0 0 800 315">
-  <defs>
-    <marker id="arrow2" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#1677b8"/></marker>
-    <style>
-      text{font-family:"Noto Sans CJK KR","Noto Sans",sans-serif;fill:#172033}
-      .h{font-size:24px;font-weight:700}.t{font-size:17px;font-weight:700}.s{font-size:15px}
-      .direct{fill:#e9f7f1;stroke:#159a78;stroke-width:3}.runtime{fill:#eef5fb;stroke:#1677b8;stroke-width:3}
-      .model{fill:#fff4df;stroke:#e89b00;stroke-width:3}.blocked{fill:#f1f2f4;stroke:#6b7280;stroke-width:3;stroke-dasharray:8 5}
-    </style>
-  </defs>
-  <text class="h" x="24" y="31">Figure 2 · ONNX graph and Runtime evidence boundary</text>
-
-  <rect class="direct" x="24" y="54" width="170" height="88" rx="10"/>
-  <text class="t" x="109" y="79" text-anchor="middle">Authorized artifact</text>
-  <text class="s" x="109" y="100" text-anchor="middle">model.onnx</text>
-  <text class="s" x="109" y="119" text-anchor="middle">+ external data</text>
-  <text class="s" x="109" y="136" text-anchor="middle">weights not included</text>
-
-  <line x1="194" y1="98" x2="220" y2="98" stroke="#1677b8" stroke-width="3" marker-end="url(#arrow2)"/>
-  <rect class="direct" x="226" y="54" width="170" height="88" rx="10"/>
-  <text class="t" x="311" y="79" text-anchor="middle">ONNX inspection</text>
-  <text class="s" x="311" y="100" text-anchor="middle">checker + protobuf</text>
-  <text class="s" x="311" y="119" text-anchor="middle">graph-only load</text>
-  <text class="s" x="311" y="136" text-anchor="middle">no tensor payload</text>
-
-  <line x1="396" y1="98" x2="422" y2="98" stroke="#1677b8" stroke-width="3" marker-end="url(#arrow2)"/>
-  <rect class="direct" x="428" y="54" width="154" height="88" rx="10"/>
-  <text class="t" x="505" y="79" text-anchor="middle">Graph inventory</text>
-  <text class="s" x="505" y="100" text-anchor="middle">7,837 ordered nodes</text>
-  <text class="s" x="505" y="119" text-anchor="middle">name · op · shape</text>
-  <text class="s" x="505" y="136" text-anchor="middle">initializer metadata</text>
-
-  <line x1="582" y1="98" x2="608" y2="98" stroke="#1677b8" stroke-width="3" marker-end="url(#arrow2)"/>
-  <rect class="direct" x="614" y="54" width="162" height="88" rx="10"/>
-  <text class="t" x="695" y="79" text-anchor="middle">Dense projections</text>
-  <text class="s" x="695" y="100" text-anchor="middle">183 nodes per token</text>
-  <text class="s" x="695" y="119" text-anchor="middle">104 attention</text>
-  <text class="s" x="695" y="136" text-anchor="middle">78 MLP · 1 lm_head</text>
-
-  <line x1="695" y1="142" x2="695" y2="171" stroke="#1677b8" stroke-width="3" marker-end="url(#arrow2)"/>
-  <rect class="model" x="544" y="177" width="232" height="98" rx="10"/>
-  <text class="t" x="660" y="202" text-anchor="middle">Deterministic ledger</text>
-  <text class="s" x="660" y="225" text-anchor="middle">decode-1 / decode-32</text>
-  <text class="s" x="660" y="244" text-anchor="middle">identity + byte geometry</text>
-  <text class="s" x="660" y="263" text-anchor="middle">analytical replay + 3 RTL tiles</text>
-
-  <rect class="runtime" x="24" y="177" width="332" height="98" rx="10"/>
-  <text class="t" x="190" y="200" text-anchor="middle">Separate ONNX Runtime reference</text>
-  <text class="t" x="190" y="220" text-anchor="middle">Android CPU EP</text>
-  <text class="s" x="190" y="241" text-anchor="middle">batch 1 · sequence 1 · artificial past 1</text>
-  <text class="s" x="190" y="261" text-anchor="middle">3 runs · 408.445 ms mean · not decode-32</text>
-
-  <rect class="blocked" x="370" y="177" width="154" height="98" rx="10"/>
-  <text class="t" x="447" y="202" text-anchor="middle">Do not combine</text>
-  <text x="447" y="228" text-anchor="middle" font-size="14px">ORT wall clock ≠ RTL,</text>
-  <text x="447" y="250" text-anchor="middle" font-size="14px">DRAMsim3, accelerator,</text>
-  <text x="447" y="268" text-anchor="middle" font-size="14px">or board timing</text>
-
-  <text class="s" x="400" y="299" text-anchor="middle">Green = graph-derived · blue = host functional reference</text>
-  <text class="s" x="400" y="312" text-anchor="middle">Orange = analytical/RTL ledger boundary · gray = forbidden combination</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900">
+<rect width="1600" height="900" fill="#f7fbff"/>
+<defs><marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M0,0 L12,6 L0,12 Z" fill="#1878a8"/></marker></defs>
+<text x="70" y="78" font-size="44px" font-family="Noto Sans CJK KR, Noto Sans KR, sans-serif" font-weight="800" fill="#102a43" text-anchor="start">실제 그래프 형상을 의존성 있는 출력 타일로 변환</text>
+<text x="70" y="124" font-size="31px" font-family="Noto Sans CJK KR, Noto Sans KR, sans-serif" font-weight="500" fill="#486581" text-anchor="start">32개 토큰은 겹치지 않으며, 초기 배치는 별도 설계 변수로 비교한다</text>
+<rect x="60" y="205" width="245" height="150" rx="18" fill="#ffffff" stroke="#4d9ec2" stroke-width="3"/>
+<text x="182" y="260" font-size="31px" font-family="Noto Sans CJK KR, Noto Sans KR, sans-serif" font-weight="750" fill="#173f5f" text-anchor="middle">ONNX 그래프</text>
+<text x="182" y="315" font-size="31px" font-family="Noto Sans CJK KR, Noto Sans KR, sans-serif" font-weight="600" fill="#486581" text-anchor="middle">노드 7,837</text>
+<rect x="360" y="205" width="245" height="150" rx="18" fill="#ffffff" stroke="#4d9ec2" stroke-width="3"/>
+<text x="482" y="260" font-size="31px" font-family="Noto Sans CJK KR, Noto Sans KR, sans-serif" font-weight="750" fill="#173f5f" text-anchor="middle">투영 연산</text>
+<text x="482" y="315" font-size="31px" font-family="Noto Sans CJK KR, Noto Sans KR, sans-serif" font-weight="600" fill="#486581" text-anchor="middle">183개/토큰</text>
+<rect x="660" y="205" width="245" height="150" rx="18" fill="#ffffff" stroke="#4d9ec2" stroke-width="3"/>
+<text x="782" y="260" font-size="31px" font-family="Noto Sans CJK KR, Noto Sans KR, sans-serif" font-weight="750" fill="#173f5f" text-anchor="middle">출력 타일</text>
+<text x="782" y="315" font-size="31px" font-family="Noto Sans CJK KR, Noto Sans KR, sans-serif" font-weight="600" fill="#486581" text-anchor="middle">802개/토큰</text>
+<rect x="970" y="205" width="245" height="150" rx="18" fill="#ffffff" stroke="#4d9ec2" stroke-width="3"/>
+<text x="1092" y="260" font-size="31px" font-family="Noto Sans CJK KR, Noto Sans KR, sans-serif" font-weight="750" fill="#173f5f" text-anchor="middle">단계 의존성</text>
+<text x="1092" y="315" font-size="31px" font-family="Noto Sans CJK KR, Noto Sans KR, sans-serif" font-weight="600" fill="#486581" text-anchor="middle">qkv→o→MLP</text>
+<rect x="1290" y="205" width="245" height="150" rx="18" fill="#ffffff" stroke="#4d9ec2" stroke-width="3"/>
+<text x="1412" y="260" font-size="31px" font-family="Noto Sans CJK KR, Noto Sans KR, sans-serif" font-weight="750" fill="#173f5f" text-anchor="middle">직렬 토큰</text>
+<text x="1412" y="315" font-size="31px" font-family="Noto Sans CJK KR, Noto Sans KR, sans-serif" font-weight="600" fill="#486581" text-anchor="middle">총 25,664개</text>
+<line x1="305" y1="280" x2="350" y2="280" stroke="#1878a8" stroke-width="5" marker-end="url(#arrow)"/>
+<line x1="605" y1="280" x2="650" y2="280" stroke="#1878a8" stroke-width="5" marker-end="url(#arrow)"/>
+<line x1="915" y1="280" x2="960" y2="280" stroke="#1878a8" stroke-width="5" marker-end="url(#arrow)"/>
+<line x1="1235" y1="280" x2="1280" y2="280" stroke="#1878a8" stroke-width="5" marker-end="url(#arrow)"/>
+<text x="70" y="440" font-size="31px" font-family="Noto Sans CJK KR, Noto Sans KR, sans-serif" font-weight="750" fill="#102a43" text-anchor="start">보수적 단계 장벽</text>
+<rect x="70" y="470" width="1450" height="120" rx="18" fill="#edf6fb" stroke="#76abc4" stroke-width="2"/>
+<rect x="145" y="505" width="175" height="54" rx="10" fill="#ffffff" stroke="#4d9ec2" stroke-width="2"/>
+<text x="232" y="541" font-size="31px" font-family="Noto Sans CJK KR, Noto Sans KR, sans-serif" font-weight="700" fill="#173f5f" text-anchor="middle">q / k / v</text>
+<rect x="430" y="505" width="175" height="54" rx="10" fill="#ffffff" stroke="#4d9ec2" stroke-width="2"/>
+<text x="517" y="541" font-size="31px" font-family="Noto Sans CJK KR, Noto Sans KR, sans-serif" font-weight="700" fill="#173f5f" text-anchor="middle">o</text>
+<rect x="680" y="505" width="175" height="54" rx="10" fill="#ffffff" stroke="#4d9ec2" stroke-width="2"/>
+<text x="767" y="541" font-size="31px" font-family="Noto Sans CJK KR, Noto Sans KR, sans-serif" font-weight="700" fill="#173f5f" text-anchor="middle">gate / up</text>
+<rect x="990" y="505" width="175" height="54" rx="10" fill="#ffffff" stroke="#4d9ec2" stroke-width="2"/>
+<text x="1077" y="541" font-size="31px" font-family="Noto Sans CJK KR, Noto Sans KR, sans-serif" font-weight="700" fill="#173f5f" text-anchor="middle">down</text>
+<rect x="1260" y="505" width="175" height="54" rx="10" fill="#ffffff" stroke="#4d9ec2" stroke-width="2"/>
+<text x="1347" y="541" font-size="31px" font-family="Noto Sans CJK KR, Noto Sans KR, sans-serif" font-weight="700" fill="#173f5f" text-anchor="middle">다음 계층</text>
+<line x1="320" y1="532" x2="415" y2="532" stroke="#1878a8" stroke-width="4" marker-end="url(#arrow)"/>
+<line x1="605" y1="532" x2="700" y2="532" stroke="#1878a8" stroke-width="4" marker-end="url(#arrow)"/>
+<line x1="855" y1="532" x2="950" y2="532" stroke="#1878a8" stroke-width="4" marker-end="url(#arrow)"/>
+<line x1="1165" y1="532" x2="1260" y2="532" stroke="#1878a8" stroke-width="4" marker-end="url(#arrow)"/>
+<text x="70" y="670" font-size="31px" font-family="Noto Sans CJK KR, Noto Sans KR, sans-serif" font-weight="750" fill="#102a43" text-anchor="start">비교한 초기 배치</text>
+<rect x="70" y="705" width="320" height="105" rx="16" fill="#eaf7f4" stroke="#3f9f8c" stroke-width="2"/>
+<text x="230" y="746" font-size="31px" font-family="Noto Sans CJK KR, Noto Sans KR, sans-serif" font-weight="750" fill="#176d60" text-anchor="middle">기존 산술</text>
+<text x="230" y="787" font-size="31px" font-family="Noto Sans CJK KR, Noto Sans KR, sans-serif" font-weight="600" fill="#486581" text-anchor="middle">464 / 208 / 78 / 52</text>
+<rect x="440" y="705" width="320" height="105" rx="16" fill="#eaf7f4" stroke="#3f9f8c" stroke-width="2"/>
+<text x="600" y="746" font-size="31px" font-family="Noto Sans CJK KR, Noto Sans KR, sans-serif" font-weight="750" fill="#176d60" text-anchor="middle">라운드로빈</text>
+<text x="600" y="787" font-size="31px" font-family="Noto Sans CJK KR, Noto Sans KR, sans-serif" font-weight="600" fill="#486581" text-anchor="middle">201 / 201 / 200 / 200</text>
+<rect x="810" y="705" width="320" height="105" rx="16" fill="#eaf7f4" stroke="#3f9f8c" stroke-width="2"/>
+<text x="970" y="746" font-size="31px" font-family="Noto Sans CJK KR, Noto Sans KR, sans-serif" font-weight="750" fill="#176d60" text-anchor="middle">크기 균형</text>
+<text x="970" y="787" font-size="31px" font-family="Noto Sans CJK KR, Noto Sans KR, sans-serif" font-weight="600" fill="#486581" text-anchor="middle">198 / 202 / 200 / 202</text>
+<rect x="1180" y="705" width="320" height="105" rx="16" fill="#eaf7f4" stroke="#3f9f8c" stroke-width="2"/>
+<text x="1340" y="746" font-size="31px" font-family="Noto Sans CJK KR, Noto Sans KR, sans-serif" font-weight="750" fill="#176d60" text-anchor="middle">채널 친화</text>
+<text x="1340" y="787" font-size="31px" font-family="Noto Sans CJK KR, Noto Sans KR, sans-serif" font-weight="600" fill="#486581" text-anchor="middle">394 / 136 / 136 / 136</text>
 </svg>

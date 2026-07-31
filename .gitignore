@@ -26,6 +26,12 @@ publication_assets/
 presentation/final/.work/
 presentation/final/prompts/
 presentation/final/drafts/
+# 발표 영상과 배포 ZIP은 GitHub Release 자산으로 제공하고 Git 이력에는 넣지 않는다.
+presentation/final/**/*.mp4
+presentation/final/**/*.gif
+presentation/final/*.mp4
+presentation/final/*.gif
+release/*.zip
 study/.build/
 paper/final/*.html
 paper/final/*_plaintext.txt

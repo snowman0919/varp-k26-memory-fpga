@@ -1,0 +1,6 @@
+claim,status,reason,next_action
+외부 8GB가 Gemma 1B에 필요하다,REJECTED,로컬 4GB 용량에 들어감,K26-local 기준선 비교
+S3가 실제 Gemma decode tail을 줄인다,REJECTED,의존성과 토큰 장벽이 없음,dependency-aware 재실험
+닫힌 DDR-link-MatVec 경로가 있다,REJECTED,세 평면이 독립적이었음,논리 RTL 경로 구현
+물리 참조 보드다,REJECTED,라우팅 쿠폰 범위,NOT FOR FABRICATION으로 재분류
+저비용·저전력을 달성했다,REJECTED,전체 BOM·보드 전력 없음,목표와 추정을 분리

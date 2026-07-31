@@ -1,0 +1,4 @@
+projection_class,quantized_tile_sha256,job_id,fetch_accept_cycle,dma_command_cycle,ddr_response_cycle,matvec_result_cycle,observed_int32,expected_int32,parity,evidence_type
+gate_proj,e1a7fcdedcc41462fd799007b43c5d886c6a204d2752e253de2a8fb1ad1906db,100,5,11,13,88,5026|-2583|-15699|-9278,5026|-2583|-15699|-9278,true,actual-weight-closed-logical-path-rtl-simulated
+lm_head,917066bb94b2c3c7db66d58c085a92f2f5783bbd4c563e5e60a04bde461baf16,101,89,95,97,172,15939|-4830|338|16112,15939|-4830|338|16112,true,actual-weight-closed-logical-path-rtl-simulated
+o_proj,a2136798e7f3979e2c3ad1799ae2a2b4499c9ec8827946a7bd8c5a9e25218ccb,102,173,179,181,256,3783|19577|-11581|-7508,3783|19577|-11581|-7508,true,actual-weight-closed-logical-path-rtl-simulated

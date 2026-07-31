@@ -1,0 +1,28 @@
+{
+  "design_decision": "Gemma 1B keeps K26-local as the first baseline; external 8GB and work stealing remain conditional expansion mechanisms.",
+  "direct_rtl": {
+    "all_parity": true,
+    "closed_logical_path_tiles": 3,
+    "physical_gth_mig_closed": false
+  },
+  "gemma_dependency_aware_pct": {
+    "channel_affinity_s3_vs_s1_tilejob_p95": -19.79,
+    "source_rule_s3_vs_s1_completion": 4.8,
+    "source_rule_s3_vs_s1_tilejob_p95": 0.28
+  },
+  "not_claimed": [
+    "request-level tail latency",
+    "functional full-model FPGA inference",
+    "measured board performance or power",
+    "closed physical GTH/MIG timing",
+    "fabrication-ready PCB"
+  ],
+  "report": "research/v11_research_freeze.md",
+  "schema_version": "varp.research-freeze.v11",
+  "status": "PASS",
+  "synthetic_paired_seed_median_pct": {
+    "s3_vs_s1_tilejob_p95": -19.13,
+    "s3_vs_s1_tilejob_p99": -18.71,
+    "s3_vs_s2_remote_weight": -35.49
+  }
+}

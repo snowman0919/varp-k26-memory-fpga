@@ -1,321 +1,200 @@
 ---
-title: "K26–Memory FPGA 다채널 메모리·Work Stealing 구조: 확장 기술보고서"
-subtitle: "Extended Technical Report on Gemma 3 1B Trace, RTL, Scheduler, Cost, and Physical Evidence"
+title: "온디바이스 sLLM용 K26–Memory FPGA 후보 구조: 확장 기술보고서"
+subtitle: "Extended Technical Report on Dependency-Aware Mapping, Closed Logical RTL, and Placement Sensitivity"
 author: "최윤혁 (CHOI YUNHYUK) · 한국디지털미디어고등학교 · ORCID 0009-0006-3537-0249"
 lang: ko-KR
-date: 2026-07-31
+date: 2026-08-01
 ---
 
 # 초록
 
-온디바이스 LLM 복호화는 투영 가중치를 반복해서 읽으므로 정적 작업 소유권에서 생긴 큐·메모리 불균형이 꼬리 지연을 지배할 수 있다. 본 연구는 실제 Gemma 3 1B 그래프에서 작업 목록을 만들고, K26 연산 소유권과 외부 Memory FPGA의 채널 친화도를 분리한 후보 구조에서 정적 S1과 지역성 인지 워크 스틸링 S3를 동일 조건으로 감사한다. 실제 graph-derived decode-32 replay에서 S3는 S1보다 p95와 p99를 각각 15.07%와 14.61% 낮췄다. 이 replay와 분리한 1,000-job synthetic stress의 완전 중첩 서비스 모델에서는 skew와 mixed의 p95가 18.12%와 17.59% 낮아지고 S2 대비 원격 가중치 전송량이 37.84%와 22.16% 줄었지만, 순차 서비스에서는 skew의 S2/S3 순위가 뒤집혔다. Gemma 3 1B의 context-32K 용량 모델 2.4301 GiB는 명목 K26 로컬 4 GB에도 들어가므로 외부 8 GiB 채택은 용량이 아니라 로컬 메모리 대역폭·경합·전력 검증에 달려 있으며, 본 방법은 그 채택 조건과 다음 실험을 명확히 선택하게 한다.
+온디바이스 소형 언어 모델은 서버급 가속기를 사용하기 어려워 메모리 용량과 가중치 공급 대역폭을 제한된 전력·비용 안에서 함께 해결해야 한다. 본 연구는 Kria K26이 연산·제어를 맡고 외부 Memory FPGA가 다채널 가중치 공급을 맡는 확장형 후보 구조를 설계했다. 정적 작업 배정으로 일부 연산 클러스터가 유휴 상태에 빠질 때는 데이터 이동 비용을 고려한 작업 훔치기(Work Stealing)를 선택적으로 사용한다. 실제 Gemma 3 1B 그래프의 7,837개 노드에서 토큰당 183개 투영 연산을 추출하고, 이를 의존성이 있는 802개 출력 타일로 변환해 네 가지 초기 배치와 세 가지 대기열 정책을 비교했다. 합성 불균형 부하에서 지역성 인식 정책은 정적 배정보다 TileJob p95를 19.13% 줄이고, 단순 작업 훔치기보다 비지역 가중치 이동량을 35.49% 줄였다. 그러나 Gemma 형상에서는 초기 배치에 따라 p95 변화가 +0.28%에서 −19.79%까지 달라졌으며, K26 로컬 메모리 기준선도 외부 6.4 GB/s 후보보다 짧았다. 따라서 외부 8GB와 작업 재분배는 Gemma 1B의 필수 구성요소가 아니라 더 큰 모델·긴 문맥·로컬 경합이 확인될 때 채택할 확장 수단이다. 결과는 제한된 RTL 시뮬레이션과 분석 모델에 근거하며 보드 실측값이 아니다.
 
-**핵심어:** Gemma 3 1B, Kria K26, Memory FPGA, 다채널 DDR3L, Work Stealing, SpinalHDL, KiCad
+**핵심어:** 온디바이스 sLLM, Kria K26, Memory FPGA, 다채널 메모리, 작업 훔치기, SpinalHDL
 
 # Abstract
 
-On-device LLM decoding repeatedly streams projection weights, so queue and memory imbalance under static ownership can dominate tail latency. We derive a job ledger from the actual Gemma 3 1B graph and audit static S1 against locality-aware work stealing S3 on a candidate architecture that separates K26 compute ownership from external Memory FPGA channel affinity. In the graph-derived decode-32 replay, S3 reduces p95 and p99 against S1 by 15.07% and 14.61%. In a separate 1,000-job synthetic stress under a full-overlap service model, S3 reduces p95 by 18.12% and 17.59% on skew and mixed workloads and reduces remote-weight bytes against S2 by 37.84% and 22.16%, while a sequential service boundary reverses the skew S2/S3 ordering. Because the 2.4301-GiB context-32K capacity model fits nominal K26 local 4 GB, external 8 GiB remains conditional on local-memory bandwidth, contention, and power validation; the method identifies the adoption gates and next experiments.
+On-device small language models must address memory capacity and weight-delivery bandwidth within tighter power and cost limits than server accelerators. This work evaluates an extensible candidate architecture in which a Kria K26 handles control and computation while an external Memory FPGA supplies weights through multiple memory channels. Locality-aware work stealing is enabled only when static placement leaves compute clusters idle and its expected benefit exceeds data-movement cost. From the 7,837-node Gemma 3 1B graph, 183 projections per token are mapped to 802 dependency-aware output tiles and evaluated under four initial placements and three queue policies. On a synthetic skew workload, the locality-aware policy reduces TileJob p95 by 19.13% against static placement and non-local weight movement by 35.49% against oldest-job stealing. On Gemma-shaped tiles, however, the p95 effect ranges from +0.28% to −19.79% depending on initial placement, and the modeled K26-local baseline remains shorter than the external 6.4-GB/s candidate. External 8GB memory and work stealing are therefore conditional expansion mechanisms rather than requirements for Gemma 1B. The results are based on bounded RTL simulation and analytical models, not board measurements.
 
-**Keywords:** Gemma 3 1B, Kria K26, Memory FPGA, multi-channel DDR3L, work stealing, SpinalHDL
+**Keywords:** on-device sLLM, Kria K26, Memory FPGA, multi-channel memory, work stealing, SpinalHDL
 
 # I. 서론
 
-작은 배치의 LLM 복호화는 같은 투영 가중치를 토큰마다 다시 사용한다. 이때 연산 클러스터를 여러 개 두어도 작업이 특정 클러스터나 메모리 채널에 몰리면 일부 클러스터는 놀고 다른 큐의 p95와 p99는 길어진다. 유휴 클러스터가 다른 큐의 작업을 가져오는 워크 스틸링(work stealing)은 이를 줄일 수 있지만, 가중치와 활성값의 원격 이동을 만든다. 따라서 핵심 질문은 “스틸링이 빠른가”가 아니라 “어떤 작업을 언제 옮기면 꼬리 지연 감소가 이동 비용보다 큰가”이다.
+온디바이스 환경에서는 서버급 GPU의 전력과 가격을 그대로 사용할 수 없다. 모델이 메모리에 들어가는지만 보는 것도 충분하지 않다. 연산부가 가중치를 기다리는 시간, 운영체제·활성값·KV cache가 쓰는 로컬 메모리와 가중치 공급의 경합, 여러 연산 클러스터 사이의 부하 균형이 함께 성능을 결정한다.
 
-본 연구는 이 질문을 K26–Memory FPGA 후보 구조의 채택 조건 평가로 구체화한다. K26 대상 기능 RTL은 네 연산 클러스터와 signed-INT8 MatVec primitive를 수행한다. Memory command와 link routing은 compute payload와 연결되지 않은 독립 입력 평면으로 구현되어 있다. 스케줄러는 큐 소유권을 보존하면서 작업 나이와 지역성 벌점을 계산하지만, 실제 DDR 응답을 받아 MatVec에 주입하는 end-to-end 경로는 없다.
+본 연구는 처음에 외부 메모리가 Gemma 3 1B의 용량 때문에 필요하다고 가정했다. 그러나 INT8 가중치와 32K 문맥의 용량을 계산한 결과 2.43 GiB로, 명목상 K26 로컬 4GB에 들어갔다. 이에 연구 질문을 “외부 메모리가 필요한가”에서 “가중치 공급을 로컬 실행 메모리와 분리하는 구조는 어떤 조건에서 이득인가”로 바꾸었다.
 
-그림 1은 구현과 제안의 경계를 포함한 현재 구조를 먼저 보여준다. TileScheduler, payload store, ComputeClusterArray와 DecodeMatVecInt8의 compute path는 연결되어 있다. 반면 `memoryRequest→memoryCommands`와 `linkInput→linkBundles`는 외부 입력으로 시작하는 별도 command/routing plane이며 response, DMA sequencing, PHY 또는 compute payload store 연결이 없다. 세부 증거 등급과 허용 주장은 표 3에서 고정한다.
+제안 후보는 K26의 연산·제어와 Memory FPGA의 다채널 가중치 공급을 분리한다. K26에는 네 연산 클러스터와 독립 대기열을 두고, 외부 쪽에는 네 DDR3L x16 채널과 네 논리 링크를 둔다. 정적 배정이 데이터 지역성을 지키더라도 작업이 한쪽에 몰리면 일부 클러스터가 놀 수 있다. 이때만 유휴 클러스터가 다른 대기열의 작업을 가져오며, 이미 배치된 가중치와 활성값을 옮기는 비용을 함께 계산한다.
 
-<div class="wide-figure">
-![그림 1. K26 연산 RTL, 분석 서비스와 미통합 DMA/link/DDR 경계를 분리한 후보 데이터 경로. 상세 composite는 publication asset F01이다.](figures/paper_f01_evidence_path.svg)
-</div>
-
-의사결정 사슬은 다음과 같다. **문제**는 정적 home ownership의 큐·채널 쏠림이 꼬리 지연을 만드는가이다. **후보**는 K26 연산 소유권과 외부 4-channel Memory FPGA 친화도를 분리한 조건부 설계다. **정책 사다리**는 S1(static local)→S2(oldest eligible steal)→S3(age+locality steal)이고, S0는 이상적 중앙 기준선이다. **결정**은 S3의 조건부 꼬리 지연·전송량 이득은 관측하되, 외부 Memory FPGA 채택과 중앙·분산 큐의 물리 우열은 로컬 메모리 및 물리 구현 기준선이 생길 때까지 보류하는 것이다.
-
-기여는 세 가지다. (1) 실제 ONNX graph-derived 작업 목록, (2) 동일 작업 목록에서 꼬리 지연·완료 시간·원격 전송량을 함께 보는 정책 감사, (3) 제한된 RTL·물리 검증 관문과 주장 경계의 연결이다. S3 알고리즘 자체의 신규성이나 보드 성능은 주장하지 않는다.
-
-# II. 관련 연구와 차별점
-
-PagedAttention은 serving 환경의 KV-cache paging과 fragmentation을 다루고[1], FlashAttention은 IO-aware tiling으로 attention의 memory movement를 줄인다[2]. GPTQ, SmoothQuant와 AWQ는 저비트 양자화에서 모델 크기와 정확도의 균형을 연구한다[3–5]. 이들은 memory traffic이 중요한 이유를 설명하지만, K26 cluster의 local queue에서 Memory FPGA channel로 이동하는 TileJob의 ownership과 stealing traffic을 직접 다루지 않는다.
-
-FTRANS, DFX와 FlightLLM은 Transformer의 FPGA mapping, multi-FPGA 확장과 end-to-end 실행을 제시했다[6–8]. 본 연구는 이들과 최고 처리량을 경쟁하지 않는다. 차별점은 실제 ONNX graph를 scheduler ledger로 연결하고, queue policy의 p95·p99, remote-weight byte, actual MatVec parity와 제한된 PCB coupon을 동일한 evidence chain에서 감사한다는 데 있다. Scheduler 결과는 physical throughput이 아니라 architecture decision을 위한 event-driven model이다.
-
-고전적 work stealing은 dependency가 있는 multithreaded computation의 load balance와 이론적 bound를 제공한다[15]. LAWS는 multisocket NUMA에서 shared-cache와 remote-memory locality를 online profiling으로 조정한다[16]. 본 연구의 S3는 이 계열보다 새롭다고 주장하지 않는다. 표 1은 알고리즘 우월성이 아니라 실제 LLM 그래프→스케줄러→제한된 RTL·물리 관문의 추적 가능성을 비교한다.
-
-<div class="wide-table">
-**표 1. 가장 가까운 연구와 contract-level evidence 비교**
-
-| 연구 | Work ownership | Data locality | Remote-byte 회계 | 실제 LLM graph | RTL 시간 증거 | Physical gate |
-|---|---|---|---|---|---|---|
-| Classic work stealing[15] | deque/task | 고려 안 함 | 통신 bound | 아니오 | 아니오 | 아니오 |
-| LAWS NUMA scheduler[16] | socket queue | profiling 기반 | remote access 최적화 | 아니오 | 아니오 | 아니오 |
-| DFX[7] | multi-FPGA static mapping | partition 기반 | inter-FPGA 설계 | 실제 model | hardware system | 본 연구와 다른 appliance |
-| FlightLLM[8] | compiled dataflow | mapping 기반 | memory/dataflow 평가 | 실제 model | FPGA mapping | 구현 flow |
-| 본 연구 | TileJob identity | age/locality score | policy별 modeled byte | Gemma graph-derived | 세 steal→MatVec | bounded KiCad gate |
-</div>
-
-표의 차이는 우월성 순위가 아니다. 본 연구는 actual graph와 제한된 temporal/physical evidence를 하나의 claim audit에 연결하지만, non-stealing dynamic placement와 기존 locality-aware stealing을 동일 ledger에서 비교하지 않았다.
-
-DRAMsim3는 channel, bank, row와 timing constraint를 cycle 수준에서 계산한다[9]. 이 공개 저장소에는 runnable adapter가 없고 `results/runs/dramsim3-snapshot/dramsim_stats_ch4.json`의 과거 4-channel 통계 snapshot과 설정만 보존한다. 이 snapshot은 Gemma scheduler replay와 cycle-by-cycle로 결합되지 않았고 `make reproduce`가 재생성하지 않으므로 Gemma J/token에 합산하지 않는다. KiCad ERC/DRC도 선언한 전기 규칙만 검사한다[14]. 각 산출물의 허용 범위는 표 3을 따른다.
-
-# III. 실제 Gemma 3 1B workload와 설계 목표
-
-## A. Graph-derived trace
-
-입력 artifact는 로컬 read-only Gemma 3 1B ONNX model과 external-data file이다. ONNX와 external data의 SHA-256은 각각 e63d7c5e59f8c54a17cb7302529350a186b173701c4809db1b4eb1fd43602ad2와 c10ce493923725d45cae3c299ba2f8b9b6fe9183d93e88992595dd70db4b47e5다. Graph inventory는 7,837개 node를 순서대로 보존한다. Decode token당 dense projection은 attention의 q, k, v, o 104개, MLP gate, up, down 78개, lm_head 1개로 총 183개다.
-
-원본 float32 projection initializer는 3,999,006,720 byte다. 본 평가의 coarse INT8 배치는 이를 999,751,680 byte로 모델링한다. 여기서 **context-32**는 KV 과거 길이 32를 뜻하며 float32 KV cache 산술은 1,703,936 byte다. 뒤의 **context-32K**는 용량 모델의 KV 문맥 길이 32,768로, 32개의 생성 토큰을 뜻하는 **decode-32**와도 다르다.
-
-그래프 추출 경로와 ONNX Runtime 실행 경로는 분리한다. 전자는 `onnx.checker.check_model`과 external tensor를 적재하지 않는 protobuf graph load로 node 이름·연산·shape·initializer·external-data offset을 읽는다. 후자는 Y700의 ONNX Runtime Android CPU Execution Provider에서 batch 1, sequence length 1, artificial past length 1 조건으로 측정한 세 번의 기능 참조이며 평균 wall clock은 408.445 ms였다. 이 ORT 세션은 본 평가의 decode-32 `token_trace.jsonl`이나 183×32 TileJob ledger를 재실행하지 않았고 RTL·DRAMsim3·가속기 시간도 아니다. 혼합 결과는 이 Y700 실행에서 분리한 비투영 시간을 투영 분석 모델과 합친 값이다. 그림 2는 hash-bound ONNX artifact가 graph inventory와 projection ledger로 변환되는 경로, 그리고 별도 ORT 기능 참조의 경계를 함께 나타낸다.
+본 연구의 기여는 다음과 같다. 첫째, 로컬 실행 메모리와 외부 가중치 공급 메모리의 역할을 분리한 온디바이스 확장 후보를 제시하고 K26 로컬 기준선과 비교했다. 둘째, 원격 복사 시간을 실제 링크 서비스에 부과해 초기 배치와 작업 재분배의 효과를 분리했다. 셋째, 실제 Gemma 그래프의 형상에서 TileJob을 만들고, 제한된 실제 가중치 타일이 DMA 명령·메모리 응답 경계·논리 링크·MatVec까지 통과하는 재현 가능한 흐름을 구현했다.
 
 <div class="wide-figure">
-![그림 2. ONNX checker/protobuf graph inspection으로 7,837-node inventory와 token당 183개 projection ledger를 만들고, 별도의 ONNX Runtime Android CPU EP 기능 참조가 decode-32·RTL·보드 시간과 결합되지 않음을 표시한 전체 흐름.](figures/paper_f02_onnx_runtime_graph.svg)
+![그림 1. K26의 연산·제어와 Memory FPGA의 가중치 공급을 분리한 후보 구조. 굵은 실선은 연결된 논리 RTL 경로이며, 점선의 GTH·MIG는 후속 물리 구현 범위다.](figures/paper_f01_evidence_path.svg)
 </div>
 
-## B. 실제 weight tile과 RTL parity
+# II. 관련 연구와 연구 공백
 
-Attention output, MLP gate와 lm_head initializer에서 각각 연속된 16×4 float32 tile을 external-data offset으로 읽었다. 각 tile은 최대 절댓값을 127에 대응시키는 대칭 per-tile INT8 양자화를 적용하고 zero point를 0으로 고정했다. 입력 vector, scale, source offset과 tile hash를 fixture에 기록했다. 세 fixture는 실제 ComputeCluster/DecodeMatVecInt8 경로에 주입되었고 INT32 software reference와 정확히 일치했다.
+PagedAttention[1]은 KV cache의 페이지 관리 문제를, FlashAttention[2]은 attention 연산의 데이터 이동을 줄이는 방법을 다룬다. GPTQ[3], SmoothQuant[4], AWQ[5]는 모델 크기와 양자화 정확도의 균형을 연구한다. 이 연구들은 메모리 이동이 중요하다는 근거를 제공하지만, 여러 로컬 대기열과 외부 가중치 공급 링크를 함께 가진 소형 FPGA 구조의 초기 배치 문제를 직접 다루지 않는다.
 
-이 parity는 중요한 최소 연결 증거다. Graph의 실제 weight byte가 accelerator의 실제 signed INT8 multiplier 경로까지 도달한다. 그러나 세 개 16×4 tile만 검증했으므로 model-wide quantization accuracy, 모든 projection의 layout, full-model inference 또는 K26 timing을 증명하지 않는다.
+FTRANS[6], DFX[7], FlightLLM[8]은 Transformer의 FPGA 매핑과 다중 FPGA 실행 구조를 제시했다. 이들은 완성된 매핑 흐름이나 처리량을 중심으로 평가한다. 본 연구는 최고 처리량 경쟁보다 설계 조건 규명에 초점을 둔다. K26 로컬 메모리와 외부 다채널 메모리 후보를 같은 작업 형상에서 비교하고, 작업 재분배가 가중치 복사 비용을 감수할 조건을 찾는다.
 
-표 2는 실제 그래프에서 직접 얻은 값과 용량 산술·RTL 결과를 분리한다.
+고전적 작업 훔치기[15]는 의존 작업의 부하 균형을 설명하고, LAWS[16]는 NUMA 환경에서 원격 메모리 비용을 고려한다. 본 연구의 정책은 이들보다 이론적으로 새롭다고 주장하지 않는다. 연구 공백은 실제 sLLM 투영 형상, FPGA 메모리 분리 구조, 초기 배치, 비지역 전송 비용을 하나의 공개 설계 흐름에서 비교한 자료가 부족하다는 점이다.
 
-**표 2. Gemma workload와 증거 경계**
+# III. 온디바이스 가속기의 설계 목표
 
-| 항목 | 값 | 증거 유형 | 허용되는 해석 |
-|---|---:|---|---|
-| ONNX graph node | 7,837 | graph-derived | 실제 artifact의 graph inventory |
-| Projection/token | 183 | graph-derived | q/k/v/o, MLP 3종, lm_head 순서 |
-| Float32 projection weight | 3,999,006,720 B | graph-derived | initializer byte 합 |
-| Modeled INT8 projection weight | 999,751,680 B | capacity arithmetic | coarse resident/traffic model |
-| 실제 weight tile parity | 3/3 | RTL-simulated | 제한된 16×4 MatVec 정확성 |
-| Y700 기능 참조 | 408.445 ms 평균 | host-measured | 과거 단일-token CPU EP 조건 |
+대상은 3B 이하 sLLM을 향한 확장형 후보이며, 이번 평가는 Gemma 3 1B를 사용한다. K26 로컬 4GB는 운영체제와 실행 환경, 활성값, KV cache, 자주 쓰는 데이터를 담당한다. 외부 메모리는 상주 가중치, 다음 층 사전 적재, 용량 확장을 담당하도록 역할을 나눈다.
 
-# IV. K26–Memory FPGA 시스템
+**표 1. 설계 목표와 이번 평가의 범위**
 
-K26는 control, activation과 hot working set을 담당하고 네 compute cluster로 TileJob을 분배한다. 용량만 보면 Gemma 3 1B의 INT8 context-32K budget 2.4301 GiB는 명목 K26 local 4 GB 후보에 들어가므로 외부 8 GiB의 필요성은 capacity로 입증되지 않는다. 본 연구는 external capacity expansion, independent channel bandwidth와 weight-service isolation을 서로 다른 가설로 분리하며, K26 local-memory의 effective bandwidth·경합·전력 baseline 없이 외부 memory가 필요하다고 주장하지 않는다.
-
-분석 모델의 TileJob은 명시적 home cluster를 가지지만 RTL TileJob은 job ID, arrival, layer/op, activation ID, weight/output address, K/N 범위, preferred channel·bundle, reduction owner, priority와 stealable flag를 가지며 `jobId % clusterCount`로 home queue를 정한다. Scheduler가 queue 간에 job을 이동해도 identity는 바뀌지 않는다. Input ID set, dispatch ID set과 completion ID set이 같고 duplicate completion이 0이어야 정상이다.
-
-네 논리 link bundle은 serializer, credit, CDC, outstanding table, response serializer와 consumer FIFO wait를 분리해서 센다. TileJob queue와 transport FIFO도 별도 경계다. 전자는 “누가 실행할지”, 후자는 “byte가 언제 이동할지”를 결정한다. 이 둘을 합치면 queue imbalance와 link backpressure의 원인을 구분할 수 없다.
-
-표 3은 이후 모든 수치에 적용할 증거 등급, 정의와 허용 주장을 한곳에 고정한다.
-
-<div class="wide-table keep-table">
-**표 3. 증거 등급과 허용 주장**
-
-| 등급 | 정의와 대표 산출물 | 허용 주장 | 금지·보류 주장 |
-|---|---|---|---|
-| Direct | 원본 ONNX/external-data hash, host 측정, native KiCad 결과 | 해당 산출물의 node·byte·측정 조건·검사 결과 | 다른 장치 성능, 완성 보드 동작 |
-| RTL-simulated | actual Gemma tile→MatVec 3/3 parity; synthetic scheduler→payload→MatVec exact-once | 각 독립 경로의 제한된 기능·시간 동작 | 실제 Gemma가 scheduler·DMA/DDR를 통과한 end-to-end 실행 |
-| Graph-derived | graph inventory와 decode-1/decode-32 projection order·shape·byte | 실제 모델에서 유도한 작업 순서와 크기 | 실제 decode-32 ORT execution trace 또는 물리 배치 |
-| Modeled | S0–S3 event model, overlap 경계, energy·DRAM-die cost | 명시한 식 안의 p95·전송량·민감도·정규화 | 물리 protocol timing, 전체 보드 J/token·가격; S0 0 B와 +7 cycle은 정의·한 점 민감도 |
-| Blocked | dispatch→DMA/link/DDR→MatVec release, Vivado·SI/PI·board | 다음 검증 관문 식별 | 중앙/분산 큐의 물리 우열, 제작·실측 성능 |
-</div>
-
-표 4는 외부 8 GiB 후보를 용량·대역폭·격리·확장 질문으로 나눠 채택 근거의 현재 상태를 보여준다.
-
-<div class="keep-table">
-**표 4. 외부 8 GiB 후보 설계의 가설과 판정**
-| 가설 | 본 논문 evidence | 판정 |
+| 항목 | 목표 | 이번 평가 |
 |---|---|---|
-| Gemma 1B capacity expansion | 2.4301 GiB at INT8 context-32K | 불필요; nominal local 4 GB에도 fit |
-| Independent channel bandwidth | 4×x16 pin-rate 산술과 analytical service | local-memory 실효 bandwidth baseline 부재 |
-| Weight-service isolation | queue/channel analytical counters | host/local contention 측정 부재 |
-| 3B·long-context 확장 | generic capacity arithmetic | 실행 증거 아님 |
-</div>
+| 연산 | K26의 다중 연산 클러스터 | 부호 있는 INT8 MatVec 클러스터 4개 |
+| 로컬 메모리 | 실행 환경·활성값·KV cache | 4.8–14.4 GB/s 유효 대역폭 민감도 |
+| 외부 메모리 | 8GB 이상, 채널·랭크 확장 | 4×DDR3L x16, 3.2–12.8 GB/s 분석 |
+| 링크 | Memory FPGA→K26 가중치 전송 | 논리 링크 4개, 64–256비트 민감도 |
+| 작업 배치 | 지역성과 부하 균형 | 정적·라운드로빈·크기 균형·채널 친화 |
+| 물리 검증 | GTH·MIG·전원·보드 계측 | 논리 RTL과 라우팅 쿠폰까지만 수행 |
 
-외부 메모리 baseline은 네 개의 x16 channel이다. 각 channel은 8 Gb x8 package 두 개로 2 GiB를 구성하고 전체 8 GiB가 된다. 분석 부품 AS4C1G8D3LA-10BCN은 package 내부에 두 개의 4 Gb x4 die가 적층되어 하나의 x8 rank로 보인다. 800 MT/s 가정의 산술 pin-rate 상한은 4×16×800/8 = 6.4 GB/s다. Effective payload는 controller, refresh, turnaround와 protocol overhead 때문에 더 낮다.
+외부 8GB는 Gemma 1B가 4GB에 들어가지 않아서 선택한 것이 아니다. 더 큰 모델과 긴 문맥으로 확장하거나, 로컬 실행 메모리의 경합을 줄이고, 여러 클러스터에 독립적인 가중치 공급 경로를 제공하기 위한 후보이다. 따라서 외부 구조는 K26 로컬 기준선보다 나은 조건을 보여야 채택할 수 있다.
 
-# V. Multi-Queue FCFS와 지역성 인지 Work Stealing
+# IV. K26–Memory FPGA 시스템 구조
 
-S0는 idealized global FIFO다. 빈 cluster가 central queue에서 다음 job을 가져가므로 imbalance의 낮은 기준을 주지만 global arbitration, fanout과 crossbar 비용을 단순화한다. S0-physical은 central control cycle을 추가한 분석 모델이다. S1은 home cluster의 local FIFO에서만 실행한다. S2는 idle cluster가 oldest eligible job을 훔친다. S3는 age에서 remote weight, activation residency, reduction ownership과 bundle mismatch penalty를 뺀 locality score가 양수인 job을 선택한다. Oracle은 전체 ledger를 미리 아는 offline list scheduler이며 수학적으로 증명된 optimum이 아니다.
+K26 측의 입력 명령은 작업 정보와 활성값만 포함한다. 명령은 DMA 요청 FIFO를 거쳐 외부 메모리 채널에 가중치를 요청한다. Memory FPGA 경계에서 돌아온 가중치 타일은 작업의 선호 링크에 따라 네 논리 FIFO 중 하나로 들어간다. K26은 작업 ID로 보관 중인 활성값과 응답 가중치를 결합하고, 대기열 정책이 선택한 클러스터에서 MatVec을 수행한다.
 
-그림 3은 S3의 victim 탐색부터 exact-once completion까지 정책 순서를 보여준다. 유휴 클러스터는 local queue가 빈 것을 확인하고 victim을 탐색한다. 작업이 stealable하고 dependency가 준비되었는지 검사한 다음 age/locality score를 계산한다. 분석 모델에서는 선택된 작업을 원격 요청과 전송량으로 회계하며, 계측 RTL에서는 dispatch identity가 actual MatVec까지 보존된다.
+논리 가상 시제품은 작업 수락→DMA 요청→채널 스케줄러→DDR 응답 경계→논리 링크 FIFO→입력 결합→MatVec 결과를 하나의 역압 흐름으로 연결한다. 가중치 응답이 없으면 연산 명령을 만들 수 없고, 동일 작업 ID의 응답은 한 번만 수락한다. 실제 Gemma 파일에서 제한적으로 추출한 세 개의 16×4 INT8 가중치 타일이 이 경로를 통과해 소프트웨어 INT32 결과와 모두 일치했다.
 
-<div class="wide-figure">
-![그림 3. S1→S2→S3 정책 사다리와 RTL dispatch, 분석 migration cost, 미통합 DMA/link/DDR 경계. 상세 composite는 publication asset F02다.](figures/paper_f03_policy_boundary.svg)
-</div>
+이 연결은 물리 링크가 완성되었다는 뜻이 아니다. 링크 FIFO는 넓은 논리 응답을 전달하며 GTH 직렬화, 레인 결합, CDC, 패킷 분할, CRC 재전송, 크레딧 반환은 포함하지 않는다. 메모리 응답도 MIG 경계에서 주입하므로 DDR3L PHY와 보정 과정을 검증하지 않는다. 그림 1은 이 차이를 실선과 점선으로 구분한다.
 
-S3는 보편적으로 우월하도록 설계되지 않았다. Balanced workload에서는 이동할 필요가 없고, hotspot은 memory channel 자체가 병목일 수 있다. Remote weight가 큰 job은 S2보다 덜 옮겨 traffic을 줄이지만, 그 선택 때문에 completion이 늦어질 수 있다. 본 평가의 핵심은 이 trade-off를 p95·p99와 byte 양쪽에서 정량화하는 것이다.
+**표 2. 결과를 해석할 때의 증거 구분**
 
-S3 score의 age/locality 계수와 양수 threshold는 calibration이나 exhaustive sensitivity를 거치지 않은 한 design point다. Dynamic least-loaded, join-shortest-queue 또는 affinity-aware initial placement 같은 non-stealing online baseline도 실행하지 않았다. 따라서 S3는 static ownership에서 tail을 줄이는 한 방법이며 구조적으로 필요하다는 결론은 보류한다.
-
-# VI. RTL, 분석 모델, 전력·비용 평가 방법
-
-## A. 실제 RTL 시간 증거
-
-WorkStealingEvidenceTop은 production TileScheduler S3, payload identity store와 실제 ComputeClusterArray를 연결한 계측 harness다. Victim queue에 job 1, 5, 9를 넣고 cluster 0을 idle하게 둔 skew case에서 cycle 16–18에 세 번의 steal이 발생했다. 이후 실제 MatVec start와 result를 관측하고 accepted=dispatched=completed=3, successfulSteals=3을 확인했다. 그림 4는 이 세 dispatch와 MatVec start/result의 시간 관계를 보존한다.
-
-<div class="wide-figure">
-![그림 4. Cycle 16–18의 job 1/5/9 dispatch와 MatVec result identity, 3 accepted=3 dispatched=3 completed를 표시한 RTL-simulated 요약.](figures/paper_f04_waveform_identity.svg)
-</div>
-
-이 harness는 synthetic 정책과 소비자 사이의 시간적 연결을 직접 지지한다. 실제 Gemma weight parity test와의 관계 및 미통합 구간은 표 3의 RTL-simulated/blocked 경계를 따른다. 3-job fixture의 latency를 Gemma projection 성능으로 사용하지 않으며 S0–S3 비교와 Gemma 5,856-job replay는 event-driven analytical model이다.
-
-Python event model과 RTL scheduler는 동일 구현이 아니다. Python은 명시적 `home_cluster`를 사용하고 victim queue의 모든 eligible job을 탐색하며 byte/service-dependent locality penalty를 적용하고 같은 event time에 여러 cluster를 dispatch할 수 있다. RTL은 `jobId % clusterCount` ownership, victim head-only FCFS, 고정 정수 penalty와 clock edge당 최대 한 dispatch를 사용한다. 또한 분석 기본값은 64 MAC/cycle이지만 실제 16×4, tileDim=1 MatVec는 64 MAC의 request-to-done에 65 cycle이 걸린다. 따라서 분석 cycle은 RTL cycle 예측이 아니며 현재 issue-rate 차이는 65배다. 이 보정은 공개 저장소의 `docs/calibration.md`와 RTL test로 고정한다.
-
-| 계약 항목 | Python 분석 모델 | 현재 RTL |
+| 구분 | 포함 내용 | 허용되는 해석 |
 |---|---|---|
-| Home queue | 명시적 `home_cluster` | `jobId % clusterCount` |
-| Victim 후보 | queue 내부 전체 eligible job | victim queue head만 |
-| Locality cost | byte/service-dependent | 고정 정수 penalty |
-| Dispatch 폭 | event time당 복수 가능 | edge당 최대 1 |
-| 64 MAC service | 기본 1 analytical cycle | 65 request-to-done cycle |
+| 직접 확인 | ONNX 노드·형상, 실제 타일 3개, KiCad 원본 | 해당 파일과 제한 경로의 사실 |
+| RTL 시뮬레이션 | 닫힌 논리 경로, 정확히 한 번 처리, MatVec 결과 | 논리 기능과 역압 |
+| 분석 모델 | 대기열, 링크·메모리 서비스, 배치 민감도 | 명시한 가정 안의 상대 비교 |
+| 미검증 | GTH·MIG 타이밍, 보드 전력, SI/PI, 전체 가격 | 후속 구현·계측 과제 |
 
-## B. 공정한 scheduler 비교
+# V. Gemma 3 1B 작업의 하드웨어 매핑
 
-Synthetic scheduler subset은 balanced, skew, hotspot, bursty, mixed 각 1,000 job을 seed 19, 23, 29, 31, 43으로 생성한다. 모든 정책은 동일 job stream, 네 cluster, 네 channel, 네 bundle과 128-bit link를 사용한다. Process repetition 3회는 동일 seed의 deterministic 복원을 검사하며 표본 수로 세지 않는다. 결과는 repetition 0의 seed 5개 중앙값으로 요약한다. 780개 전체 row는 factor sweep을 포함하지만 본문 scheduler 비교는 subset=scheduler만 사용한다.
+로컬에 보관된 Gemma 3 1B ONNX 그래프는 7,837개 노드와 토큰당 183개 밀집 투영 연산을 가진다. Attention의 q, k, v, o가 104개, MLP의 gate, up, down이 78개, lm_head가 1개다. 원본 float32 투영 가중치는 약 4.0GB이며, 평가에서는 명시적인 INT8 변환을 가정해 약 1.0GB로 모델링했다. 모델 가중치 자체는 공개 저장소에 배포하지 않는다.
 
-모델은 arrival, cluster, link와 channel availability의 다음 event로 진행한다. Weight byte는 K×N, activation byte는 K, output byte는 4N으로 계산한다. 기본 full-overlap mode는 같은 dispatch-ready 시점에서 link와 memory service를 시작하고 data-ready=max(link-end, memory-end)로 둔다. Sequential sensitivity는 data-ready=link-end+memory-service로 직렬화한다. 둘 다 transaction-level DMA/PHY를 재현한 물리 timing이 아니라 경계 가정이다. DRAM bank timing, physical PHY와 FPGA clock closure도 포함하지 않는다. 모든 정상 row는 1,000 input/completed ID 일치, duplicate 0, timeout false를 통과해야 한다.
-
-클러스터 지표는 아래 두 용어로 고정한다. `unreserved idle`은 예약되지 않은 cluster-cycle count이며 compute-idle과 다르다.
-
-| 지표 | 고정 정의 |
-|---|---|
-| compute duty | compute-cycle 합 ÷ (cluster 수×completion time) |
-| reservation occupancy | dispatch부터 link/memory wait와 compute 완료까지의 예약 구간 합 ÷ (cluster 수×completion time) |
-
-`reservation occupancy`가 0.99에 가까워도 MAC array가 99% 계산했다는 뜻은 아니다.
-
-Baseline traffic 회계는 대칭이 아니다. S2/S3는 stolen job의 home cluster와 dispatch cluster가 다를 때 remote weight·activation·partial sum을 센다. S0/S0-physical은 global queue에서 어느 cluster로 보내도 remote traffic을 정의상 0으로 둔다. 따라서 표의 S0 0 B는 관측이 아니라 중앙 공유 storage를 암묵적으로 가정한 baseline 정의다. S0-physical도 synthesis에서 얻은 비용이 아니라 arbitration 2, fanout 2, crossbar 3을 합한 임의의 +7 cycle/job sensitivity 한 점이다. 0/수십/수백 cycle이나 crossbar bandwidth sweep을 실행하지 않았으므로 중앙·분산 queue의 물리 비교는 미결정이다.
-
-Gemma replay는 graph 순서의 183 projection을 token당 한 coarse job으로 변환한다. **decode-1**은 생성 토큰 1개의 183 job, **decode-32**는 생성 토큰 32개의 5,856 job이다. 이는 KV 길이 **context-32K**와 별개다. 배치는 graph-derived지만 timing, placement, scheduler와 link byte는 분석 모델이다. 한 개 deterministic 작업 목록만 사용했으므로 synthetic seed sensitivity를 대체하지 않는다.
-
-## C. Power, energy와 memory-die cost
-
-Vivado, device file과 license가 없어 synthesis, place-and-route, SAIF/VCD 기반 report_power는 수행하지 않았다. Compute energy는 1/5/15 pJ per INT8 MAC, serialized link는 24/51.2/120 pJ per bit의 low/central/high 범위를 둔다. DDR3L은 ACT, PRE, READ, WRITE, REFRESH와 idle state의 command/background 식을 분리한다. 기존 DRAMsim3 breakdown은 Gemma replay와 cycle-by-cycle로 결합되지 않았다. Energy join의 link 항은 base projection stream과 scheduler별 steal-overhead byte를 합친다. Graph-derived MAC·byte count와 analytical dynamic READ+ACT+PRE 단위를 결합하되 refresh, idle, controller, PHY와 board power는 제외한다.
-
-가격 경계는 DRAM package와 그 내부 physical die뿐이다. K26, Memory FPGA, PCB, regulator, connector, 조립비는 제외한다. 2026-07-31의 AS4C1G8D3LA-10BCN quantity-1 snapshot은 Mouser 39.32 USD와 DigiKey 97.10 USD다. 이 가격은 변동 가능한 시점 자료이므로 조달 전에 갱신해야 한다. Package에 두 die가 있으므로 physical-die dollar는 package 가격을 2로 나눈 정규화 산술이지 구매 가능한 bare-die quote가 아니다.
-
-# VII. 질문별 결과와 설계 결정
-
-## A. Q1 — Stealing은 언제 tail을 줄이는가?
-
-**답:** 정적 소유권의 큐 불균형이 큰 skew와 mixed에서는 줄지만, balanced와 channel-hotspot에서는 줄지 않는다. Balanced의 S0–S3 p95는 모두 19,524 cycle이고 successful steal은 0이다. Hotspot에서도 S1과 S3의 p95가 159,940 cycle로 같다.
-
-Full-overlap mode에서 skew S1 p95는 285,333 cycle, S3는 233,625 cycle로 18.12% 낮다. Mixed에서는 478,553에서 394,375 cycle로 17.59% 낮다. Skew S1→S3의 compute duty는 0.057097→0.068999, reservation occupancy는 0.336200→0.994864, unreserved idle은 811,713→5,137 cycle이다. Mixed는 각각 0.068345→0.080889, 0.413076→0.996291, 1,210,683→6,432 cycle이다. 그림 5는 workload별 percentile을 같은 축에서 비교한다.
-
-같은 full-overlap 고정 row의 p99는 skew S1/S2/S3가 302,186.41/249,379.73/247,296.42 cycle, mixed가 506,354.73/426,120.83/422,255.59 cycle이다. 이는 분석 모델의 repetition 0, seed 5개 중앙값이며 physical timing이 아니다. S3의 S2 대비 p99 차이는 각각 −0.84%, −0.91%로 작다.
+각 투영은 전체 K차원을 유지하고 N≤1024인 출력 타일로 나누어 토큰당 802개 TileJob을 만든다. q/k/v가 끝난 뒤 o, o가 끝난 뒤 gate/up, 이 둘이 끝난 뒤 down을 내보낸다. 다음 계층은 이전 down 뒤에 시작하고, 다음 토큰은 lm_head가 끝난 뒤에만 시작한다. 32토큰 조건은 이 의존성 인식 토큰을 중첩 없이 직렬 반복한 25,664개 TileJob이다.
 
 <div class="wide-figure">
-![그림 5. 동일 synthetic ledger의 skew/mixed에서 S1과 S3 p95를 비교한 분석 모델 결과.](figures/paper_f05_tail_latency.svg)
+![그림 2. 실제 Gemma 그래프의 투영 연산을 의존성이 있는 출력 TileJob으로 변환하는 과정. 배치 규칙은 그래프 사실이 아니라 별도 모델 변수다.](figures/paper_f02_onnx_runtime_graph.svg)
 </div>
 
-현재 비용 정의에서 S0는 synthetic p95 하한을 제공한다. Skew의 S0 p95는 226,611 cycle이고 mixed는 378,232 cycle이다. S0-physical의 단일 +7 cycle/job도 순위를 바꾸지 않는다. **판정:** S3는 정적 큐 불균형이 큰 조건의 후보로 유지하고, 범용 정책 채택은 보류한다.
+초기 배치는 네 가지다. 기존 산술 규칙은 토큰당 타일 수가 C0/C1/C2/C3에 464/208/78/52로 치우친다. 라운드로빈은 타일 수를 균등하게 나눈다. 크기 균형 배치는 누적 MAC 수가 가장 작은 클러스터에 다음 타일을 둔다. 채널 친화 배치는 가중치가 있는 채널과 같은 번호의 클러스터를 우선한다. 네 배치 모두 실제 컴파일러 결과가 아니라 설계 변수이며, 이 비교로 “초기 배치를 잘한 효과”와 “작업을 나중에 옮긴 효과”를 분리한다.
 
-## B. Q2 — S3는 S2보다 무엇을 얻고 잃는가?
+# VI. 다중 대기열과 지역성 인식 작업 재분배
 
-**답:** 지역성 벌점은 원격 가중치 전송량과 p95를 줄이지만 마지막 작업 완료를 늦출 수 있다. Skew에서 S2→S3 remote weight는 2,443,776→1,519,104 B로 37.84%, mixed에서는 3,799,040→2,957,312 B로 22.16% 감소한다. 동시에 S3 p95는 S2보다 skew 1.23%, mixed 2.33% 낮다.
-
-Completion time은 반대 trade-off를 보인다. Skew에서 S2 253,424 cycle에 비해 S3는 255,897 cycle로 0.98% 길고, mixed에서는 432,283 대비 434,075 cycle로 0.41% 길다. Tail이 짧아져도 마지막 큰 job이 늦어질 수 있음을 뜻한다. 따라서 정책 선택은 p95만이 아니라 completion과 traffic을 함께 보아야 한다.
-
-그림 6은 이 p95·steal·전송량 trade-off를 비교하고, 표 5는 compute duty, reservation occupancy, unreserved idle을 축약 없이 함께 제시한다.
+S1은 각 클러스터가 자기 대기열만 선착순으로 처리하는 정적 기준선이다. S2는 유휴 클러스터가 다른 대기열에서 가장 오래 기다린 작업을 가져온다. S3는 기다린 시간에서 가중치 크기, 활성값 이동, 부분합 반환, 링크 불일치 비용을 뺀 점수가 양수일 때만 작업을 가져온다.
 
 <div class="wide-figure">
-![그림 6. S2 대비 S3의 p95·completion·remote-weight byte trade-off를 함께 표시한 분석 결과.](figures/paper_f06_tradeoff.svg)
+![그림 3. 정적 다중 대기열과 지역성 인식 작업 재분배. 옮긴 작업은 기본 위치에 가중치를 먼저 적재한 뒤 유휴 클러스터로 복사하며, 추가 바이트와 사이클을 링크 서비스에 부과한다.](figures/paper_f03_policy_boundary.svg)
 </div>
 
-<div class="wide-table keep-table">
-**표 5. Full-overlap synthetic 결과의 seed 5개 중앙값**
+이번 모델은 작업 훔치기의 비용을 사후 통계로만 세지 않는다. 정적 배치가 선호 링크로 가중치를 먼저 공급했다고 가정하고, 훔친 작업은 가중치·활성값·부분합을 실행 클러스터 쪽 링크로 다시 복사한다. 기본 전송과 추가 전송의 바이트와 사이클을 분리해 저장한다. 따라서 S3가 더 작은 작업을 고르면 S2보다 비지역 전송량을 줄일 수 있지만, 복사 자체가 정적 S1보다 완료시간을 늘릴 수도 있다.
 
-| Workload | Policy | p95 cycle | Completion | compute duty | reservation occupancy | unreserved idle | Remote weight |
-|---|---|---:|---:|---:|---:|---:|---:|
-| Skew | S0 | 226,611 | 241,560 | 0.073365 | 0.997976 | 1,914 | 0 B |
-| Skew | S1 | 285,333 | 306,837 | 0.057097 | 0.336200 | 811,713 | 0 B |
-| Skew | S2 | 236,528 | 253,424 | 0.069318 | 0.998086 | 1,914 | 2,443,776 B |
-| Skew | S3 | 233,625 | 255,897 | 0.068999 | 0.994864 | 5,137 | 1,519,104 B |
-| Mixed | S0 | 378,232 | 396,401 | 0.087726 | 0.998087 | 3,034 | 0 B |
-| Mixed | S1 | 478,553 | 513,745 | 0.068345 | 0.413076 | 1,210,683 | 0 B |
-| Mixed | S2 | 403,766 | 432,283 | 0.081225 | 0.998245 | 3,034 | 3,799,040 B |
-| Mixed | S3 | 394,375 | 434,075 | 0.080889 | 0.996291 | 6,432 | 2,957,312 B |
-</div>
+S3는 상시 정책이 아니다. 균형 배치에서는 옮길 이유가 없고, 메모리 채널 자체가 병목이면 빈 클러스터를 채워도 완료시간이 줄지 않는다. 정책을 켜는 조건은 예상 대기 감소가 추가 데이터 이동 시간보다 큰 경우이다.
 
-S0의 remote weight 0 B는 표 3의 modeled 정의다. 표 6은 서비스 경계를 바꾸면 S2/S3 순위가 얼마나 민감한지 보여준다.
+# VII. 구현과 평가 방법
 
-<div class="keep-table">
-**표 6. Link/memory service overlap sensitivity의 p95 중앙값**
-
-| Workload | Service mode | S1 | S2 | S3 | S2↔S3 순위 |
-|---|---|---:|---:|---:|---|
-| Skew | Full overlap | 285,333.05 | 236,527.85 | 233,625.15 | S3가 1.23% 낮음 |
-| Skew | Sequential | 499,243.85 | 260,052.10 | 264,294.60 | S2가 1.63% 낮음 |
-| Mixed | Full overlap | 478,553.05 | 403,766.25 | 394,375.45 | S3가 2.33% 낮음 |
-| Mixed | Sequential | 825,278.25 | 471,918.25 | 463,867.20 | S3가 1.71% 낮음 |
-</div>
-
-Sequential sensitivity에서도 S3는 S1보다 낮지만 S2와의 p95 순위는 skew에서 뒤집히고 mixed에서 유지된다. **판정:** S3는 전송량을 줄이는 후보이지만 S2 대비 tail 우위는 service composition에 의존하므로 물리 통합 전에는 보류한다.
-
-## C. Q3 — Actual Gemma ledger에서도 같은 방향인가?
-
-**답:** decode-1에서는 아니지만 decode-32 분석 모델에서는 같은 tail·전송량 방향이 나타난다. Decode-1에서 S1 projection은 220.126 ms, S3는 220.863 ms로 S3가 0.34% 길다. Decode-32에서는 S1 7.341 s, S3 6.335 s로 S3가 13.70% 짧다. S3 p95 job latency는 1.223×10⁹→1.039×10⁹ cycle로 15.07% 낮고, remote weight는 S2 4.855 GB에서 S3 2.830 GB로 41.72% 감소한다.
-
-Host non-projection fallback 6.550 s를 선형 외삽해 합친 decode-32 hybrid total은 S1 13.891 s, S3 12.885 s, Oracle 11.819 s다. 표 7은 decode-1과 decode-32를 context-32K 용량 조건과 구별해 비교한다.
-
-<div class="wide-table keep-table">
-**표 7. Gemma 3 1B graph-derived decode-1/decode-32 coarse replay**
-
-| Decode tokens | Policy | Projection time | Hybrid total | p95 job cycle | reservation occupancy† | Remote weight |
-|---:|---|---:|---:|---:|---:|---:|
-| 1 | S0 | 221.706 ms | 426.407 ms | 19,750,965 | 0.605 | 0 B‡ |
-| 1 | S0-physical | 221.707 ms | 426.407 ms | 19,751,147 | 0.605 | 0 B‡ |
-| 1 | S1 | 220.126 ms | 424.827 ms | 19,755,052 | 0.635 | 0 B |
-| 1 | S3 | 220.863 ms | 425.564 ms | 19,064,335 | 0.597 | 68,714,496 B |
-| 32 | S0 | 6.368 s | 12.918 s | 1,197,759,773 | 0.986 | 0 B‡ |
-| 32 | S0-physical | 6.368 s | 12.918 s | 1,197,764,260 | 0.986 | 0 B‡ |
-| 32 | S1 | 7.341 s | 13.891 s | 1,223,259,980 | 0.713 | 0 B |
-| 32 | S2 | 6.509 s | 13.059 s | 1,219,938,210 | 0.986 | 4,855,431,168 B |
-| 32 | S3 | 6.335 s | 12.885 s | 1,038,875,850 | 0.986 | 2,829,975,552 B |
-| 32 | Oracle | 5.269 s | 11.819 s | 399,092,134 | 0.973 | 0 B |
-</div>
-
-† reservation occupancy는 VI-B의 고정 정의를 따른다. ‡ S0/S0-physical 0 B는 baseline 정의다. **판정:** decode-32는 실제 graph-derived 규모에서도 S3 후속 검증의 우선순위를 지지하지만, 표 3의 modeled 범위를 넘어 채택을 확정하지 않는다.
-
-## D. Q4 — 외부 8 GiB와 energy/cost는 채택을 정당화하는가?
-
-**답:** 아니다. 8 GiB topology는 8개 x8 package, 16개 physical 4 Gb die를 사용하고 low/high package snapshot에서 DRAM component 합은 314.56–776.80 USD다. 16 GiB는 두 번째 rank를 추가해 package와 cost를 두 배로 만들지만 pin-rate 상한은 6.4 GB/s로 같다.
-
-Gemma 3 1B INT8의 **context-32K** capacity model은 weight 0.9313 GiB, KV 0.8125 GiB, runtime headroom 0.6863 GiB, 합계 2.4301 GiB다. Generic 3B INT8 context-32K case도 5.3528 GiB로 8 GiB 안에 들어가지만 이는 실행 증거가 아니다. context-131K 3B case는 9.8528 GiB로 8 GiB를 넘고 16 GiB에 들어간다. 표 8은 이 후보의 DRAM-die-only 비용 민감도를 보인다.
-
-<div class="wide-table keep-table">
-**표 8. Memory-die-only 비용 민감도**
-
-| Capacity | Package / physical die | Package snapshot | DRAM component sum | 70% effective GB/s | Effective GB/s per die-dollar |
-|---:|---:|---:|---:|---:|---:|
-| 8 GiB | 8 / 16 | 39.32 USD | 314.56 USD | 4.48 | 0.014242 |
-| 8 GiB | 8 / 16 | 68.21 USD | 545.68 USD | 4.48 | 0.008210 |
-| 8 GiB | 8 / 16 | 97.10 USD | 776.80 USD | 4.48 | 0.005767 |
-| 16 GiB | 16 / 32 | 39.32 USD | 629.12 USD | 4.48 | 0.007121 |
-| 16 GiB | 16 / 32 | 97.10 USD | 1,553.60 USD | 4.48 | 0.002884 |
-</div>
-
-Decode-32 S3 중앙값은 `2.483495600 hybrid-modeled token/s ÷ 545.68 USD = 0.004551194106 hybrid-modeled token/s per DRAM-component-dollar`이다. 분모는 8개 DDR3L package의 DRAM component/die-only midpoint뿐이며 K26, Memory FPGA, PCB, controller, regulator, connector, cooling, assembly, tax, freight, software와 board power를 제외한다. 분자는 측정 throughput이 아니라 graph-derived projection 모델과 Y700 non-projection 선형 외삽을 결합한 값이므로 전체 accelerator performance/$ 또는 제품 가격이 아니다.
-
-Energy join은 graph-derived MAC·weight·link byte와 hybrid latency를 low/central/high analytical unit에 결합한다. S3 decode-32의 link는 base 1,003,000,416 B/token에 steal overhead 88,806,088 B/token을 더한 1,091,806,504 B/token이다. Estimated dynamic energy는 0.291943317/0.553753651/1.185041645 J/token이고 central energy-delay product는 약 0.223 J·s/token이다. 표 3의 modeled 경계에 따라 이는 전체 보드 J/token이 아니다. **판정:** 외부 8 GiB는 용량·energy·cost만으로 채택하지 않고 로컬 메모리 대역폭·경합·전력 기준선이 이길 때만 유지한다.
-
-# VIII. KiCad 물리 참조 설계
-
-KiCad hierarchy는 K26 SOM GTH boundary, XC7K160T bank boundary, 네 DDR3L x16 topology, four-lane link, clock/reset/configuration, power/decoupling과 JTAG/debug를 포함한다. Coupon은 29 footprint, 116 net, 65 track segment, 50 via, 한 zone과 140×110 mm outline을 가진다. 그림 7은 체크인된 `k26_memory_coupon.kicad_pcb`를 KiCad CLI의 고정 camera·quality 설정으로 직접 렌더링한 설계 모습이다. 장식용 생성 이미지가 아니라 native board source의 3D view지만, 부품 모델·배선 완성도·제조 가능성을 보증하지 않는다.
+RTL은 SpinalHDL로 작성하고 Verilator로 시뮬레이션했다. 직접 확인한 경로는 세 실제 가중치 타일의 작업 수락, DMA 명령, DDR 응답 경계, 링크 FIFO, MatVec 결과이다. 별도의 세 작업 합성 시험 입력은 S3 스케줄러가 작업 ID를 보존하며 세 작업을 훔치고 정확히 한 번 완료하는지 확인한다.
 
 <div class="wide-figure">
-![그림 7. KiCad native PCB source에서 직접 렌더링한 K26/XC7K160T memory+GTH validation coupon. Native gate는 제한된 proposal rule 범위에서 통과하지만 55 unrouted, 9 return-path crossings, no ground stitching, 0/116 test points와 provenance blocker가 남아 있다. NOT FOR FABRICATION.](figures/paper_f07_kicad_coupon_render.png)
+![그림 4. 실제 Gemma 대표 타일 세 개가 폐루프 논리 RTL 경로를 통과한 사이클 추적. 세 결과는 소프트웨어 INT32 기준과 일치한다.](figures/paper_f04_waveform_identity.svg)
 </div>
 
-Native 0건은 routing 완료를 뜻하지 않는다. 독립 분석기는 55개 unrouted net, 9개 high-speed return-path crossing, ground stitching 부재, test-point 0/116과 incomplete MPN/datasheet coverage를 찾았다. Geometry에는 0.10 mm annular ring, 10개 untented via-in-pad, 27개 front fiducial 부재가 남아 있다. Thermal analyzer는 부품의 MPN, dissipation과 thermal parameter가 없어 0개 component만 평가했다.
+분석 모델은 클러스터 4개, 메모리 채널 4개, 논리 링크 묶음 4개, 묶음당 128비트를 기본값으로 사용한다. 합성 부하는 균형, 편향, 채널 집중, 순간 집중, 혼합의 1,000개 작업을 5개 시드에서 생성한다. 같은 작업 부하와 시드의 모든 정책은 동일한 작업 목록 해시를 사용한다. 정책별 중앙값을 나누지 않고 시드별 변화율을 먼저 계산한 뒤 그 중앙값과 범위를 보고한다.
 
-따라서 coupon이 직접 지지하는 것은 “제한된 connector/bank boundary model이 선언한 ERC/DRC와 export를 재현한다”는 명제뿐이다. 실제 BGA pin, 네 MIG bank placement, impedance, insertion loss, skew, jitter, eye margin, PDN, temperature와 EMC는 inference 또는 blocker다. Vivado MIG와 post-route timing이 닫히기 전 XC7K160T-2FFG676I는 conditional candidate다.
+Gemma 평가는 모델에서 추출한 K/N 형상과 보수적 단계 의존성을 사용한다. p95와 p99는 개별 TileJob이 의존성에서 해제된 시점부터 완료될 때까지의 분포이다. 사용자 요청 단위의 꼬리 지연이 아니다. 32토큰 시간은 동일한 토큰 모델의 직렬 반복이며 기능적 텍스트 생성도 아니다.
 
-# IX. 논의와 다음 검증
+K26 로컬 기준선은 외부 링크를 제거하고 공유 로컬 메모리의 유효 대역폭을 4.8, 9.6, 14.4 GB/s로 바꾼다. 외부 후보는 네 채널의 합을 3.2, 6.4, 12.8 GB/s로 바꾸고 링크 폭을 64, 128, 256비트로 비교한다. 이 값들은 측정값이 아니라 채택 임계값을 찾는 민감도이다.
 
-결과를 바꿀 가능성이 가장 큰 미검증 가정은 세 가지다. 첫째, non-stealing dynamic placement와 S3 score sensitivity가 없어 Q1의 인과는 static S1 비교에 한정된다. 둘째, full-overlap과 sequential 경계 사이에서 skew S2/S3 순위가 바뀌므로 실제 DMA→DDR→response 순서가 Q2를 바꿀 수 있다. 셋째, 로컬 4 GB의 실효 대역폭·경합·전력과 외부 8 GiB의 전체 보드 비용이 없어 Q4의 구조 채택을 판정할 수 없다. 세 항목 모두 표 3의 modeled/blocked 등급에 해당한다.
+# VIII. 결과와 시스템 설계 결정
 
-따라서 다음 실험은 우선순위대로 진행한다. (1) actual Gemma tile stream과 scheduler dispatch를 RTL–DRAMsim3 command trace에 연결해 S2/S3 및 동적 non-stealing baseline을 비교한다. (2) Vivado에서 S0–S3와 1/2/4 cluster의 LUT, BRAM, Fmax, fanout, MIG placement와 SAIF 기반 power를 닫는다. (3) local 4 GB와 external 8 GiB를 동일 decode-32 조건에서 측정한 뒤에만 exact pin·stackup·SI/PI·thermal·CAM 및 board 제작으로 넘어간다.
+## A. 합성 불균형 부하
 
-# X. 결론
+합성 편향 부하에서 S3는 S1보다 TileJob p95를 19.13%, p99를 18.71% 줄였다. 전체 완료시간도 17.25% 짧았다. S2와 비교하면 비지역 가중치 이동량을 35.49% 줄였고 완료시간 중앙값 차이는 +0.01%로 거의 같았다. 혼합 부하에서도 S1 대비 p95가 17.70% 줄었다. 균형 부하에서는 변화가 없고 채널 집중 부하에서는 p95 변화가 0%였다.
 
-**관측.** 실제 Gemma 3 1B ONNX graph에서 유도한 decode-32 작업 목록에서는 S3가 static S1보다 p95와 p99를 각각 15.07%와 14.61% 낮췄다. 같은 Gemma replay에서 S3는 S2보다 remote-weight byte를 41.72% 줄였고 completion도 2.68% 짧았다. 이 replay와 분리한 1,000-job synthetic stress에서는 skew와 mixed의 S1 대비 p95가 각각 18.12%와 17.59% 낮아졌고, skew에서 S3는 S2보다 remote-weight byte를 37.84% 줄이는 대신 completion이 0.98% 길었다. Balanced와 hotspot에서는 이득이 없었으며, synthetic 결과의 S2/S3 순위는 서비스 경계에 민감했다. 모든 시간 결과는 보드 측정이 아니라 분석 모델이다.
+<div class="wide-figure">
+![그림 5. 동일한 다섯 시드를 짝지어 비교한 합성 부하 결과. 작업 불균형이 큰 편향과 혼합 부하에서만 꼬리 지연 감소가 나타난다.](figures/paper_f05_tail_latency.svg)
+</div>
 
-**채택·보류.** S3는 static ownership의 불균형을 완화할 후속 RTL 후보로 채택한다. 외부 Memory FPGA와 중앙·분산 queue의 물리 선택은 보류한다. 실제 dispatch→DMA/DDR→MatVec 통합, 동적 non-stealing 비교, Vivado timing·power, local 4 GB 대비 대역폭·경합·전력 측정이 모두 통과하면 외부 Memory FPGA와 S3를 함께 채택할 수 있다.
+**표 3. 합성 부하의 S3 효과, 동일 시드 쌍비교 중앙값**
+
+| 부하 | S1 대비 완료시간 | S1 대비 TileJob p95 | S1 대비 p99 | S2 대비 비지역 가중치 |
+|---|---:|---:|---:|---:|
+| 균형 | 0.00% | 0.00% | 0.00% | 해당 없음 |
+| 채널 집중 | −0.06% | 0.00% | 0.00% | 0.00% |
+| 순간 집중 | −1.79% | −0.08% | −1.16% | −15.25% |
+| 혼합 | −15.91% | −17.70% | −16.92% | −22.60% |
+| 편향 | −17.25% | −19.13% | −18.71% | −35.49% |
+
+이 결과는 작업 불균형이 데이터 이동 비용보다 큰 조건에서만 작업 재분배가 유효하다는 가설을 지지한다. 합성 편향 부하의 수치를 실제 Gemma 실행 결과로 해석해서는 안 된다.
+
+## B. Gemma 형상과 초기 배치
+
+Gemma 형상에서는 초기 배치가 결과를 지배했다. 기존 산술 배치에서 S3는 S1보다 완료시간이 4.80% 길고 p95도 0.28% 길었다. 원격 복사 비용을 부과하면 빈 클러스터를 채운 이득보다 이동 비용이 더 컸다. 라운드로빈과 크기 균형 배치에서는 p95가 변하지 않았고 완료시간만 1% 미만 줄었다. 채널 친화 배치에는 큰 작업 쏠림이 남아 S3가 완료시간을 7.56%, p95를 19.79% 줄였다.
+
+<div class="wide-figure">
+![그림 6. 같은 Gemma 형상에서 초기 배치에 따라 S3의 효과가 바뀐다. 배치가 이미 균형이면 꼬리 지연 이득이 없다.](figures/paper_f06_tradeoff.svg)
+</div>
+
+**표 4. Gemma 의존성 인식 TileJob의 S3 효과**
+
+| 초기 배치 | 타일 수 C0/C1/C2/C3 | 완료시간 변화 | TileJob p95 변화 | 추가 링크 전송 |
+|---|---|---:|---:|---:|
+| 기존 산술 규칙 | 464/208/78/52 | +4.80% | +0.28% | 395.2 MB/토큰 |
+| 라운드로빈 | 201/201/200/200 | −0.59% | 0.00% | 43.3 MB/토큰 |
+| 크기 균형 | 198/202/200/202 | −0.76% | 0.00% | 110.8 MB/토큰 |
+| 채널 친화 | 394/136/136/136 | −7.56% | −19.79% | 416.4 MB/토큰 |
+
+결론은 “Gemma에서 작업 훔치기가 빠르다”가 아니다. 초기 배치가 충분히 균형이면 작업을 옮길 필요가 없다. 채널 지역성을 우선해 큰 불균형이 남은 경우에만 선택적 재분배가 의미가 있다.
+
+## C. K26 로컬과 외부 메모리 후보
+
+크기 균형 S1에서 K26 로컬 4.8/9.6/14.4 GB/s의 완료시간은 각각 45.0M/24.6M/17.8M 사이클이었다. 외부 4채널 3.2/6.4/12.8 GB/s 후보는 238.3M/120.6M/62.4M 사이클이었다. 외부 6.4 GB/s 조건은 링크 폭을 64비트에서 256비트로 넓혀도 거의 바뀌지 않아 메모리 공급이 병목이었다.
+
+이 민감도에서는 외부 후보가 Gemma 1B의 성능 기준선을 이기지 못한다. 또한 INT8 문맥 길이 32K의 용량 2.43 GiB가 로컬 4GB 안에 들어가므로 용량 채택 근거도 없다. 외부 Memory FPGA는 3B·더 긴 문맥·실제 로컬 경합을 평가할 다음 구조 후보이며, Gemma 1B의 기본 구성은 K26 로컬이다.
+
+비용 자료는 DDR3L 부품 가격 조사 시점 자료만 포함하고 K26, FPGA, PCB, 전원, 냉각, 조립을 제외한다. 에너지도 MAC·링크·DRAM 동적 항의 민감도일 뿐이다. 따라서 저비용·저전력은 설계 목표이지 이번 연구가 실물로 달성한 결과가 아니다.
+
+# IX. PCB 인터페이스 라우팅 쿠폰
+
+KiCad 자료는 전체 Memory FPGA 보드가 아니라 인터페이스 배선의 공간을 검토한 쿠폰이다. J1은 XC7K160T의 DDR/GTH bank 경계를, J2는 K26 GTH 경계를 대신한 범용 Samtec 커넥터다. U1은 네 메모리 채널 중 DDR3L x16 한 슬라이스만 나타낸다. 실제 K26 SOM 커넥터 핀과 FPGA BGA ball, 네 MIG 채널, 전원 트리, 부트 회로는 포함하지 않는다.
+
+<div class="wide-figure">
+![그림 7. 실제 KiCad 원본에서 렌더링한 인터페이스 라우팅 쿠폰. 두 범용 경계 커넥터, 대표 DDR3L x16 슬라이스, GTH·refclk 배선을 표시한다. NOT FOR FABRICATION.](figures/paper_f07_kicad_coupon_render.png)
+</div>
+
+쿠폰은 29개 부품 배치와 20개 배선된 GTH/기준 클록 신호망을 포함하며 선언된 제한 범위의 ERC/DRC는 0건이다. 그러나 전체 116개 신호망 중 55개가 미배선이고, 고속 신호 귀환 경로와 접지 비아 배치, 시험점, 정확한 부품 출처가 완성되지 않았다. 이 자료가 지지하는 주장은 “대표 링크와 DDR 배선의 위치 관계를 KiCad 객체로 구체화했다”는 것뿐이다. 제작 가능성, SI/PI, 온도, 실제 대역폭은 검증하지 않았다.
+
+# X. 논의와 한계
+
+첫째, Gemma 작업의 K/N 형상과 투영 순서는 실제 모델에서 얻었지만 초기 클러스터·채널·링크 배치는 모델 변수다. 실제 컴파일러나 실행 환경의 배치가 생기면 네 민감도 중 어느 조건에 가까운지 다시 확인해야 한다. 둘째, 단계 장벽은 잘못된 병렬 실행을 막는 보수적 모델이며 실제 연산자의 세부 중첩 실행을 재현하지 않는다. 셋째, p95와 p99는 TileJob 분포이지 사용자 요청 분포가 아니다.
+
+넷째, 닫힌 RTL 경로는 논리 가상 시제품이다. GTH·MIG·CDC·패킷 프로토콜을 구현하고 Vivado 타이밍을 닫아야 물리 대역폭을 말할 수 있다. 다섯째, K26 로컬 대역폭과 전력은 민감도 입력이다. 실제 보드에서 같은 작업을 실행해 로컬 경합과 전체 전력을 측정해야 외부 메모리 채택을 결정할 수 있다.
+
+후속 검증 순서는 명확하다. 먼저 실제 K26 로컬 대역폭·경합·전력을 측정한다. 다음으로 논리 응답을 패킷 단위로 나누고 GTH·CDC·크레딧 경로를 구현한다. 그 뒤 MIG 타이밍과 한 채널의 정확한 핀·전원·배선을 닫고 SI/PI 검증을 진행한다. 이 관문을 통과하기 전에는 전체 보드를 제작 대상으로 취급하지 않는다.
+
+# XI. 결론
+
+본 연구는 K26의 연산·제어와 외부 Memory FPGA의 가중치 공급을 분리한 온디바이스 sLLM 확장 후보를 설계하고, 실제 Gemma 형상에서 초기 배치와 작업 재분배의 조건을 평가했다. 합성 불균형 부하에서는 지역성 인식 작업 재분배가 TileJob p95와 비지역 가중치 이동을 함께 줄였다. 그러나 의존성과 이동 비용을 반영한 Gemma 형상에서는 배치에 따라 이득이 사라지거나 완료시간이 악화되었다.
+
+따라서 작업 훔치기는 이 구조의 주인공이 아니라, 초기 배치 후 남은 불균형이 이동 비용보다 클 때만 켜는 수단이다. Gemma 1B는 K26 로컬을 우선하고, 외부 8GB는 더 큰 모델·긴 문맥·실제 로컬 경합이 확인될 때 채택한다. 실제 모델 그래프, 출력 TileJob, 폐루프 논리 RTL, 분석 결과, KiCad 쿠폰을 공개한 설계 흐름이 본 연구의 핵심 공학적 기여다.
+
+# 코드와 자료 공개
+
+SpinalHDL RTL, 실험 설정과 결과 CSV, Gemma 그래프 목록, 그림 원본, KiCad 원본, 논문과 발표자료는 다음 저장소에 공개한다.
+
+KiCad 원본은 `hardware/kicad/`에 있으며 제작용 산출물이 아닌 참조 쿠폰이다.
+
+**Repository:** https://github.com/snowman0919/varp-k26-memory-fpga
+**Release:** https://github.com/snowman0919/varp-k26-memory-fpga/releases/tag/v11-conference-final
+
+모델 가중치는 라이선스와 용량 때문에 배포하지 않는다. 공개 압축 파일은 고정 해시의 그래프 목록과 제한된 타일 시험 입력만 포함한다.
 
 # 참고문헌
 
@@ -351,120 +230,161 @@ Native 0건은 routing 완료를 뜻하지 않는다. 독립 분석기는 55개 
 
 [15] R. D. Blumofe and C. E. Leiserson, “Scheduling Multithreaded Computations by Work Stealing,” Journal of the ACM, vol. 46, no. 5, pp. 720–748, 1999.
 
-[16] Q. Chen et al., “Locality-Aware Work Stealing Based on Online Profiling and Auto-Tuning for Multisocket Multicore Architectures,” HPDC, 2015, doi:10.1145/2766450.
+[16] Q. Chen et al., “Locality-Aware Work Stealing Based on Online Profiling and Auto-Tuning for Multisocket Multicore Architectures,” HPDC, 2015.
 
 </div>
 
 \newpage
 
-# 부록 A. Evidence taxonomy와 재현 단위
+# 부록 A. 재현 단위와 해석 원칙
 
-이 기술보고서는 수치마다 생성 경로를 네 층으로 나눈다. Direct evidence는 ONNX graph parser가 읽은 node, initializer와 external-data byte, KiCad source의 component·net·track 수처럼 artifact에서 다시 셀 수 있는 값이다. RTL-simulated evidence는 Verilator에서 handshake와 sequential logic을 진행한 값이다. Analytical evidence는 명시한 event와 cost 식이 만든 값이다. Hybrid evidence는 서로 다른 두 evidence layer를 합친 값이다.
+본 개정에서 수치의 권위는 그림이 아니라 원본 CSV와 생성 코드에 있다. 직접 확인
+자료는 ONNX 그래프의 노드·형상·가중치 구간, KiCad 객체 수처럼 원본에서 다시 셀
+수 있는 값이다. RTL 시뮬레이션 자료는 Verilator가 handshake와 순차 논리를 진행해
+만든 값이다. 분석 모델 자료는 명시된 작업·자원·비용 식이 만든 값이다. 보드에서
+측정한 성능·전력·신호 품질 자료는 없다.
 
-Gemma trace의 재현 단위는 model file 자체가 아니라 model manifest와 trace manifest다. Model weight는 repository에 복사하지 않는다. Manifest가 ONNX와 external-data SHA-256, file size, opset, input/output, layer·hidden·intermediate·vocabulary 정보를 기록한다. 생성기는 authorized read-only model directory를 입력받아 graph_inventory, projection_trace, token_trace와 representative weight tile을 다시 만든다. Output hash가 trace manifest와 다르면 paper 숫자를 재사용하지 않는다.
+Gemma 작업 목록은 `projection_trace.csv`의 K/N 형상과 연산 순서를 입력으로 삼는다.
+원본 가중치는 저장소에 넣지 않으며, 대표 타일만 허가된 로컬 모델에서 추출해 RTL
+정확성 fixture로 사용한다. 합성 실험은 같은 부하와 시드의 S1/S2/S3가 같은 작업
+목록 해시를 공유해야 유효하다. 재현 검증기는 완료 ID 집합, 중복 완료, timeout,
+비용 필드와 manifest 해시를 함께 확인한다.
 
-Scheduler의 재현 단위는 ledger SHA-256이다. 같은 seed와 workload로 생성한 job sequence가 정책마다 달라지면 공정한 비교가 아니다. 각 결과 row는 scheduler뿐 아니라 cluster, channel, bundle, width, completed ID count, duplicate count와 timeout을 함께 저장한다. Process repetition은 같은 ledger와 모델이 byte-identical 결과를 내는지 검사한다.
+분석 결과는 보드 실측이나 기능적 언어 모델 추론으로 확대하지 않는다. 특히 p95와
+p99는 의존성에서 해제된 TileJob의 완료 지연이다. 32토큰 조건은 동일한 의존성
+그래프를 직렬 반복한 것이며, KV cache가 증가하는 실제 텍스트 생성은 아니다.
 
-RTL temporal evidence의 공개 재현 단위는 current RTL test와 compact event CSV다. CSV는 224 cycle을 보존하고 cycle 16, 17, 18의 steal, 이후 MatVec start/result와 마지막 counter를 기계적으로 검사한다. Annotated SVG는 설명용 파생물이며 raw VCD는 저장소 크기를 줄이기 위해 `v10-final` archive에만 보존한다.
+# 부록 B. 폐루프 논리 RTL 구조
 
-# 부록 B. RTL module map과 interface
+`ClosedLoopVirtualPrototypeTop`은 작업 수락, DMA 요청 FIFO, 다중 채널 스케줄러,
+DDR 응답 경계, 논리 링크 FIFO, job ID 결합, 대기열 정책, MatVec 결과를 하나의
+역할 흐름으로 연결한다. 메모리 응답이 들어오기 전에는 연산 명령을 만들 수 없고,
+같은 응답은 한 번만 수락된다. 기존 `K26WorkStealingTop`의 스케줄러·메모리·링크
+평면은 독립적인 구조 실험으로 남겨 두고, 새 top을 폐루프 논리 검증 경로로 쓴다.
 
-TileScheduler는 S0–S3 ownership, FCFS queue와 victim selection을 구현한다. Scheduler depth는 local queue당 8이다. 표 3의 증거 경계에 따라 actual Gemma external-data tile→DecodeMatVecInt8와 synthetic TileScheduler→payload store→MatVec는 서로 다른 RTL-simulated 경로다. Scheduler dispatch→DMA/link/DDR request·response→MatVec release는 blocked 상태다.
+대표 검증은 Gemma의 `gate_proj`, `lm_head`, `o_proj`에서 추출한 16×4 INT8 타일
+세 개를 사용한다. 각 타일은 작업 수락→DMA 요청→메모리 응답→MatVec 결과 순서를
+지켰고 결과는 소프트웨어 INT32 내적과 일치했다. 수락/요청/응답/결과 사이클은
+각각 5/11/13/88, 89/95/97/172, 173/179/181/256이다. 이 범위는 실제 가중치가
+논리 데이터 경로를 통과했다는 사실만 확인한다.
 
-ComputeClusterArray는 1, 2, 4개의 concrete cluster를 생성한다. 각 ComputeCluster의 input FIFO depth는 4, output FIFO depth는 2다. MatVecTileConsumer는 LegacyMatVecAdapter를 거쳐 16×4 signed INT8 DecodeMatVecInt8 primitive를 실행한다. Result는 INT32이며 job ID와 함께 반환된다. Accepted, dispatched, completed counter와 output ID가 exact-once invariant의 기준이다.
+GTH 직렬화, 레인 결합, CDC, 패킷 분할, CRC 재전송, 크레딧 반환은 구현되지 않았다.
+DDR 응답은 MIG 경계에서 주입하므로 DDR3L PHY와 보정도 검증하지 않았다. 따라서
+논리 링크 폭과 FIFO 깊이는 구조 사실이지만 Fmax, 물리 대역폭, 보드 처리율은 아직
+말할 수 없다.
 
-BundleRouter는 preferred bundle과 bounded reroute를 수행한다. MultiChannelMemoryIngress는 output tile에 channel affinity를 부여한다. BankAwareChannelScheduler는 row hit를 우선하지만 age cap으로 starvation을 제한한다. 이 memory/link plane은 생성 가능한 RTL이지만 WorkStealingEvidenceTop의 three-job waveform에 물리 DDR/GTH로 결합되지 않는다.
+# 부록 C. Gemma 투영에서 TileJob으로의 변환
 
-Clock boundary는 논리적으로 compute, link와 memory plane으로 나뉜다. 현 증거는 기능 simulation clock을 사용한다. K26 PL clock, GTH reference clock, Memory FPGA fabric/MIG clock과 CDC constraint를 production XDC에서 닫지 않았다. 따라서 module map의 bus width와 queue depth는 structural fact이지만 Fmax와 throughput은 blocked다.
+Gemma 3 1B ONNX 그래프는 7,837개 노드와 183개 dense 투영을 토큰마다 가진다.
+Attention의 q/k/v/o가 104개, MLP의 gate/up/down이 78개, lm_head가 1개다. 원본
+float32 투영 가중치는 약 4.0 GiB이고 명시적 INT8 변환 뒤 약 1.0 GiB로 모델링한다.
 
-# 부록 C. Gemma graph와 tile 추출 상세
+개정 모델은 투영 하나를 작업 하나로 두지 않는다. 각 투영의 전체 K차원을 유지하고
+N≤1024인 출력 구간으로 나누어 토큰당 802개 TileJob을 만든다. q/k/v→o,
+o→gate/up, gate/up→down, down→다음 계층의 보수적 장벽을 둔다. 다음 토큰은
+현재 토큰의 lm_head가 끝난 뒤에만 열린다. 따라서 32토큰은 25,664개 TileJob의
+직렬 의존성 반복이다.
 
-Graph inventory는 node index, name, operator category, K, N, dtype, initializer name, byte offset, byte length, activation/output byte와 candidate cluster/channel/bundle을 기록한다. Attention projection 104개는 26 layer의 q, k, v, o로 구성된다. MLP 78개는 26 layer의 gate, up, down이다. 마지막 lm_head가 한 개 추가되어 토큰당 183개가 된다.
+초기 배치는 네 가지다. 기존 산술 규칙은 C0/C1/C2/C3에 464/208/78/52개 타일을
+둔다. 라운드로빈은 201/201/200/200개로 나눈다. 크기 균형은 누적 MAC이 작은
+클러스터에 다음 작업을 둬 198/202/200/202개가 된다. 채널 친화는 가중치 채널과
+같은 번호의 클러스터를 우선해 394/136/136/136개가 된다. 이 네 배치는 실제
+컴파일러 결과가 아니라 설계 민감도 변수다.
 
-Token trace는 tokenizer가 만든 32개 deterministic input ID와 projection-order hash를 연결한다. 생성 text나 ORT timing trace가 아니다. Scheduler replay는 각 token의 projection order를 반복하고 각 projection을 한 개 coarse INT8 job으로 취급한다. 실제 accelerator는 projection을 많은 16×4 tile로 나누어야 하므로 coarse job의 wait distribution을 physical tile latency로 읽을 수 없다.
+# 부록 D. 정책과 원격 복사 비용
 
-Representative tile은 initializer external-data offset에서 float32 64개를 읽는다. Quantizer는 tile별 maximum absolute value를 구하고 scale을 max_abs/127로 둔다. 각 값은 scale로 나눈 뒤 nearest integer로 반올림하고 -127에서 127로 clamp한다. Zero point는 0이다. 이 방식은 정확성 fixture를 고정하기 위한 것이며 production per-channel quantization policy가 아니다.
+S1은 자기 대기열만 선착순으로 처리하는 정적 다중 대기열이다. S2는 유휴
+클러스터가 다른 대기열의 가장 오래된 작업을 가져온다. S3는 예상 대기 감소에서
+가중치·활성값·부분합 이동과 링크 불일치 비용을 뺀 점수가 양수일 때만 가져온다.
 
-RTL parity는 attention output, MLP gate와 lm_head 세 tile에 대해 software의 signed INT8 dot product와 hardware INT32 result를 비교한다. Input vector와 quantized weight가 모두 fixture에 저장되어 model file 없이도 bounded RTL test를 다시 실행할 수 있다. 반대로 full graph trace를 재생성하려면 license가 허용된 원본 model이 필요하다.
+작업 이동은 단순 ownership counter가 아니다. 모델은 정적 배치의 선호 링크로
+가중치를 먼저 공급한 뒤, 실행 클러스터가 바뀌면 가중치·활성값·부분합의 추가
+바이트를 새 링크로 복사한다. 기본 링크 서비스와 추가 복사 서비스의 바이트·사이클을
+별도 필드로 보존하고, 두 서비스 모두 완료시간 계산에 들어간다. 따라서 S3가
+S2보다 작은 원격 작업을 골라 비지역 가중치를 줄일 수 있어도 S1보다 느릴 수 있다.
 
-# 부록 D. Scheduler algorithm과 invariants
+의존성 있는 작업은 모든 선행 작업이 끝나야 대기열에 들어간다. TileJob 지연의
+시작점은 원래 생성 시각이 아니라 의존성 해제 시각이다. 이 정의는 단계 장벽 때문에
+기다린 시간을 스케줄러 지연으로 잘못 세지 않는다.
 
-S1은 arrival 시 home cluster queue에 job을 넣고 FIFO head만 실행한다. S2는 idle cluster가 victim queue의 eligible job 중 가장 오래된 것을 선택한다. S3의 ordering key는 age benefit과 locality penalty를 결합한다. Penalty는 remote weight byte, activation 비상주, reduction owner mismatch와 preferred bundle mismatch를 나타낸다. Score가 threshold를 넘지 않으면 local owner가 기다린다.
+# 부록 E. 합성 부하의 동일 시드 쌍비교
 
-Stealing은 queue element 복제가 아니라 ownership transfer다. Scheduler는 victim queue에서 job을 제거한 뒤 target cluster에 한 번만 dispatch한다. Payload identity store는 job ID에 대응하는 weight/input fixture를 내보낸다. Completion scoreboard는 이미 끝난 ID를 다시 수락하지 않는다.
+분석 모델 기본값은 클러스터 4개, 메모리 채널 4개, 논리 링크 묶음 4개, 묶음당
+128비트다. 각 합성 부하는 1,000개 작업이며 시드 다섯 개를 사용한다. 정책별
+중앙값을 먼저 비교하지 않고, 같은 시드의 S3/S1 또는 S3/S2 변화율을 계산한 뒤
+그 변화율의 중앙값을 보고한다.
 
-정상 종료 invariant는 input ID set과 completed ID set의 동일성, duplicate completion 0, ingress backlog 0과 timeout false다. Starvation ratio, completion reordered와 steal success rate는 진단 지표이며 correctness를 대신하지 않는다. Stalled bundle stress는 큰 completion 값으로 정상 통계에 섞지 않고 명시적 timeout/correctness false로 끝나야 한다.
+균형 부하에서 S3와 S1의 완료시간·p95·p99 차이는 모두 0%다. 채널 집중 부하도
+p95와 p99 차이가 0%이며 완료시간만 −0.06%다. 순간 집중 부하는 p95 −0.08%,
+p99 −1.16%로 효과가 작다. 이 조건들은 연산 클러스터의 빈 시간이 이동 비용을
+상쇄할 만큼 크지 않다.
 
-Offline Oracle은 각 job과 resource availability를 미리 아는 list scheduler다. Oracle row의 resource lower bound는 compute, channel과 link load의 최대값이다. List schedule completion을 수학적 optimum으로 부르지 않는다. S0도 실제 central queue의 arbitration과 wiring을 완전히 나타내지 않으므로 lower-reference로만 사용한다. 특히 S0 remote weight 0은 관측이 아니라 global shared storage를 암묵적으로 둔 정의다. S0-physical은 arbitration 2, fanout 2, crossbar 3의 임의 +7 cycle/job 한 점만 추가한다. 대칭 traffic account와 0/수십/수백 cycle sensitivity가 없어 central/distributed physical 순위를 정할 수 없다.
+혼합 부하에서는 S3가 S1보다 완료시간 15.91%, p95 17.70%, p99 16.92% 짧다.
+편향 부하에서는 각각 17.25%, 19.13%, 18.71% 짧다. 같은 편향 부하의 S2와
+비교하면 S3의 비지역 가중치가 35.49% 적고 완료시간 차이는 +0.01%로 거의 같다.
+즉, 지역성 인식은 가장 오래된 작업을 무조건 가져오는 것보다 전송량을 줄이지만,
+그 자체가 언제나 추가 완료시간 이득을 주는 것은 아니다.
 
-# 부록 E. Synthetic 결과의 workload별 해석
+다섯 시드는 제한된 민감도이며 통계적 모집단을 대표하지 않는다. 신뢰구간이나
+유의확률을 제시하지 않고 중앙값과 조건별 방향만 해석한다. 이 합성 수치는 Gemma
+실행 성능으로 옮겨 읽지 않는다.
 
-Balanced는 네 home cluster와 channel에 job을 균등하게 배치한다. S0, S1, S2, S3는 같은 p95 19,524 cycle과 completion 22,506 cycle을 기록했다. S0-physical은 central control 때문에 completion 24,256 cycle로 길다. 이 case에서 stealing은 한 번도 발생하지 않는다.
+# 부록 F. Gemma 형상의 초기 배치 민감도
 
-Bursty는 arrival group 때문에 global FIFO도 burst wait를 받는다. S1 p95 중앙값은 61,001 cycle이고 S3는 60,891 cycle로 거의 같다. Completion은 S1 67,976, S2 66,934, S3 66,958 cycle이다. S3 remote weight 44,032 B는 S2 58,368 B보다 낮다. 그러나 차이가 작으므로 정책 우열을 강하게 말할 수 없다.
+기존 산술 배치에서 S3는 S1보다 완료시간이 4.80% 길고 TileJob p95도 0.28%
+길다. 추가 링크 이동량은 토큰당 395.2 MB다. 라운드로빈에서는 완료시간이 0.59%
+짧고 p95 변화는 없으며 추가 이동량은 43.3 MB다. 크기 균형에서는 완료시간이
+0.76% 짧고 p95 변화는 없으며 추가 이동량은 110.8 MB다.
 
-Hotspot은 preferred channel 0을 집중시킨다. S1과 S3 p95는 모두 159,940 cycle이고 completion도 170,908과 170,816 cycle로 유사하다. Compute work를 다른 cluster로 옮겨도 shared channel service가 제한되기 때문이다. 이 결과는 channel bottleneck을 queue policy 하나로 해결할 수 없음을 보여준다.
+채널 친화 배치에는 큰 작업 쏠림이 남아 있다. 이 조건에서 S3는 완료시간을 7.56%,
+TileJob p95를 19.79% 줄이지만 추가 이동량은 토큰당 416.4 MB다. 결과는 “S3가
+항상 빠르다”가 아니라 “초기 배치 뒤 남은 불균형이 이동 비용보다 클 때만 효과가
+있다”를 지지한다. 실제 컴파일러 배치가 확보되면 네 민감도 중 어느 조건과 가까운지
+다시 확인해야 한다.
 
-Skew는 home cluster 0에 job을 집중시킨다. Full-overlap mode에서 S1/S2/S3의 compute duty는 0.057097/0.069318/0.068999이고 reservation occupancy는 0.336200/0.998086/0.994864다. S1/S2/S3 unreserved idle은 811,713/1,914/5,137 cycle이다. Mixed의 compute duty는 0.068345/0.081225/0.080889, reservation occupancy는 0.413076/0.998245/0.996291, unreserved idle은 1,210,683/3,034/6,432 cycle이다. 정의는 본문 VI-B와 같으며 0.995/0.996은 reservation occupancy일 뿐이다.
+# 부록 G. K26 로컬과 외부 메모리 후보
 
-Mixed는 attention, MLP와 lm_head shape를 섞어 job size 분산이 크다. S1 p95 478,553 cycle, S3 394,375 cycle로 tail이 줄지만 Oracle p95 341,161 cycle와 차이가 남는다. 큰 job의 locality penalty와 queue ordering을 더 정교하게 조정할 여지가 있다.
+용량 모델은 INT8 가중치, 문맥 길이 32K의 KV cache, 활성값과 실행 여유분을 합해
+2.43 GiB를 얻는다. 이는 명목 K26 4GB 안에 들어간다. 따라서 외부 8GB는 Gemma
+1B 용량에 반드시 필요한 구성이 아니다.
 
-Seed 5개는 workload generator의 제한된 sensitivity다. Process repetition 3개는 같은 seed를 복제하므로 15개 독립 sample이 아니다. Confidence interval이나 통계적 유의성을 제시하지 않고 중앙값과 방향만 해석한다.
+크기 균형 S1에서 K26 로컬 유효 대역폭 4.8/9.6/14.4 GB/s의 완료시간은
+45.0M/24.6M/17.8M 사이클이다. 외부 네 채널 합계 3.2/6.4/12.8 GB/s 후보는
+238.3M/120.6M/62.4M 사이클이다. 외부 6.4 GB/s에서 링크 폭을 64비트에서
+256비트로 넓혀도 결과가 거의 같아 메모리 공급이 병목임을 보인다.
 
-기본 latency 식은 같은 dispatch-ready 시점에서 link와 memory를 동시에 시작하고 `data_ready=max(link_end,memory_end)`로 두는 full-overlap abstraction이다. 이때 skew S1/S2/S3 p95는 285,333.05/236,527.85/233,625.15 cycle이고 mixed는 478,553.05/403,766.25/394,375.45 cycle이다. 별도 sequential-service sensitivity에서 p95는 skew 499,243.85/260,052.10/264,294.60, mixed 825,278.25/471,918.25/463,867.20 cycle이다. 따라서 skew에서는 S3가 S2보다 1.23% 낮던 full-overlap 순위가 sequential mode에서 S2가 약 1.63% 낮은 것으로 뒤집히고, mixed에서는 S3가 각각 2.33%와 1.71% 낮아 방향이 유지된다. 두 경계 모두 실제 DMA/link/DDR protocol timing 측정이 아니다.
+이 값들은 실측치가 아니라 채택 임계값을 탐색하는 분석 입력이다. 시험한 범위에서는
+외부 후보가 K26 로컬 기준선을 이기지 못했다. 외부 Memory FPGA의 다음 평가 조건은
+3B 이상 모델, 더 긴 문맥, K26 로컬 경합, 독립 공급 경로가 필요한 다중 클러스터다.
+전체 BOM과 보드 전력이 없으므로 저비용·저전력 달성을 주장하지 않는다.
 
-# 부록 F. Gemma hybrid 조립식
+# 부록 H. KiCad 라우팅 쿠폰의 실제 범위
 
-Projection cycle은 200 MHz analytical model clock으로 millisecond로 변환한다. Decode-1은 생성 토큰 1개의 183 job, decode-32는 생성 토큰 32개의 5,856 job이다. 이 조건은 KV context-32K와 별개다. Link traffic은 modeled weight, activation retransmission, partial sum과 overhead를 포함한다. S0와 S1의 remote weight가 0이어도 total link byte는 model data path에 의해 약 1.003 GB/token이다. Decode-32의 S3 6.3346 s는 S0 6.3676 s보다 0.518% 짧지만 단일 coarse ledger와 비대칭 locality 회계 안의 작은 차이다.
+KiCad 자료는 K26 모듈과 Memory FPGA가 실장된 전체 보드가 아니다. J1/J2의 일반
+경계 커넥터, MLCC, 단일 DDR3L 메모리 slice와 일부 GTH·기준 클록 배선을 둔 축소
+라우팅 쿠폰이다. 화면의 3D 렌더는 객체와 배선 위치를 설명할 뿐 제작 준비 상태를
+보여 주지 않는다.
 
-Host fallback은 Y700 CPU EP profile에서 projection operator group을 제외한 평균 204.701 ms/token이다. Decode 32는 이 값을 32배한 6.550 s를 사용한다. Hybrid total은 scheduler projection time과 이 fallback의 합이다. Model이 autoregressive context 증가, cache effect, thermal throttling과 runtime scheduling을 포함하지 않으므로 선형 외삽은 architecture bookkeeping에만 쓴다.
+원본에는 footprint 29개가 있고 GTH·기준 클록 관련 단일 종단 net 20개가 명시적으로
+라우팅되어 있다. 제한된 규칙에서 ERC/DRC 0이라는 결과는 쿠폰 subset에만 적용된다.
+전체 설계의 핀 지정, 전원 트리, 네 DDR controller, K26 실제 커넥터, FPGA package,
+MIG 배치, 전체 라우팅과 제조 검증은 닫히지 않았다.
 
-Decode 32에서 S3는 S1보다 projection 1.006 s, hybrid total도 1.006 s 짧다. Host fallback이 정책과 무관하게 고정되어 있기 때문이다. 따라서 hybrid total 차이는 새로운 host measurement를 추가하지 않으며 projection model 차이를 그대로 반영한다.
+후속 단계는 정확한 MPN과 데이터시트, K26 커넥터 pinout, FPGA transceiver quad,
+MIG bank, stackup, 임피던스·손실·지터 예산, plane·stitching, PDN/SI/thermal/EMC,
+제조 검사점을 요구한다. 그전에는 `NOT FOR FABRICATION` 표시를 유지한다.
 
-Oracle projection은 5.269 s이지만 list schedule 자체가 physical implementation은 아니다. S3와 Oracle의 1.066 s 차이는 locality, queue와 resource availability의 modeling gap을 포함한다. 이를 hardware optimization ceiling으로 단정하지 않는다.
+# 부록 I. 빌드와 품질 관문
 
-# 부록 G. Power와 energy formula
+논문 빌드는 Markdown을 독립 HTML로 변환하고 SVG를 포함한 뒤 headless Chromium으로
+PDF를 출력한다. 제출 원고는 A4 2단, 기술보고서는 A4 1단이다. 빌드 뒤 페이지 수,
+텍스트 추출, 금지 주장, Figure 순서와 출처를 검사한다. SVG의 원본 글꼴과 최종 PDF
+제목 글꼴의 비율로 최종 최소 글꼴을 보수적으로 계산하며 8pt 미만이면 실패한다.
 
-Compute unit energy는 10억 INT8 MAC에 pJ/MAC를 곱한다. Low, central, high는 각각 0.001, 0.005, 0.015 J per 10억 MAC이다. 이 범위는 architecture sensitivity이며 K26 또는 XC7K160T power report가 아니다.
+재현 순서는 합성 실험, 의존성 인식 Gemma 실험, K26 로컬/외부 민감도, RTL 테스트,
+논문 빌드다. 허가된 원본 Gemma 경로가 없더라도 저장된 trace와 대표 fixture로
+핵심 검증을 반복할 수 있다. 모델 원본 가중치는 저장소와 release에 포함하지 않는다.
 
-Link unit energy는 1 GiB×8 bit/byte×pJ/bit로 계산한다. 24, 51.2, 120 pJ/bit에서 1 GiB transport는 0.206, 0.440, 1.031 J다. Coding overhead, serializer clock, idle, retry와 board loss가 빠져 있으므로 serialized payload unit일 뿐 transceiver total energy가 아니다.
-
-DDR3L command model은 VDD, incremental current, command cycle과 tCK를 사용한다. Central scenario의 per-x8-die unit은 ACT 0.803 nJ, PRE 0.427 nJ, READ 0.803 nJ, WRITE 0.587 nJ, REFRESH 71.253 nJ다. Idle precharged/active는 cycle당 0.054/0.064 nJ다. Low/high corner는 central의 0.8/1.2배다.
-
-보존된 `results/runs/dramsim3-snapshot/dramsim_stats_ch4.json` snapshot은 four-channel command와 background category를 제공하지만 PRE를 별도 bucket으로 보고하지 않는다. 공개 저장소에는 runnable adapter가 없으며 PRE energy를 0으로 채우지 않고 blank로 둔다.
-
-별도 Gemma energy join은 graph-derived MAC, DRAM weight byte와 modeled link byte를 unit energy에 결합한다. S3 decode-32의 link account는 base 1,003,000,416 B/token과 steal overhead 88,806,088 B/token을 합친 1,091,806,504 B/token이다. 이에 따른 low/central/high dynamic estimate는 0.291943317/0.553753651/1.185041645 J/token이다. Central case의 hybrid latency는 약 0.403 s/token, energy-delay product는 약 0.222973478 J·s, throughput은 2.483495600 token/s다. 이 값은 dynamic READ+ACT+PRE, compute와 serialized payload만 포함한다. Refresh, idle, controller, PHY, clock와 board power가 빠져 있어 board-calibrated total energy가 아니다.
-
-# 부록 H. DRAM capacity와 cost sensitivity
-
-8 GiB baseline은 channel당 두 개 x8 package가 한 x16 rank를 이루고 이를 네 channel 반복한다. AS4C1G8D3LA-10BCN package 한 개는 8 Gb이며 내부에 두 physical 4 Gb x4 die가 있다. 전체는 package 8개, physical die 16개다. 16 GiB option은 channel당 두 번째 rank를 추가해 package 16개, physical die 32개가 된다. Gemma 1B INT8 context-32K capacity budget 2.4301 GiB는 명목 K26 local 4 GB에도 들어간다. 따라서 8 GiB의 근거는 Gemma 1B capacity necessity가 아니라 검증 대기 중인 independent-bandwidth/service-isolation design point다.
-
-Quantity-1 price snapshot은 procurement quote가 아니며 시점에 따라 바뀐다. Low 39.32 USD/package와 high 97.10 USD/package를 그대로 보여주고 midpoint 68.21 USD를 sensitivity에 사용한다. Physical-die dollar는 package price/2로 환산한다. Package, rank와 bare die를 혼동하지 않는다.
-
-Pin-rate 상한 6.4 GB/s에 delivery factor 0.50, 0.70, 0.85를 곱해 3.2, 4.48, 5.44 GB/s를 만든다. 이 factor는 측정 효율이 아니다. 16 GiB second rank는 capacity를 두 배로 하지만 channel width와 data rate를 바꾸지 않아 bandwidth 상한은 같다. 그 결과 effective GB/s per die-dollar는 8 GiB option의 절반이 된다.
-
-Cost table은 memory component boundary만 다룬다. K26 SOM, FPGA, PCB, power, connector, heatsink, assembly, NRE, freight와 tax를 합하지 않는다. Total accelerator price, total BOM과 product value를 이 결과로 표현할 수 없다.
-
-Hybrid throughput을 같은 DRAM-only denominator로 나눈 sensitivity도 별도 저장한다. S3 decode 32의 central hybrid throughput 2.4835 token/s를 midpoint DRAM-die cost 545.68 USD로 나누면 0.004551 token/s per DRAM-die dollar다. Low/high price snapshot에서는 denominator만 바뀐다. Cost-normalized CSV는 이 계산과 무관한 `delivery_case` 축을 제거해 price case 세 행만 둔다. 이 값은 total-system price-performance가 아니며 현재 hybrid throughput model의 DRAM-die 가격 정규화다.
-
-# 부록 I. KiCad audit 상세
-
-Native gate는 coupon ERC 0 error/0 warning, hierarchy ERC 0/0, coupon PCB DRC 0 violation, schematic parity 0 issue와 native unconnected pad 0을 기록했다. 이 값은 deliberately reduced connector/bank boundary와 proposal rule에만 적용된다.
-
-Raw source inventory는 schematic component 29개, named net 116개, PCB footprint 29개, track segment 65개, via 50개, zone 1개와 four copper layer declaration이다. Analyzer의 routing_complete는 false이며 unrouted net은 55개다. Explicit routed subset은 GTH/reference-clock 20개 single-ended net이다.
-
-Return-path cross analysis는 DDR CK P/N, DQ0, LDQS P/N과 두 GTH reference-clock pair에서 9개 plane-gap crossing을 찾았다. Ground stitching via도 없다. EMC risk analyzer의 67/100은 checklist priority일 뿐 compliance score가 아니다. Ten decoupling capacitor distance, J5 filtering 부재와 outer-layer reference clock이 주요 finding이다.
-
-Manufacturing risk에는 0.10 mm annular ring, untented via-in-pad 10개, front fiducial 부재 27개와 test-point coverage 0/116이 포함된다. Gerber set은 26 file, mixed drill 1개, hole 63개, flash 1,139개, draw 5,533개를 가진다. Sparse layer와 full Edge.Cuts extent 비교에서 alignment warning이 있으므로 독립 CAM overlay가 필요하다.
-
-Production 단계는 exact MPN/datasheet archive, four-controller Vivado MIG bank placement, GTX quad/refclock assignment, fabricator stackup, impedance/loss/jitter budget, plane fill와 stitching, PDN/SI/thermal/EMC, full routing과 manufacturing test를 요구한다. 그전에는 proposal-only 및 NOT FOR FABRICATION label을 유지한다.
-
-# 부록 J. Reproduction과 claim audit
-
-논문 build는 Markdown을 standalone HTML로 변환하고 figure를 embedded resource로 포함한 뒤 headless Chrome으로 PDF를 출력한다. Submission PDF는 A4 two-column CSS를 사용하고 기술보고서는 A4 single-column CSS를 사용한다. Build 이후 pdfinfo로 page 수를 읽고 pdftotext로 text extraction을 확인한다.
-
-Quality gate는 PDF text에 local filesystem path와 backtick이 없는지 검사한다. Overclaim search는 보편적 최적, 제작 가능, 실제 보드 전력, full 3B execution과 total accelerator price에 해당하는 표현을 찾는다. 해당 단어가 limitation이나 금지 문맥에 나타날 수 있으므로 최종 판정은 문맥 감사다.
-
-논문 수치는 graph manifest, scheduler CSV, RTL event CSV, cost sensitivity와 KiCad review에서 교차 확인한다. Figure는 설명 자산이고 source CSV가 숫자 권위다. Publication asset metadata의 blocked interpretation이 본문 claim보다 우선한다.
-
-일반 재현은 `make setup && make reproduce` 하나로 실행한다. 필요한 외부 요소는 Java/Scala/sbt, Verilator, Python, KiCad CLI, Pandoc, Chrome과 PDF utilities다. Authorized Gemma model path는 선택적인 `make model-trace`에만 필요하다. Model weight는 repository와 release archive에 포함하지 않는다.
+최종 해석은 세 문장으로 제한된다. 첫째, Gemma 1B에는 K26 로컬 구성이 우선이다.
+둘째, 외부 메모리는 더 큰 모델·긴 문맥·로컬 경합이 확인될 때 다시 평가한다. 셋째,
+Work Stealing은 초기 배치가 남긴 불균형이 이동 비용보다 클 때만 켠다.

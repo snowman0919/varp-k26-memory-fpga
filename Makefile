@@ -25,12 +25,15 @@ model-trace:
 
 paper-experiments:
 	PYTHONPATH=$(PYTHONPATH) $(PYTHON) scripts/run_k26_experiments.py
+	PYTHONPATH=$(PYTHONPATH) $(PYTHON) scripts/run_gemma_dependency_experiments.py
+	PYTHONPATH=$(PYTHONPATH) $(PYTHON) scripts/run_k26_local_baseline.py
+	$(PYTHON) scripts/build_v11_research_summary.py
 
 power-cost:
 	$(PYTHON) scripts/build_power_cost_evidence.py
 
 rtl-test:
-	sbt -batch "testOnly varp.TileSchedulerSpec varp.K26WorkStealingTopSpec varp.MultiChannelMemorySchedulerSpec varp.BundleRouterSpec varp.ComputeClusterSpec varp.LegacyMatVecSpec varp.WorkStealingEvidenceSpec varp.GemmaWeightTileRtlParitySpec"
+	sbt -batch "testOnly varp.TileSchedulerSpec varp.K26WorkStealingTopSpec varp.ClosedLoopVirtualPrototypeTopSpec varp.MultiChannelMemorySchedulerSpec varp.BundleRouterSpec varp.ComputeClusterSpec varp.LegacyMatVecSpec varp.WorkStealingEvidenceSpec varp.GemmaWeightTileRtlParitySpec"
 
 kicad-gate:
 	$(PYTHON) scripts/verify_k26_kicad.py
@@ -47,7 +50,7 @@ research-freeze: research-reproduce
 	$(PYTHON) scripts/validate_research_freeze.py
 
 presentation: research-freeze animations
-	$(PYTHON) presentation/tools/build_editable_deck.py
+	$(PYTHON) presentation/tools/build_v11_deck.py
 	$(PYTHON) presentation/tools/generate_visual_summary.py
 	$(PYTHON) presentation/tools/validate_editable_deck.py
 

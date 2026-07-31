@@ -93,14 +93,14 @@ def assemble_report() -> None:
     submission = (FINAL / "submission_manuscript.md").read_text(encoding="utf-8")
     submission = re.sub(
         r'^title: ".*?"$',
-        'title: "K26–Memory FPGA 다채널 메모리·Work Stealing 구조: 확장 기술보고서"',
+        'title: "온디바이스 sLLM용 K26–Memory FPGA 후보 구조: 확장 기술보고서"',
         submission,
         count=1,
         flags=re.MULTILINE,
     )
     submission = re.sub(
         r'^subtitle: ".*?"$',
-        'subtitle: "Extended Technical Report on Gemma 3 1B Trace, RTL, Scheduler, Cost, and Physical Evidence"',
+        'subtitle: "Extended Technical Report on Dependency-Aware Mapping, Closed Logical RTL, and Placement Sensitivity"',
         submission,
         count=1,
         flags=re.MULTILINE,
@@ -198,18 +198,15 @@ def extract_and_audit(pdf: Path, text_out: Path) -> None:
         raise SystemExit(f"{pdf.name}: " + ", ".join(errors))
     required = {
         "Gemma 3 1B": r"Gemma\s+3\s+1B",
-        "ONNX Runtime boundary": r"ONNX\s+Runtime\s+Android\s+CPU",
         "graph inventory": r"7,837",
-        "KiCad native source render": r"KiCad\s+native\s+PCB\s+source",
-        "S0-physical": r"S0-physical",
-        "analytical": r"analytical",
+        "closed logical path": r"닫힌\s+논리",
         "NOT FOR FABRICATION": r"NOT\s+FOR\s+FABRICATION",
-        "18.12%": r"18\.12%",
-        "17.59%": r"17\.59%",
-        "skew p99": r"302,186\.41/249,379\.73/247,296\.42",
-        "mixed p99": r"506,354\.73/426,120\.83/422,255\.59",
-        "cost-normalized midpoint": r"0\.004551194106",
-        "procurement refresh": r"조달\s+전에\s+갱신",
+        "paired synthetic p95": r"19\.13%",
+        "remote movement": r"35\.49%",
+        "source placement cost": r"4\.80%",
+        "affinity placement p95": r"19\.79%",
+        "local capacity": r"2\.43\s+GiB",
+        "repository": r"github\.com/snowman0919/varp-?k26-?memory-?fpga",
     }
     absent = [label for label, pattern in required.items() if not re.search(pattern, text)]
     if absent:
@@ -221,77 +218,77 @@ PAPER_SVG_FIGURES = (
         "figure": "1",
         "asset_id": "F01",
         "source": "paper/final/figures/paper_f01_evidence_path.svg",
-        "upstream": "build/publication_assets/figures/F01;data/publication/k26_system_architecture.csv",
-        "evidence": "RTL-simulated + modeled + blocked",
-        "scope": "core paper simplified SVG; detailed F01 is supplemental",
-        "anchor": ("Implemented RTL planes", "missing end-to-end loop"),
+        "upstream": "docs/architecture.md;hw/src/main/scala/varp/k26/ClosedLoopVirtualPrototypeTop.scala",
+        "evidence": "closed logical RTL + open physical boundary",
+        "scope": "candidate architecture and implementation boundary",
+        "anchor": ("연산과",),
     },
     {
         "figure": "2",
-        "asset_id": "F06",
+        "asset_id": "F02",
         "source": "paper/final/figures/paper_f02_onnx_runtime_graph.svg",
-        "upstream": "experiments/gemma3_1b/trace_manifest.json;experiments/gemma3_1b/projection_trace.csv",
-        "evidence": "graph-derived + separate ONNX Runtime host reference",
-        "scope": "core paper ONNX graph/runtime boundary; detailed F06 is supplemental",
-        "anchor": ("ONNX graph", "Runtime evidence boundary"),
+        "upstream": "experiments/gemma3_1b/projection_trace.csv;src/varp/gemma_dependency_model.py",
+        "evidence": "ONNX-derived shapes + modeled dependencies/placement",
+        "scope": "projection-to-tile mapping and conservative barriers",
+        "anchor": ("형상을",),
     },
     {
         "figure": "3",
-        "asset_id": "F02",
+        "asset_id": "F03",
         "source": "paper/final/figures/paper_f03_policy_boundary.svg",
-        "upstream": "build/publication_assets/figures/F02;data/publication/k26_scheduler_policies.csv",
-        "evidence": "RTL decision/dispatch + analytical migration + blocked DMA/link/DDR",
-        "scope": "core paper simplified SVG; detailed F02 is supplemental",
-        "anchor": ("policy ladder and evidence boundary",),
+        "upstream": "src/varp/k26_scheduler_model.py;results/experiments/paired_policy_effects.csv",
+        "evidence": "analytical policy and charged remote-copy service",
+        "scope": "S1/S3 decision and transfer semantics",
+        "anchor": ("가져오되",),
     },
     {
         "figure": "4",
-        "asset_id": "waveform",
+        "asset_id": "F04",
         "source": "paper/final/figures/paper_f04_waveform_identity.svg",
-        "upstream": "evidence/waveforms/work_stealing_events.csv",
-        "evidence": "RTL-simulated bounded timeline",
-        "scope": "core paper identity/count summary; compact event CSV is supplemental",
-        "anchor": ("RTL-simulated job identity", "exact-once timeline"),
+        "upstream": "evidence/model/gemma3_1b_closed_loop_trace.csv",
+        "evidence": "actual-weight bounded closed-logical-path RTL simulation",
+        "scope": "three representative Gemma INT8 tiles",
+        "anchor": ("폐쇄형",),
     },
     {
         "figure": "5",
-        "asset_id": "F04-subset",
+        "asset_id": "F05",
         "source": "paper/final/figures/paper_f05_tail_latency.svg",
-        "upstream": "data/publication/k26_scheduler_summary.csv",
-        "evidence": "analytical model",
-        "scope": "core paper skew/mixed p95 subset; detailed F04 is supplemental",
-        "anchor": ("Full-overlap", "locality-aware"),
+        "upstream": "results/experiments/paired_policy_effects.csv",
+        "evidence": "paired-seed analytical model v2",
+        "scope": "synthetic workload TileJob p95",
+        "anchor": ("유효구간에서",),
     },
     {
         "figure": "6",
-        "asset_id": "F04-subset",
+        "asset_id": "F06",
         "source": "paper/final/figures/paper_f06_tradeoff.svg",
-        "upstream": "data/publication/k26_scheduler_summary.csv",
-        "evidence": "analytical model",
-        "scope": "core paper S2/S3 trade-off subset; detailed F04 is supplemental",
-        "anchor": ("against oldest-steal",),
+        "upstream": "results/model_level/gemma3_1b_policy_effects.csv;results/model_level/gemma3_1b_placement_sensitivity.csv",
+        "evidence": "dependency-aware placement sensitivity",
+        "scope": "Gemma-shaped TileJob p95/completion trade-off",
+        "anchor": ("가른다",),
     },
 )
 
 PAPER_RASTER_FIGURES = (
     {
         "figure": "7",
-        "asset_id": "F05",
+        "asset_id": "F07",
         "source": "paper/final/figures/paper_f07_kicad_coupon_render.png",
         "upstream": "hardware/kicad/k26_memory_coupon/k26_memory_coupon.kicad_pcb;hardware/kicad/controlled_review.md",
-        "evidence": "KiCad-native source render + bounded checks",
-        "scope": "core paper native PCB render; NOT FOR FABRICATION",
+        "evidence": "KiCad-native routing coupon + bounded checks",
+        "scope": "interface routing coupon; NOT FOR FABRICATION",
     },
 )
 
 PAPER_FIGURES = PAPER_SVG_FIGURES + PAPER_RASTER_FIGURES
 
 SUPPLEMENTAL_ASSETS = (
-    ("F03", "build/publication_assets/figures/F03", "graph-derived + analytical + host-measured", "presentation/supplement only"),
-    ("T01", "build/publication_assets/figures/T01", "analytical model", "presentation/supplement only"),
-    ("T02", "build/publication_assets/figures/T02", "analytical model + not-run", "presentation/supplement only"),
-    ("T03", "build/publication_assets/figures/T03", "mixed evidence", "presentation/supplement only"),
-    ("T04", "build/publication_assets/figures/T04", "analytical model", "presentation/supplement only"),
+    ("LEGACY-F03", "build/publication_assets/figures/F03", "legacy pre-v11 figure", "technical archive only"),
+    ("LEGACY-T01", "build/publication_assets/figures/T01", "legacy analytical model", "technical archive only"),
+    ("LEGACY-T02", "build/publication_assets/figures/T02", "legacy analytical model", "technical archive only"),
+    ("LEGACY-T03", "build/publication_assets/figures/T03", "legacy mixed evidence", "technical archive only"),
+    ("LEGACY-T04", "build/publication_assets/figures/T04", "legacy analytical model", "technical archive only"),
 )
 
 
@@ -329,8 +326,10 @@ def svg_font_sizes(svg_path: Path) -> tuple[float, float]:
         sizes.append(size)
         if "h" in node.attrib.get("class", "").split() and title_size is None:
             title_size = size
-    if not sizes or title_size is None:
-        raise SystemExit(f"{svg_path}: missing text or title font")
+    if not sizes:
+        raise SystemExit(f"{svg_path}: missing text")
+    if title_size is None:
+        title_size = max(sizes)
     return min(sizes), title_size
 
 
@@ -448,7 +447,7 @@ def validate_final_figure_fonts(pdf: Path, pdftohtml: str) -> None:
             )
             if all(
                 token in page_text
-                for token in ("KiCad", "native", "PCB", "source", "validation", "coupon")
+                for token in ("KiCad", "인터페이스", "라우팅", "쿠폰")
             ):
                 pages.append(int(page.attrib["number"]))
         if len(pages) != 1:
@@ -461,7 +460,7 @@ def validate_final_figure_fonts(pdf: Path, pdftohtml: str) -> None:
                 "paper_figure": item["figure"],
                 "source_svg": item["source"],
                 "final_page": str(pages[0]),
-                "pdf_anchor": "KiCad native PCB source / validation coupon",
+                "pdf_anchor": "KiCad 인터페이스 라우팅 쿠폰",
                 "source_min_font_px": "N/A",
                 "source_title_font_px": "N/A",
                 "reported_title_font_pt": "N/A",

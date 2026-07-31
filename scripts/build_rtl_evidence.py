@@ -25,6 +25,7 @@ RTL_DOCS = ROOT / "docs/rtl"
 
 MODULES = [
     ("TileScheduler", "hw/src/main/scala/varp/scheduler/TileScheduler.scala", "S0–S3 job ownership, FCFS and steal selection", "system", "TileJob", "ScheduledTile", "8", "implemented RTL", "F01/F02"),
+    ("ClosedLoopVirtualPrototypeTop", "hw/src/main/scala/varp/k26/ClosedLoopVirtualPrototypeTop.scala", "DMA request, DDR response boundary, logical link FIFO, payload join, scheduler and MatVec", "system", "MatVecFetchCommand + MemoryWeightResponse", "MatVecTileResult", "pending 16; link FIFO 4", "implemented logical RTL; MIG/GTH external", "F01/F03"),
     ("K26WorkStealingTop", "hw/src/main/scala/varp/k26/K26WorkStealingTop.scala", "paper integration shell and payload identity store", "system", "MatVecTileCommand", "MatVecTileResult", "scheduler 8; store 32", "implemented RTL", "F01"),
     ("ComputeClusterArray", "hw/src/main/scala/varp/compute/ComputeCluster.scala", "one/two/four concrete compute clusters", "system", "per-cluster command", "per-cluster result", "cluster 4", "implemented RTL", "F01"),
     ("ComputeCluster", "hw/src/main/scala/varp/compute/ComputeCluster.scala", "FCFS command buffering and exact job counters", "system", "MatVecTileCommand", "MatVecTileResult", "4 input; 2 output", "implemented RTL", "F01/F03"),

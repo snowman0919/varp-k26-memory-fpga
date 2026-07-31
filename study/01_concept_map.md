@@ -1,21 +1,22 @@
 # 개념 지도
 
 ```text
-Gemma ONNX hash
-  └─ graph inventory (7,837 nodes)
-      └─ projection ledger (183/token)
-          ├─ representative INT8 tile → RTL MatVec parity
-          └─ analytical TileJob stream → S0/S1/S2/S3 비교
-                                      ├─ p95/p99
-                                      ├─ completion time
-                                      └─ remote bytes
+Gemma 3 1B ONNX
+  └─ 7,837 nodes → 183 projections/token
+      └─ full-K, N≤1024 → 802 TileJobs/token
+          ├─ qkv→o→gate/up→down→next layer
+          ├─ 초기 배치 4종
+          └─ S1/S2/S3 비용 포함 분석
 
-K26 compute plane ── runnable RTL
-Memory command plane ── independent command output
-Link routing plane ── independent bundle output
-DDR response/DMA/receive/CDC ── BLOCKED integration gate
+K26: scheduler + 4 compute clusters + MatVec
+  ↕ 4 logical links
+Memory FPGA 후보: 4 DDR3L channels + weight service
 
-KiCad native source → bounded ERC/DRC → NOT FOR FABRICATION
+실제 타일 → DMA 요청 → DDR 응답 경계 → 논리 FIFO → MatVec → INT32 결과
+GTH/MIG/CDC/packet/board timing → 후속 물리 구현
+
+KiCad generic boundary coupon → NOT FOR FABRICATION
 ```
 
-핵심은 화살표 하나가 곧 증거 결합을 뜻하지 않는다는 점이다. 각 연결은 실제 코드·테스트·로그가 있을 때만 닫힌 것으로 취급한다.
+중심 판단은 “외부가 항상 빠른가”가 아니라 “어떤 확장 조건에서 로컬 기준선을
+넘는가”이다.

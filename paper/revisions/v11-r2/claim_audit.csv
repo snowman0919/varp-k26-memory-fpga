@@ -1,0 +1,10 @@
+claim,status,reason,next_action
+Gemma 3 1B INT8 기본 가중치와 context 32K가 nominal K26 4GB에 들어간다,ACCEPTED,2.43 GiB 용량 모델,K26-local을 기본 기준선으로 유지
+외부 8GB가 K26-local보다 빠르다,REJECTED,시험한 민감도에서 외부 후보가 느림,더 큰 모델·긴 문맥·경합 조건에서 재평가
+S3는 모든 Gemma 배치에서 tail을 줄인다,REJECTED,기존 산술 배치에서 p95와 완료시간 악화,배치별 조건부 결과 보고
+채널 친화 배치에서 S3가 TileJob p95를 19.79% 줄인다,ACCEPTED,의존성 인식 모델과 비용 부과 결과,사용자 요청 latency로 확대 금지
+합성 편향 부하에서 S3가 S1 대비 TileJob p95를 19.13% 줄인다,ACCEPTED,5개 paired seed 중앙값,합성 부하로 한정
+S3가 S2 대비 비지역 가중치를 35.49% 줄인다,ACCEPTED,같은 합성 편향 부하의 paired median,S1 비교와 혼동 금지
+폐루프 논리 RTL 경로가 있다,ACCEPTED,세 실제 INT8 타일의 DMA·응답·MatVec trace,물리 GTH·MIG 경로로 확대 금지
+제작 가능한 전체 보드다,REJECTED,KiCad 자료는 generic boundary coupon,NOT FOR FABRICATION 유지
+저비용·저전력을 달성했다,REJECTED,전체 BOM·실측 전력 없음,설계 목표로만 기술

@@ -1,25 +1,26 @@
 # 화이트보드 설명
 
-## 전체 가속기 — 90초
+## 전체 구조 — 90초
 
-왼쪽에 K26의 네 compute cluster, 오른쪽에 4-channel Memory FPGA를 그린다. TileJob에는 계산 범위와 home/locality 정보가 있다. 현재 compute RTL은 scheduler에서 payload store와 MatVec까지 닫혀 있지만 DDR response와 link receive는 닫히지 않았다. 따라서 결과는 정책 분석과 제한된 RTL 증거이며 보드 가속 성능이 아니다.
+왼쪽에 K26의 네 작업대, 오른쪽에 네 출고 창구를 가진 Memory FPGA를 그린다.
+TileJob이 계산 위치와 가중치 위치를 연결한다. 1B는 K26 로컬 우선이고 외부는
+확장 조건의 후보다.
 
 ## Work Stealing — 60초
 
-두 local queue를 그린다. 한쪽이 비고 다른 쪽이 길면 idle cluster가 victim을 찾는다. S2는 가장 오래된 eligible job, S3는 age에서 locality penalty를 뺀 score가 좋은 job을 고른다. tail은 줄 수 있지만 remote bytes와 마지막 completion이 나빠질 수 있다.
+한 작업대의 줄이 길고 옆 작업대가 빈 그림을 그린다. S2는 가장 오래된 일을 가져오고
+S3는 기다린 이득에서 부품 운반 비용을 뺀다. 양수일 때만 ownership을 옮긴다.
 
-## 메모리 계층 — 60초
+## 실제 모델 매핑 — 60초
 
-모델 weight, activation, KV cache를 분리한다. Channel은 독립 대역폭, bank는 내부 병렬성, row hit는 activation 비용 감소와 관계가 있다. Capacity fit과 bandwidth adequacy는 다른 질문이다.
+7,837→183→802를 쓰고 qkv→o→MLP→다음 계층 장벽을 그린다. 다음 토큰은 lm_head
+뒤에 열린다. p95는 이 TileJob 분포이지 사용자 요청 시간이 아니다.
 
-## p95가 중요한 이유 — 45초
+## 논리 RTL과 물리 경계 — 60초
 
-평균이 같아도 일부 요청이 매우 느리면 대화형 체감이 나쁘다. p95는 100개 중 느린 5개가 시작되는 경계다. 단 p95만 최적화하면 completion이나 traffic이 악화될 수 있어 함께 본다.
+DMA 요청→응답 경계→논리 FIFO→MatVec을 실선으로, GTH/MIG/보드 타이밍을 점선으로
+그린다. 대표 타일 3개 결과는 맞지만 물리 대역폭은 아직 모른다.
 
-## 왜 완성 가속기가 아닌가 — 45초
+## 다음 검증 — 45초
 
-compute, command, routing plane은 있지만 실제 weight가 DDR에서 응답되어 link를 건너 MatVec payload store에 들어오는 폐루프가 없다. 이 경계를 공개하는 것이 연구 신뢰성의 일부다.
-
-## 다음 하드웨어 검증 — 60초
-
-DMA request와 DDR response를 연결하고 credit/CDC가 있는 link receive를 만든다. returned weight를 FIFO/payload store에 넣어 exact-once MatVec completion을 확인한다. 그 뒤 local DDR4 baseline과 동일 workload로 bandwidth, p95, board power를 계측한다.
+K26 로컬 실측→GTH/CDC/패킷→MIG 한 채널→전체 보드 전력·비용 순서로 닫는다.

@@ -15,11 +15,11 @@ ASSETS = ROOT / "presentation" / "final" / "assets"
 MEDIA = ROOT / "presentation" / "final" / ".work" / "manim"
 
 JOBS = (
-    ("WorkStealingSequence", "work_stealing_sequence", 10.5),
-    ("TileDataflow", "tile_dataflow", 7.0),
-    ("SchedulerTimeline", "scheduler_timeline", 8.0),
-    ("TailLatencyResults", "tail_latency_results", 6.8),
-    ("BottleneckMigration", "bottleneck_migration", 5.8),
+    ("WorkStealingSequence", "work_stealing_sequence", 4.8),
+    ("TileDataflow", "tile_dataflow", 4.0),
+    ("SchedulerTimeline", "scheduler_timeline", 3.8),
+    ("TailLatencyResults", "tail_latency_results", 2.8),
+    ("BottleneckMigration", "bottleneck_migration", 4.2),
 )
 
 

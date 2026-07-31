@@ -1,0 +1,26 @@
+{
+  "decode_tokens": [
+    1,
+    32
+  ],
+  "outputs": [
+    "results/model_level/gemma3_1b_dependency_aware.csv",
+    "results/model_level/gemma3_1b_placement_sensitivity.csv"
+  ],
+  "placements": [
+    "source_rule",
+    "round_robin",
+    "size_aware",
+    "channel_affinity"
+  ],
+  "projection_rows": 183,
+  "projection_source": "experiments/gemma3_1b/projection_trace.csv",
+  "remote_transfer_semantics": "prefetch-home-then-copy-to-thief",
+  "result_rows": 16,
+  "schedulers": [
+    "S1",
+    "S2",
+    "S3"
+  ],
+  "schema_version": "varp.gemma3.dependency-experiment.v1"
+}

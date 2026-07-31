@@ -1,22 +1,40 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="800" height="255" viewBox="0 0 800 255">
-  <style>
-    text{font-family:"Noto Sans CJK KR","Noto Sans",sans-serif;fill:#172033}
-    .h{font-size:26px;font-weight:700}.t{font-size:20px;font-weight:700}.s{font-size:18px}
-  </style>
-  <text class="h" x="24" y="34">Figure 6 · S3 locality trade-off against oldest-steal S2</text>
-  <text class="t" x="205" y="76" text-anchor="middle">skew</text>
-  <text class="t" x="595" y="76" text-anchor="middle">mixed</text>
-  <rect x="42" y="94" width="326" height="58" rx="10" fill="#fff4df" stroke="#e89b00" stroke-width="3"/>
-  <text class="t" x="205" y="120" text-anchor="middle">remote weight −37.84%</text>
-  <text class="s" x="205" y="144" text-anchor="middle">2,443,776 → 1,519,104 B</text>
-  <rect x="432" y="94" width="326" height="58" rx="10" fill="#fff4df" stroke="#e89b00" stroke-width="3"/>
-  <text class="t" x="595" y="120" text-anchor="middle">remote weight −22.16%</text>
-  <text class="s" x="595" y="144" text-anchor="middle">3,799,040 → 2,957,312 B</text>
-  <rect x="42" y="174" width="326" height="58" rx="10" fill="#eef5fb" stroke="#1677b8" stroke-width="3"/>
-  <text class="t" x="205" y="200" text-anchor="middle">p95 −1.23% · completion +0.98%</text>
-  <text class="s" x="205" y="224" text-anchor="middle">tail improves; last job can finish later</text>
-  <rect x="432" y="174" width="326" height="58" rx="10" fill="#eef5fb" stroke="#1677b8" stroke-width="3"/>
-  <text class="t" x="595" y="200" text-anchor="middle">p95 −2.33% · completion +0.41%</text>
-  <text class="s" x="595" y="224" text-anchor="middle">tail improves; last job can finish later</text>
-  <text x="400" y="248" text-anchor="middle" font-size="16px">Orange = modeled migration bytes · blue = modeled latency · neither is board measurement</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900">
+<rect width="1600" height="900" fill="#f7fbff"/>
+<defs><marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M0,0 L12,6 L0,12 Z" fill="#1878a8"/></marker></defs>
+<text x="70" y="78" font-size="44px" font-family="Noto Sans CJK KR, Noto Sans KR, sans-serif" font-weight="800" fill="#102a43" text-anchor="start">같은 Gemma 형상도 초기 배치 민감도가 결과를 가른다</text>
+<text x="70" y="124" font-size="31px" font-family="Noto Sans CJK KR, Noto Sans KR, sans-serif" font-weight="500" fill="#486581" text-anchor="start">S3 대 S1 · TileJob p95와 전체 완료시간 변화율</text>
+<line x1="100" y1="360" x2="1500" y2="360" stroke="#8da7b5" stroke-width="3"/>
+<text x="85" y="368" font-size="31px" font-family="Noto Sans CJK KR, Noto Sans KR, sans-serif" font-weight="500" fill="#627d98" text-anchor="end">0%</text>
+<rect x="170" y="355.8" width="90" height="4.2" rx="3" fill="#2aa58e" stroke="#2aa58e" stroke-width="0"/>
+<text x="215.0" y="341.8" font-size="31px" font-family="Noto Sans CJK KR, Noto Sans KR, sans-serif" font-weight="750" fill="#9b4d45" text-anchor="middle">+0.28%</text>
+<text x="215.0" y="790" font-size="31px" font-family="Noto Sans CJK KR, Noto Sans KR, sans-serif" font-weight="650" fill="#35556b" text-anchor="middle">기존 산술</text>
+<rect x="275" y="288.0" width="90" height="72.0" rx="3" fill="#2f80b7" stroke="#2f80b7" stroke-width="0"/>
+<text x="320.0" y="274.0" font-size="31px" font-family="Noto Sans CJK KR, Noto Sans KR, sans-serif" font-weight="750" fill="#9b4d45" text-anchor="middle">+4.80%</text>
+<text x="320.0" y="790" font-size="31px" font-family="Noto Sans CJK KR, Noto Sans KR, sans-serif" font-weight="650" fill="#35556b" text-anchor="middle"></text>
+<text x="267" y="830" font-size="31px" font-family="Noto Sans CJK KR, Noto Sans KR, sans-serif" font-weight="600" fill="#627d98" text-anchor="middle">추가 395 MB</text>
+<rect x="515" y="360" width="90" height="0.0" rx="3" fill="#2aa58e" stroke="#2aa58e" stroke-width="0"/>
+<text x="560.0" y="390.0" font-size="31px" font-family="Noto Sans CJK KR, Noto Sans KR, sans-serif" font-weight="750" fill="#35556b" text-anchor="middle">0.00%</text>
+<text x="560.0" y="790" font-size="31px" font-family="Noto Sans CJK KR, Noto Sans KR, sans-serif" font-weight="650" fill="#35556b" text-anchor="middle">라운드로빈</text>
+<rect x="620" y="360" width="90" height="8.85" rx="3" fill="#2f80b7" stroke="#2f80b7" stroke-width="0"/>
+<text x="665.0" y="398.85" font-size="31px" font-family="Noto Sans CJK KR, Noto Sans KR, sans-serif" font-weight="750" fill="#35556b" text-anchor="middle">-0.59%</text>
+<text x="665.0" y="790" font-size="31px" font-family="Noto Sans CJK KR, Noto Sans KR, sans-serif" font-weight="650" fill="#35556b" text-anchor="middle"></text>
+<text x="612" y="830" font-size="31px" font-family="Noto Sans CJK KR, Noto Sans KR, sans-serif" font-weight="600" fill="#627d98" text-anchor="middle">추가 43 MB</text>
+<rect x="860" y="360" width="90" height="0.0" rx="3" fill="#2aa58e" stroke="#2aa58e" stroke-width="0"/>
+<text x="905.0" y="390.0" font-size="31px" font-family="Noto Sans CJK KR, Noto Sans KR, sans-serif" font-weight="750" fill="#35556b" text-anchor="middle">0.00%</text>
+<text x="905.0" y="790" font-size="31px" font-family="Noto Sans CJK KR, Noto Sans KR, sans-serif" font-weight="650" fill="#35556b" text-anchor="middle">크기 균형</text>
+<rect x="965" y="360" width="90" height="11.4" rx="3" fill="#2f80b7" stroke="#2f80b7" stroke-width="0"/>
+<text x="1010.0" y="401.4" font-size="31px" font-family="Noto Sans CJK KR, Noto Sans KR, sans-serif" font-weight="750" fill="#35556b" text-anchor="middle">-0.76%</text>
+<text x="1010.0" y="790" font-size="31px" font-family="Noto Sans CJK KR, Noto Sans KR, sans-serif" font-weight="650" fill="#35556b" text-anchor="middle"></text>
+<text x="957" y="830" font-size="31px" font-family="Noto Sans CJK KR, Noto Sans KR, sans-serif" font-weight="600" fill="#627d98" text-anchor="middle">추가 111 MB</text>
+<rect x="1205" y="360" width="90" height="296.84999999999997" rx="3" fill="#2aa58e" stroke="#2aa58e" stroke-width="0"/>
+<text x="1250.0" y="686.8499999999999" font-size="31px" font-family="Noto Sans CJK KR, Noto Sans KR, sans-serif" font-weight="750" fill="#35556b" text-anchor="middle">-19.79%</text>
+<text x="1250.0" y="790" font-size="31px" font-family="Noto Sans CJK KR, Noto Sans KR, sans-serif" font-weight="650" fill="#35556b" text-anchor="middle">채널 친화</text>
+<rect x="1310" y="360" width="90" height="113.39999999999999" rx="3" fill="#2f80b7" stroke="#2f80b7" stroke-width="0"/>
+<text x="1355.0" y="503.4" font-size="31px" font-family="Noto Sans CJK KR, Noto Sans KR, sans-serif" font-weight="750" fill="#35556b" text-anchor="middle">-7.56%</text>
+<text x="1355.0" y="790" font-size="31px" font-family="Noto Sans CJK KR, Noto Sans KR, sans-serif" font-weight="650" fill="#35556b" text-anchor="middle"></text>
+<text x="1302" y="830" font-size="31px" font-family="Noto Sans CJK KR, Noto Sans KR, sans-serif" font-weight="600" fill="#627d98" text-anchor="middle">추가 416 MB</text>
+<rect x="1050" y="165" width="180" height="54" rx="10" fill="#e2f4ee" stroke="#2aa58e" stroke-width="2"/>
+<text x="1140" y="200" font-size="31px" font-family="Noto Sans CJK KR, Noto Sans KR, sans-serif" font-weight="700" fill="#176d60" text-anchor="middle">TileJob p95</text>
+<rect x="1250" y="165" width="180" height="54" rx="10" fill="#e7effb" stroke="#2f80b7" stroke-width="2"/>
+<text x="1340" y="200" font-size="31px" font-family="Noto Sans CJK KR, Noto Sans KR, sans-serif" font-weight="700" fill="#245a8a" text-anchor="middle">완료시간</text>
 </svg>

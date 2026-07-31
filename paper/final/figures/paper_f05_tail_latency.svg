@@ -1,18 +1,26 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="800" height="250" viewBox="0 0 800 250">
-  <style>
-    text{font-family:"Noto Sans CJK KR","Noto Sans",sans-serif;fill:#172033}
-    .h{font-size:26px;font-weight:700}.t{font-size:20px;font-weight:700}.s{font-size:18px}
-  </style>
-  <text class="h" x="24" y="34">Figure 5 · Full-overlap p95: static S1 versus locality-aware S3</text>
-  <text class="t" x="200" y="75" text-anchor="middle">skew</text>
-  <text class="t" x="600" y="75" text-anchor="middle">mixed</text>
-  <text class="s" x="28" y="112">S1</text><rect x="76" y="94" width="260" height="28" fill="#c98b21"/><text class="s" x="346" y="115">285,333</text>
-  <text class="s" x="28" y="158">S3</text><rect x="76" y="140" width="213" height="28" fill="#6f8f3d"/><text class="s" x="299" y="161">233,625</text>
-  <text class="s" x="430" y="112">S1</text><rect x="478" y="94" width="260" height="28" fill="#c98b21"/><text class="s" x="748" y="115" text-anchor="end">478,553</text>
-  <text class="s" x="430" y="158">S3</text><rect x="478" y="140" width="214" height="28" fill="#6f8f3d"/><text class="s" x="702" y="161">394,375</text>
-  <rect x="76" y="180" width="260" height="42" rx="10" fill="#eef5fb" stroke="#1677b8" stroke-width="2"/>
-  <text class="t" x="206" y="208" text-anchor="middle">18.12% lower p95</text>
-  <rect x="478" y="180" width="260" height="42" rx="10" fill="#eef5fb" stroke="#1677b8" stroke-width="2"/>
-  <text class="t" x="608" y="208" text-anchor="middle">17.59% lower p95</text>
-  <text class="s" x="400" y="244" text-anchor="middle">Analytical model cycles · five-seed median · not physical protocol timing</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900">
+<rect width="1600" height="900" fill="#f7fbff"/>
+<defs><marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M0,0 L12,6 L0,12 Z" fill="#1878a8"/></marker></defs>
+<text x="70" y="78" font-size="44px" font-family="Noto Sans CJK KR, Noto Sans KR, sans-serif" font-weight="800" fill="#102a43" text-anchor="start">작업 불균형이 큰 유효구간에서 꼬리 지연이 감소</text>
+<text x="70" y="124" font-size="31px" font-family="Noto Sans CJK KR, Noto Sans KR, sans-serif" font-weight="500" fill="#486581" text-anchor="start">S3 대 S1 · 5개 시드의 TileJob p95 변화율 중앙값</text>
+<line x1="110" y1="300" x2="1500" y2="300" stroke="#8da7b5" stroke-width="3"/>
+<text x="90" y="308" font-size="31px" font-family="Noto Sans CJK KR, Noto Sans KR, sans-serif" font-weight="500" fill="#627d98" text-anchor="end">0%</text>
+<rect x="190" y="300" width="125" height="0.0" rx="3" fill="#91b8c8" stroke="#91b8c8" stroke-width="0"/>
+<text x="252.5" y="330.0" font-size="31px" font-family="Noto Sans CJK KR, Noto Sans KR, sans-serif" font-weight="750" fill="#35556b" text-anchor="middle">0.00%</text>
+<text x="252.5" y="790" font-size="31px" font-family="Noto Sans CJK KR, Noto Sans KR, sans-serif" font-weight="650" fill="#35556b" text-anchor="middle">균형</text>
+<rect x="450" y="300" width="125" height="0.0" rx="3" fill="#91b8c8" stroke="#91b8c8" stroke-width="0"/>
+<text x="512.5" y="330.0" font-size="31px" font-family="Noto Sans CJK KR, Noto Sans KR, sans-serif" font-weight="750" fill="#35556b" text-anchor="middle">0.00%</text>
+<text x="512.5" y="790" font-size="31px" font-family="Noto Sans CJK KR, Noto Sans KR, sans-serif" font-weight="650" fill="#35556b" text-anchor="middle">채널 집중</text>
+<rect x="710" y="300" width="125" height="1.68" rx="3" fill="#91b8c8" stroke="#91b8c8" stroke-width="0"/>
+<text x="772.5" y="331.68" font-size="31px" font-family="Noto Sans CJK KR, Noto Sans KR, sans-serif" font-weight="750" fill="#35556b" text-anchor="middle">-0.08%</text>
+<text x="772.5" y="790" font-size="31px" font-family="Noto Sans CJK KR, Noto Sans KR, sans-serif" font-weight="650" fill="#35556b" text-anchor="middle">순간 집중</text>
+<rect x="970" y="300" width="125" height="371.7" rx="3" fill="#2aa58e" stroke="#2aa58e" stroke-width="0"/>
+<text x="1032.5" y="701.7" font-size="31px" font-family="Noto Sans CJK KR, Noto Sans KR, sans-serif" font-weight="750" fill="#35556b" text-anchor="middle">-17.70%</text>
+<text x="1032.5" y="790" font-size="31px" font-family="Noto Sans CJK KR, Noto Sans KR, sans-serif" font-weight="650" fill="#35556b" text-anchor="middle">혼합</text>
+<rect x="1230" y="300" width="125" height="401.72999999999996" rx="3" fill="#2aa58e" stroke="#2aa58e" stroke-width="0"/>
+<text x="1292.5" y="731.73" font-size="31px" font-family="Noto Sans CJK KR, Noto Sans KR, sans-serif" font-weight="750" fill="#35556b" text-anchor="middle">-19.13%</text>
+<text x="1292.5" y="790" font-size="31px" font-family="Noto Sans CJK KR, Noto Sans KR, sans-serif" font-weight="650" fill="#35556b" text-anchor="middle">편향</text>
+<rect x="900" y="665" width="560" height="90" rx="14" fill="#eaf7f4" stroke="#3f9f8c" stroke-width="2"/>
+<text x="1180" y="705" font-size="31px" font-family="Noto Sans CJK KR, Noto Sans KR, sans-serif" font-weight="800" fill="#176d60" text-anchor="middle">편향: p95 −19.13% · p99 −18.71%</text>
+<text x="1180" y="746" font-size="31px" font-family="Noto Sans CJK KR, Noto Sans KR, sans-serif" font-weight="650" fill="#486581" text-anchor="middle">S2 대비 비지역 가중치 −35.49%</text>
 </svg>

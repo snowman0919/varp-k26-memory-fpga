@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from dataclasses import replace
 import json
 from pathlib import Path
 import tempfile
@@ -158,6 +159,59 @@ class K26SchedulerModelTests(unittest.TestCase):
             s3["remote_weight_bytes"], s2["remote_weight_bytes"]
         )
 
+    def test_stolen_payload_is_charged_to_link_service(self) -> None:
+        jobs = self.jobs("skew", count=200, seed=23)
+        result = self.simulate(jobs, scheduler="S2")
+        self.assertGreater(result["successful_steals"], 0)
+        self.assertGreater(result["incremental_remote_link_bytes"], 0)
+        self.assertGreater(
+            result["incremental_remote_link_service_cycles"], 0
+        )
+        self.assertEqual(
+            result["charged_link_bytes"],
+            result["base_link_bytes"]
+            + result["incremental_remote_link_bytes"],
+        )
+        self.assertEqual(result["incremental_remote_memory_service_cycles"], 0)
+
+    def test_dependencies_release_jobs_only_after_predecessor_completion(self) -> None:
+        source = generate_jobs(
+            "balanced",
+            3,
+            7,
+            clusters=1,
+            channels=1,
+            bundles=1,
+        )
+        jobs = [
+            replace(source[0], arrival_timestamp=0, dependency_ids=()),
+            replace(source[1], arrival_timestamp=0, dependency_ids=(0,)),
+            replace(source[2], arrival_timestamp=0, dependency_ids=(1,)),
+        ]
+        events = []
+        result = run_model(
+            jobs,
+            ModelConfig(
+                scheduler="S1",
+                clusters=1,
+                channels=1,
+                bundles=1,
+            ),
+            seed=7,
+            workload="dependency_chain",
+            event_sink=events,
+        )
+        by_job = {event["job_id"]: event for event in events}
+        self.assertEqual(result["dependency_edge_count"], 2)
+        self.assertEqual(by_job[0]["release_cycle"], 0)
+        self.assertGreaterEqual(
+            by_job[1]["release_cycle"], by_job[0]["compute_end_cycle"]
+        )
+        self.assertGreaterEqual(
+            by_job[2]["release_cycle"], by_job[1]["compute_end_cycle"]
+        )
+        self.assertTrue(result["correctness"])
+
     def test_compute_utilization_is_separate_from_reservation_occupancy(self) -> None:
         result = self.simulate(self.jobs("mixed"), scheduler="S3", workload="mixed")
         self.assertEqual(
@@ -243,6 +297,19 @@ class K26SchedulerModelTests(unittest.TestCase):
             slow["total_completion_cycles"],
             baseline["total_completion_cycles"],
         )
+
+    def test_local_memory_baseline_disables_external_base_link(self) -> None:
+        result = self.simulate(
+            self.jobs("balanced", 100),
+            scheduler="S1",
+            workload="balanced",
+            external_link_enabled=False,
+        )
+        self.assertFalse(result["external_link_enabled"])
+        self.assertEqual(result["base_link_bytes"], 0)
+        self.assertEqual(result["base_link_service_cycles"], 0)
+        self.assertEqual(result["charged_link_bytes"], 0)
+        self.assertTrue(result["correctness"])
 
     def test_stalled_bundle_and_deadlock_timeout_are_explicit(self) -> None:
         result = self.simulate(

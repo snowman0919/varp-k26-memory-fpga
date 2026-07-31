@@ -1,19 +1,18 @@
 # 구조와 데이터 흐름
 
-## 닫힌 compute path
+## 역할 분리
 
-`MatVecTileCommand → TileScheduler → associative payload store → ComputeClusterArray → MatVecTileResult`
+K26은 TileJob 수락, 대기열 정책, DMA 명령, 네 연산 클러스터와 MatVec 결과를
+관리한다. Memory FPGA 후보는 네 DDR3L 채널의 가중치 공급을 맡는다.
 
-이 경로는 runnable RTL이며 synthetic steal identity와 actual MatVec result를 연결한다.
+## 닫힌 논리 경로
 
-## 독립 memory/link planes
+`작업 수락 → DMA 요청 FIFO → 채널 스케줄러 → DDR 응답 경계 → 논리 링크 FIFO → job ID 결합 → MatVec → 결과`
 
-`memoryRequest → channel mapping → bank-aware queue → memoryCommands`
+대표 Gemma 타일 세 개가 이 경로를 통과했다. 응답이 없으면 MatVec 명령을 만들 수
+없고 같은 응답은 한 번만 수락된다.
 
-`linkInput → bundle select → linkBundles`
+## 열린 물리 경로
 
-둘 다 외부 입력에서 시작한다. response interface, DMA sequencing, GT wrapper, receive path, returned weight insertion은 없다.
-
-## FIFO를 구분하는 이유
-
-TileJob queue는 ‘누가 실행하는가’를 정한다. Transport FIFO는 ‘byte가 언제 이동하는가’를 정한다. 합치면 queue imbalance와 link backpressure를 구분할 수 없다.
+GTH 직렬화, 레인 결합, CDC, 패킷, CRC, 크레딧, MIG/PHY, 실제 K26 커넥터와 보드
+타이밍은 후속 범위다. 논리 폐루프를 물리 링크 완료로 말하면 안 된다.

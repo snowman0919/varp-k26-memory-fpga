@@ -10,7 +10,7 @@ cycle-accurate reference for `TileScheduler`.
 | Locality cost | byte/service-dependent floating-point penalties | fixed integer channel, bundle, activation, and reduction penalties |
 | Dispatch width | multiple idle clusters may dispatch at one event time | at most one job per clock edge |
 | Compute rate | default abstract 64 MAC/cycle | 16×4 demo performs 64 MACs in 65 request-to-done cycles |
-| Memory/link | analytical resource service and overlap assumptions | independent command/routing planes; no compute data return |
+| Memory/link | analytical resource service and overlap assumptions | `K26WorkStealingTop`: independent command/routing planes. `ClosedLoopVirtualPrototypeTop`: DMA request FIFO→multichannel command scheduler→testbench response boundary→logical link FIFO→job-ID join→MatVec result |
 
 Consequences:
 
@@ -20,3 +20,9 @@ Consequences:
   common trace contract; neither is claimed here.
 - The current RTL tests establish bounded functionality and exact-once
   ownership, not analytical-result reproduction.
+- The closed-loop actual-tile fixture uses one cluster, one channel, and S0.
+  S3 ownership transfer is covered by a separate synthetic scheduler fixture;
+  the two tests do not constitute one physical Work-Stealing execution.
+- `ClosedLoopVirtualPrototypeTop` closes a logical payload path. Its response is
+  injected at a testbench boundary, so GTH serialization, packet framing,
+  credit/CDC, MIG/DDR timing, and board payload bandwidth remain open gates.
