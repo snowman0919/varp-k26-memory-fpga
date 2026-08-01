@@ -42,6 +42,7 @@ REQUIRED = ["README.md"] + [f"{index:02d}_{name}.md" for index, name in enumerat
     "interview_script",
     "self_quiz",
     "misconceptions",
+    "final_round_scoring_strategy",
 ))]
 
 FORBIDDEN = (
@@ -61,6 +62,10 @@ REQUIRED_FACTS = (
     "논리",
     "GTH",
     "MIG",
+    "주제 이해도",
+    "질의응답",
+    "참여도",
+    "80% 이상",
 )
 
 

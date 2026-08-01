@@ -19,6 +19,7 @@ Vault token 경보 #1의 폐기·교체 확인 전까지 보류한다.
 | `make publication-index` | PASS — Figure 10개, flow 5개, 최소 환산 11.04 pt |
 | `make paper` | PASS — 제출본 8쪽, 기술보고서 10쪽, 최소 Figure 글자 8.102 pt, PDF 텍스트 감사 |
 | `make presentation` | PASS — 14장, 내장 영상 4개, notes 14개, 목표 580초·낭독 추정 574.3초, 최소 12 pt |
+| 본선 심사 기준 Gate | PASS — 주제 이해도·전달성·질의응답·참여도 매핑, 슬라이드별 그림 순서·예상 질문·답변·주의 표현 14개 |
 | `make reproduce` | PASS — 연구 동결·KiCad·논문 포함, `source_clean_gate=PASS` |
 | `make release` | PASS — 공식 패키지 5종 생성 |
 | `sha256sum -c release/checksums.sha256` | PASS — 5종 모두 일치 |
@@ -35,7 +36,8 @@ Vault token 경보 #1의 폐기·교체 확인 전까지 보류한다.
 - 연구 동결: `research/v11_research_freeze.md`
 - 논리 RTL 추적: `evidence/model/gemma3_1b_closed_loop_trace.csv`
 - KiCad 범위: `hardware/kicad/k26_reports/k26_scope_manifest.json`
-- 학습자료: `study/study_pack.pdf`, `study/10_qna_bank.md`
+- 학습자료: `study/study_pack.pdf`, `study/10_qna_bank.md`,
+  `study/15_final_round_scoring_strategy.md`
 - Release checksum: `release/checksums.sha256`
 
 ## 보안 보류 조건

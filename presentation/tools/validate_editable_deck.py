@@ -149,6 +149,12 @@ def main() -> int:
     notes_md = (FINAL / "speaker_notes.md").read_text(encoding="utf-8")
     if notes_md.count("기억할 문장:") != 14:
         fail("speaker notes must contain 14 memory sentences")
+    for field in ("그림 설명 순서:", "예상 질문:", "답변 핵심:", "해석 경계:", "주의할 표현:"):
+        if notes_md.count(field) != 14:
+            fail(f"speaker notes must contain 14 {field} entries")
+    for rubric in ("주제 이해도 30점", "전달성 10점", "질의응답 20점", "참여도 5점"):
+        if rubric not in notes_md:
+            fail(f"speaker notes missing final-round rubric: {rubric}")
     durations = re.findall(r"\((\d+):(\d{2})\)", notes_md)
     total_seconds = sum(int(minutes) * 60 + int(seconds) for minutes, seconds in durations)
     if total_seconds != 580:
@@ -177,6 +183,9 @@ def main() -> int:
         "out_of_bounds_shapes": 0,
         "obsolete_v10_screen_values": 0,
         "speaker_note_memory_sentences": 14,
+        "speaker_note_visual_orders": 14,
+        "speaker_note_expected_questions": 14,
+        "final_round_rubric_mapped": True,
         "target_duration_seconds": total_seconds,
         "script_estimate_seconds_at_275_chars_per_minute": round(estimated_seconds, 1),
         "rendered_png_size": [1920, 1080],

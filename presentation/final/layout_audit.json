@@ -9,6 +9,9 @@
   "out_of_bounds_shapes": 0,
   "obsolete_v10_screen_values": 0,
   "speaker_note_memory_sentences": 14,
+  "speaker_note_visual_orders": 14,
+  "speaker_note_expected_questions": 14,
+  "final_round_rubric_mapped": true,
   "target_duration_seconds": 580,
   "script_estimate_seconds_at_275_chars_per_minute": 574.3,
   "rendered_png_size": [
