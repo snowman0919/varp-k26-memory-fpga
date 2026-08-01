@@ -50,6 +50,7 @@ research-freeze: research-reproduce
 	$(PYTHON) scripts/validate_research_freeze.py
 
 presentation: research-freeze animations
+	$(PYTHON) presentation/tools/build_qna_materials.py
 	$(PYTHON) presentation/tools/build_v11_deck.py
 	$(PYTHON) presentation/tools/generate_visual_summary.py
 	$(PYTHON) presentation/tools/validate_editable_deck.py

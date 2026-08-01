@@ -11,7 +11,7 @@
 - 코드·데이터 공개 범위: [`paper/final/code_and_data_availability.md`](../paper/final/code_and_data_availability.md)
 - 개정 이력: [`paper/revisions/`](../paper/revisions/)
 
-## 9분 50초 발표
+## 9분 35초 본선 발표
 
 - 편집 가능한 PPTX: [`presentation/final/presentation.pptx`](../presentation/final/presentation.pptx)
 - PDF: [`presentation/final/presentation.pdf`](../presentation/final/presentation.pdf)
@@ -22,7 +22,7 @@
 - Manim 생성 코드: [`presentation/tools/manim_scenes.py`](../presentation/tools/manim_scenes.py)
 
 MP4/GIF는 저장소 용량을 줄이기 위해 GitHub Release 자산으로 제공한다. PPTX에는
-데이터 흐름, 작업 훔치기, 실행 타임라인, 병목 이동 영상 네 개가 직접 포함되어 있다.
+데이터 흐름, 작업 훔치기, 실행 타임라인, 꼬리 지연 결과, 병목 이동 영상 다섯 개가 직접 포함되어 있다.
 
 ## 연구 데이터와 재현
 
@@ -45,7 +45,9 @@ KiCad 자료는 인터페이스 라우팅 참조 쿠폰이며 **NOT FOR FABRICAT
 
 ## 발표 준비
 
-- 89개 예상 질문과 답변: [`study/10_qna_bank.md`](../study/10_qna_bank.md)
+- 발표자 전용 98개 예상 질문과 답변: [`presentation/final/qna_bank.md`](../presentation/final/qna_bank.md)
+- 타 발표 질의 참여용 10개 질문: [`presentation/final/peer_question_bank.md`](../presentation/final/peer_question_bank.md)
+- 기존 89개 연구 중심 질문 자료: [`study/10_qna_bank.md`](../study/10_qna_bank.md)
 - 통합 학습자료 PDF: [`study/study_pack.pdf`](../study/study_pack.pdf)
 - 화이트보드 설명: [`study/11_whiteboard_explanations.md`](../study/11_whiteboard_explanations.md)
 - 주장 경계: [`study/09_claim_boundary.md`](../study/09_claim_boundary.md)
@@ -56,10 +58,11 @@ KiCad 자료는 인터페이스 라우팅 참조 쿠폰이며 **NOT FOR FABRICAT
 - 요구사항 감사표: [`docs/final_closure/requirements_audit.md`](../docs/final_closure/requirements_audit.md)
 - 최종 Gate 기록: [`docs/final_closure/final_validation.md`](../docs/final_closure/final_validation.md)
 - 본선 심사 기준 감사표: [`docs/final_closure/final_round_scoring_audit.md`](../docs/final_closure/final_round_scoring_audit.md)
+- 최종 독립 검토 기록: [`presentation/final/review_report.md`](../presentation/final/review_report.md)
 - Release checksum: [`release/checksums.sha256`](../release/checksums.sha256)
 - 공개 Release: [`v11-conference-final`](https://github.com/snowman0919/varp-k26-memory-fpga/releases/tag/v11-conference-final)
 
 로컬 산출물과 공식 소스 아카이브 검증은 통과했다. 과거 PDF의 GitHub 경보 #1은
 저장소 소유자가 `false_positive`로 해소했고, 현재 패키지 재귀 검사도 0건이다.
 `v11-conference-final` tag와 Release는 공개 당시 기준선으로 보존한다. 이후 요청된
-16장 발표 개정은 tag를 이동하지 않고 `conference-final` 브랜치 최신 커밋에서 제공한다.
+17장 본선 발표 개정은 tag를 이동하지 않고 `conference-final` 브랜치 최신 커밋에서 제공한다.

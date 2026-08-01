@@ -71,108 +71,91 @@ def placement_effect(placement: str, metric: str) -> float:
 
 
 class TileDataflow(Scene):
-    """Gemma TileJob through the newly closed logical RTL path."""
+    """Explain the verified MatVec arithmetic path without implying board timing."""
 
     def construct(self):
-        title = txt("Gemma TileJob의 폐루프 논리 경로", 40, INK, True).to_edge(UP, buff=0.28)
-        subtitle = txt("실제 가중치 타일 3개 · DMA 응답 뒤에만 MatVec 실행", 21, MUTED).next_to(title, DOWN, buff=0.08)
-        names = ["작업 수락", "DMA 요청", "DDR 응답 경계", "논리 링크 FIFO", "16×4 MatVec", "결과 확인"]
-        colors = [BLUE, BLUE, TEAL, CYAN, BLUE, TEAL]
-        stages = VGroup(*[box(name, color, 2.05, 1.15) for name, color in zip(names, colors)]).arrange(RIGHT, buff=0.20).scale(0.78).shift(DOWN * 0.15)
-        arrows = VGroup(*[Arrow(stages[i][0].get_right(), stages[i + 1][0].get_left(), color=MUTED, buff=0.05, stroke_width=4) for i in range(5)])
+        title = txt("실제 가중치로 MatVec 산술을 확인했다", 40, INK, True).to_edge(UP, buff=0.28)
+        subtitle = txt("대표 가중치 타일 3개 · 소프트웨어 INT32 기준값과 비교", 22, MUTED).next_to(title, DOWN, buff=0.08)
+        names = ["실제 가중치\n추출", "시험 입력\n생성", "16×4 INT8\nMatVec RTL", "기준값\n비교"]
+        colors = [BLUE, CYAN, BLUE, TEAL]
+        stages = VGroup(*[box(name, color, 2.65, 1.45) for name, color in zip(names, colors)]).arrange(RIGHT, buff=0.45).shift(DOWN * 0.10)
+        arrows = VGroup(*[Arrow(stages[i][0].get_right(), stages[i + 1][0].get_left(), color=MUTED, buff=0.08, stroke_width=5) for i in range(3)])
         token = Circle(radius=0.14, color=AMBER, fill_color=AMBER, fill_opacity=1).move_to(stages[0])
-        status = txt("gate_proj · 수락 5", 28, AMBER, True).to_edge(DOWN, buff=0.42)
+        status = txt("대표 타일 1 · 게이트 투영", 28, AMBER, True).to_edge(DOWN, buff=0.42)
         self.play(FadeIn(title, subtitle, stages, arrows, token, status))
-        labels = ["gate_proj · 수락 5", "DMA 11", "응답 13", "job ID 결합", "MatVec 실행", "결과 88 · INT32 일치"]
-        for index in range(1, 6):
-            new_status = txt(labels[index], 28, TEAL if index == 5 else AMBER, True).move_to(status)
+        labels = ["대표 타일 1 · 게이트 투영", "고정된 시험 벡터", "INT8 곱셈 · INT32 누산", "3/3 정확히 일치"]
+        for index in range(1, 4):
+            new_status = txt(labels[index], 30, TEAL if index == 3 else AMBER, True).move_to(status)
             self.play(token.animate.move_to(stages[index]), Transform(status, new_status), run_time=0.62)
             self.wait(0.18)
-        boundary = txt("GTH·MIG 물리 경로는 후속 구현", 23, RED, True).to_edge(DOWN, buff=0.95)
+        boundary = txt("검증 범위 · MatVec 산술", 22, MUTED, True).to_edge(DOWN, buff=0.95)
         self.play(FadeIn(boundary))
         self.wait(1.0)
 
 
 class WorkStealingSequence(Scene):
-    """Static queue imbalance, locality cost, and exact-once transfer."""
+    """Show the three decisions in locality-aware work redistribution."""
 
     def construct(self):
-        title = txt("빈 작업대가 일을 가져오되 운반 비용을 계산한다", 38, INK, True).to_edge(UP, buff=0.27)
+        title = txt("빈 연산기는 이득이 있을 때만 작업을 가져온다", 38, INK, True).to_edge(UP, buff=0.27)
         left = box("C0 · 긴 대기열", BLUE, 4.1, 2.1).shift(LEFT * 3.5 + DOWN * 0.15)
-        right = box("C3 · 유휴", TEAL, 4.1, 2.1).shift(RIGHT * 3.5 + DOWN * 0.15)
+        right = box("C2 · 유휴", TEAL, 4.1, 2.1).shift(RIGHT * 3.5 + DOWN * 0.15)
+        left[1].shift(UP * 0.58)
+        right[1].shift(UP * 0.58)
         jobs = VGroup(*[RoundedRectangle(width=0.58, height=0.40, corner_radius=0.06, color=BLUE, fill_color=BLUE, fill_opacity=0.65) for _ in range(6)]).arrange(RIGHT, buff=0.12).move_to(left).shift(DOWN * 0.25)
-        status = txt("1  정적 큐: 지역성은 유지하지만 C3는 쉰다", 27, AMBER, True).to_edge(DOWN, buff=0.38)
+        status = txt("1  유휴 연산기 발견", 29, AMBER, True).to_edge(DOWN, buff=1.12)
         self.play(FadeIn(title, left, right, jobs, status))
         probe = Arrow(right[0].get_left(), left[0].get_right(), color=CYAN, buff=0.12, stroke_width=7)
-        status2 = txt("2  유휴 클러스터가 실행 가능한 작업을 탐색", 27, AMBER, True).move_to(status)
+        status2 = txt("2  기다림 감소와 데이터 이동 비용 비교", 29, AMBER, True).move_to(status)
         self.play(Transform(status, status2), GrowArrow(probe))
-        score = VGroup(txt("대기 감소 이득", 24, CYAN, True), txt("가중치·활성값·부분합 이동 비용을 차감", 23, RED, True), txt("남은 값이 양수일 때만 이동", 27, TEAL, True)).arrange(DOWN, buff=0.12).move_to([0, 1.1, 0])
-        status3 = txt("3  지역성 비용을 링크 서비스 시간에 직접 부과", 27, AMBER, True).move_to(status)
-        self.play(Transform(status, status3), FadeIn(score))
+        score = VGroup(txt("기다림 감소", 25, CYAN, True), txt("-  가중치·활성값 이동", 24, RED, True), txt(">  0", 30, TEAL, True)).arrange(DOWN, buff=0.14).move_to([0, 1.0, 0])
+        self.play(FadeIn(score))
         stolen = jobs[-1].copy()
-        status4 = txt("4  작업 소유권을 옮기고 정확히 한 번 완료", 27, TEAL, True).move_to(status)
-        self.play(stolen.animate.move_to(right).shift(DOWN * 0.25), Transform(status, status4), FadeOut(probe, score), run_time=1.0)
-        done = txt("중복 0 · 누락 0", 25, TEAL, True).move_to(right).shift(UP * 0.32)
-        self.play(FadeIn(done))
+        status3 = txt("3  이득이 클 때만 작업 이전", 29, TEAL, True).move_to(status)
+        self.play(stolen.animate.move_to(right).shift(DOWN * 0.25), Transform(status, status3), FadeOut(probe, score), run_time=1.0)
         self.wait(1.1)
 
 
 class SchedulerTimeline(Scene):
-    """Highlight representative stolen jobs from the regenerated event CSV."""
+    """Compare one representative job from the committed event CSV."""
 
     def construct(self):
         rows = read_csv(ROOT / "presentation/final/assets/s1_s3_timeline_events.csv")
-        stolen = [row for row in rows if row["scheduler"] == "S3" and row["stolen"] == "1" and int(row["dispatch_cycle"]) > 30_000]
-        selected: list[dict[str, str]] = []
-        used_clusters: set[str] = set()
-        for row in stolen:
-            if row["dispatch_cluster"] not in used_clusters:
-                selected.append(row)
-                used_clusters.add(row["dispatch_cluster"])
-            if len(selected) == 3:
-                break
-        s1_by_job = {row["job_id"]: row for row in rows if row["scheduler"] == "S1"}
-        title = txt("같은 TileJob 세 건의 실제 사건 구간", 38, INK, True).to_edge(UP, buff=0.24)
-        heads = VGroup(txt("S1 정적 로컬 큐", 26, BLUE, True), txt("S3 지역성 인식 작업 훔치기", 26, TEAL, True)).arrange(RIGHT, buff=4.4).shift(UP * 2.15)
-        self.play(FadeIn(title, heads))
+        s1 = next(row for row in rows if row["scheduler"] == "S1" and row["job_id"] == "996")
+        s3 = next(row for row in rows if row["scheduler"] == "S3" and row["job_id"] == "996")
+        q1, q3 = int(s1["queue_wait_cycles"]), int(s3["queue_wait_cycles"])
+        saved = q1 - q3
+        remote = int(s3["link_end_cycle"]) - int(s3["remote_copy_start_cycle"])
+        compute = int(s3["compute_end_cycle"]) - int(s3["compute_start_cycle"])
+        title = txt("같은 작업에서 배정 정책만 바꿨다", 40, INK, True).to_edge(UP, buff=0.24)
+        static_head = txt("정적 배정 · C0", 27, BLUE, True).move_to([-4.2, 2.0, 0])
+        move_head = txt("지역성 인식 재분배 · C2", 27, TEAL, True).move_to([3.8, 2.0, 0])
+        self.play(FadeIn(title, static_head, move_head))
 
-        def duration(row, start, end):
-            return max(0, int(row[end]) - int(row[start]))
+        def lane(x: float, queue_text: str, remote_text: str | None) -> VGroup:
+            base = RoundedRectangle(width=6.0, height=1.1, corner_radius=0.10, color="#294057", fill_color=PANEL, fill_opacity=1).move_to([x, 0.35, 0])
+            queue = Rectangle(width=2.7, height=0.68, color=MUTED, fill_color=MUTED, fill_opacity=0.55).move_to([x - 1.45, 0.35, 0])
+            queue_label = txt(queue_text, 20, INK, True).move_to(queue)
+            data = Rectangle(width=1.35, height=0.68, color="#2B667B", fill_color="#2B667B", fill_opacity=0.9).move_to([x + 0.62, 0.35, 0])
+            data_label = txt("데이터\n준비", 18, INK, True).move_to(data)
+            compute_box = Rectangle(width=0.95, height=0.68, color=BLUE, fill_color=BLUE, fill_opacity=0.86).move_to([x + 2.05, 0.35, 0])
+            compute_label = txt(f"연산\n{compute}", 17, INK, True).move_to(compute_box)
+            group = VGroup(base, queue, queue_label, data, data_label, compute_box, compute_label)
+            if remote_text:
+                remote_box = Rectangle(width=1.25, height=0.68, color=TEAL, fill_color=TEAL, fill_opacity=0.86).move_to([x + 0.61, -0.70, 0])
+                remote_label = txt(remote_text, 17, INK, True).move_to(remote_box)
+                connector = Arrow(data.get_bottom(), remote_box.get_top(), color=TEAL, buff=0.05, stroke_width=4)
+                group.add(remote_box, remote_label, connector)
+            return group
 
-        groups = VGroup()
-        for index, s3 in enumerate(selected):
-            s1 = s1_by_job[s3["job_id"]]
-            y = 1.25 - index * 1.25
-            for side_x, row, scheduler in ((-3.75, s1, "S1"), (3.35, s3, "S3")):
-                lane = RoundedRectangle(width=5.7, height=0.72, corner_radius=0.08, color="#294057", fill_color=PANEL, fill_opacity=1).move_to([side_x, y, 0])
-                label = txt(f"J{row['job_id']} · C{row['dispatch_cluster']}", 17, INK, True).move_to([side_x - 2.05, y + 0.47, 0])
-                queue = duration(row, "arrival_cycle", "dispatch_cycle")
-                prep = duration(row, "dispatch_cycle", "compute_start_cycle")
-                remote = duration(row, "remote_copy_start_cycle", "link_end_cycle") if int(row["remote_copy_bytes"]) else 0
-                compute = duration(row, "compute_start_cycle", "compute_end_cycle")
-                pieces = [("큐 대기", queue, MUTED, 2.3), ("데이터 준비", max(0, prep - remote), "#2B667B", 0.9)]
-                if remote:
-                    pieces.append(("원격 복사", remote, TEAL, 1.25))
-                pieces.append(("연산", compute, BLUE, 0.75))
-                cursor = side_x - 2.75
-                row_shapes = VGroup(lane, label)
-                for name, cycles, color, width in pieces:
-                    block = Rectangle(width=width, height=0.44, color=color, fill_color=color, fill_opacity=0.78).move_to([cursor + width / 2, y, 0])
-                    block_label = txt(f"{name}\n{cycles:,}", 12, INK, True).move_to(block)
-                    row_shapes.add(block, block_label)
-                    cursor += width + 0.04
-                if scheduler == "S3":
-                    idle = txt("훔치기 전 목적 C 유휴", 13, AMBER, True).next_to(lane, DOWN, buff=0.07)
-                    row_shapes.add(idle)
-                groups.add(row_shapes)
-        self.play(FadeIn(groups), run_time=1.2)
-        legend = VGroup(
-            txt("구간 폭은 가독성용", 18, MUTED, True),
-            txt("숫자는 CSV cycle", 18, CYAN, True),
-            txt("청록 = 원격 복사", 18, TEAL, True),
-            txt("파랑 = 연산", 18, BLUE, True),
-        ).arrange(RIGHT, buff=0.5).to_edge(DOWN, buff=0.20)
-        self.play(FadeIn(legend))
+        static_lane = lane(-3.65, f"큐 대기\n{q1:,}", None)
+        moved_lane = lane(3.65, f"큐 대기\n{q3:,}", f"원격 이동\n{remote}")
+        self.play(FadeIn(static_lane), run_time=0.7)
+        arrow = Arrow([-0.35, -1.65, 0], [0.35, -1.65, 0], color=CYAN, stroke_width=7)
+        saved_text = txt(f"큐 대기 {saved:,} 사이클 감소", 29, CYAN, True).move_to([0, -2.25, 0])
+        self.play(GrowArrow(arrow), FadeIn(moved_lane, saved_text), run_time=1.0)
+        note = txt("폭은 설명용 · 숫자는 원본 사건 자료", 20, MUTED, True).to_edge(DOWN, buff=0.20)
+        self.play(FadeIn(note))
         self.wait(1.3)
 
 
@@ -185,16 +168,18 @@ class TailLatencyResults(Scene):
         skew_p99 = paired_effect("skew", "S3_vs_S1", "p99_tile_latency_cycles")
         source_p95 = placement_effect("source_rule", "tilejob_p95_effect_s3_vs_s1_pct")
         affinity_p95 = placement_effect("channel_affinity", "tilejob_p95_effect_s3_vs_s1_pct")
-        panels = VGroup(box("합성 편향 부하", CYAN, 3.4, 2.4), box("Gemma · 기존 산술", AMBER, 3.4, 2.4), box("Gemma · 채널 친화", TEAL, 3.4, 2.4)).arrange(RIGHT, buff=0.55).shift(DOWN * 0.25)
+        panels = VGroup(box("합성 편향 부하", CYAN, 3.4, 2.4), box("Gemma · 기존 배치", AMBER, 3.4, 2.4), box("Gemma · 채널 고려", TEAL, 3.4, 2.4)).arrange(RIGHT, buff=0.55).shift(DOWN * 0.25)
+        for panel in panels:
+            panel[1].shift(UP * 0.72)
         self.play(FadeIn(title, panels))
         numbers = VGroup(
-            txt(f"p95 {skew_p95:.2f}%\np99 {skew_p99:.2f}%", 30, CYAN, True).move_to(panels[0]).shift(DOWN * 0.28),
-            txt(f"p95 +{source_p95:.2f}%", 32, AMBER, True).move_to(panels[1]).shift(DOWN * 0.28),
-            txt(f"p95 {affinity_p95:.2f}%", 32, TEAL, True).move_to(panels[2]).shift(DOWN * 0.28),
+            txt(f"p95 {skew_p95:.2f}%\np99 {skew_p99:.2f}%", 30, CYAN, True).move_to(panels[0]).shift(DOWN * 0.34),
+            txt(f"p95 +{source_p95:.2f}%", 32, AMBER, True).move_to(panels[1]).shift(DOWN * 0.34),
+            txt(f"p95 {affinity_p95:.2f}%", 32, TEAL, True).move_to(panels[2]).shift(DOWN * 0.34),
         )
         for number in numbers:
             self.play(FadeIn(number), run_time=0.55)
-        rule = txt("Work Stealing은 초기 배치 뒤 남은 불균형이 이동 비용보다 클 때만 유효", 25, AMBER, True).to_edge(DOWN, buff=0.36)
+        rule = txt("재분배는 초기 배치 뒤 남은 불균형이 이동 비용보다 클 때만 유효", 25, AMBER, True).to_edge(DOWN, buff=0.36)
         self.play(FadeIn(rule))
         self.wait(1.2)
 
@@ -210,12 +195,12 @@ class BottleneckMigration(Scene):
         static_panel = RoundedRectangle(width=5.2, height=3.0, corner_radius=0.14, color=BLUE, fill_color=PANEL, fill_opacity=1).shift(LEFT * 3.3 + DOWN * 0.10)
         locality_panel = RoundedRectangle(width=5.2, height=3.0, corner_radius=0.14, color=TEAL, fill_color=PANEL, fill_opacity=1).shift(RIGHT * 3.3 + DOWN * 0.10)
         headings = VGroup(
-            txt("정적 큐 효과 · S3 대 S1", 22, BLUE, True).move_to(static_panel).shift(UP * 1.05),
-            txt("지역성 점수 효과 · S3 대 S2", 22, TEAL, True).move_to(locality_panel).shift(UP * 1.05),
+            txt("정적 배정 대비", 24, BLUE, True).move_to(static_panel).shift(UP * 1.05),
+            txt("무제약 재분배 대비", 24, TEAL, True).move_to(locality_panel).shift(UP * 1.05),
         )
         self.play(FadeIn(title, static_panel, locality_panel, headings))
         left = VGroup(
-            txt(f"큐 tail p95 {p95:.2f}%", 27, CYAN, True),
+            txt(f"꼬리 지연 p95 {p95:.2f}%", 27, CYAN, True),
             txt("원격 링크 서비스: 0에서 발생", 20, AMBER, True),
             txt("병목: 큐에서 데이터 이동으로", 20, INK, True),
         ).arrange(DOWN, buff=0.34).move_to(static_panel).shift(DOWN * 0.25)

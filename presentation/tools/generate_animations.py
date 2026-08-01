@@ -18,7 +18,7 @@ JOBS = (
     ("WorkStealingSequence", "work_stealing_sequence", 4.8),
     ("TileDataflow", "tile_dataflow", 4.0),
     ("SchedulerTimeline", "scheduler_timeline", 3.8),
-    ("TailLatencyResults", "tail_latency_results", 2.8),
+    ("TailLatencyResults", "tail_latency_results", 4.2),
     ("BottleneckMigration", "bottleneck_migration", 4.2),
 )
 
