@@ -1,0 +1,8 @@
+claim,status,scope,forbidden_extension
+Gemma 3 1B INT8와 문맥 32K의 모델 용량은 2.43 GiB다,ACCEPTED,용량 산식,K26에서 기능 실행·실측으로 확대 금지
+K26 로컬 기준선이 시험한 외부 후보보다 짧다,ACCEPTED,분석 민감도,실제 보드 성능으로 확대 금지
+합성 편향 부하에서 S3의 TileJob p95가 S1보다 19.13% 작다,ACCEPTED,5개 동일 시드 쌍비교 중앙값,Gemma 사용자 요청 지연으로 확대 금지
+채널 친화 배치의 Gemma 형상에서 S3의 TileJob p95가 19.79% 작다,ACCEPTED,의존성 인식 분석 모델,모든 배치·요청 지연으로 확대 금지
+기존 산술 배치에서는 S3 완료시간이 4.80% 늘어난다,ACCEPTED,의존성 인식 분석 모델,실측 성능으로 확대 금지
+논리 RTL의 실제 타일 결과가 소프트웨어 INT32와 일치한다,ACCEPTED,대표 타일 3개,GTH·MIG 물리 경로로 확대 금지
+KiCad 자료는 K26–Memory FPGA 전체 보드다,REJECTED,일반 경계 라우팅 쿠폰,제작 가능성 주장 금지

@@ -1,21 +1,27 @@
 # 한 장 요약
 
-## 연구 질문
+## 무엇을 만들었나
 
-정적 큐 소유권으로 생기는 불균형에서, locality-aware Work Stealing이 원격 이동 비용을 통제하면서 p95/p99 tail latency를 줄일 수 있는가?
+Kria K26이 연산·제어를 맡고 외부 Memory FPGA가 다채널로 가중치를 공급하는
+확장 후보 구조를 설계했다. Work Stealing은 유휴 클러스터가 생길 때 데이터 이동
+비용보다 이득이 큰 작업만 옮기는 보조 정책이다.
 
-## 구조
+## 왜 필요한가
 
-K26 측에는 4개 compute cluster와 signed-INT8 16×4 MatVec 경로가 있다. 외부 Memory FPGA 후보에는 4-channel DDR3L command plane과 4-bundle link routing plane이 있다. 하지만 DDR response→link receive→payload store→MatVec의 닫힌 end-to-end 경로는 아직 없다.
+Gemma 3 1B INT8와 문맥 32K의 용량 모델은 2.43 GiB로 K26 4GB 안에 들어간다.
+따라서 외부 8GB의 이유는 단순 용량이 아니라 더 큰 모델·긴 문맥·로컬 경합에서
+가중치 공급을 실행 메모리와 분리할 가능성이다.
 
-## 핵심 결과
+## 무엇을 확인했나
 
-- graph-derived: Gemma 3 1B ONNX 7,837 nodes, token당 183 projections.
-- RTL-simulated: 실제 weight tile 3/3 INT32 parity, synthetic steal→MatVec 3 accepted=3 completed.
-- analytical: full-overlap에서 S3는 S1보다 skew p95 18.12%, mixed p95 17.59% 감소.
-- analytical: S3는 S2보다 remote weight bytes를 skew 37.84%, mixed 22.16% 감소.
-- capacity model: INT8 context-32K 2.4301 GiB는 명목 4 GB에도 들어간다.
+- ONNX 7,837개 노드에서 토큰당 183개 투영을 찾아 802개 TileJob으로 변환했다.
+- 대표 실제 가중치 타일 3개가 폐루프 논리 RTL을 통과해 INT32 결과와 일치했다.
+- 합성 편향 부하에서 S3 대 S1 TileJob p95 −19.13%, p99 −18.71%였다.
+- Gemma 형상은 초기 배치에 따라 p95 효과가 +0.28%에서 −19.79%까지 바뀌었다.
+- 시험한 민감도에서 외부 후보는 K26 로컬 기준선을 이기지 못했다.
 
 ## 결론
 
-S3는 불균형 조건의 후보 정책이다. 외부 8 GiB의 채택 이유는 용량이 아니라 향후 측정할 로컬 대역폭·경합·전력에 달려 있다. 보드 성능·전력, 완전한 3B 실행, 제작 준비 상태는 주장하지 않는다.
+Gemma 1B는 K26 로컬을 우선한다. 외부 메모리와 Work Stealing은 남은 불균형이
+이동 비용보다 큰 확장 조건에서 다시 평가한다. 보드 성능·전력, 전체 가격,
+제작 가능한 PCB는 주장하지 않는다.

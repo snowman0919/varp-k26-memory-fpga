@@ -44,6 +44,10 @@ class TileJob:
     priority: int
     stealable: bool
     home_cluster: int
+    # Upstream jobs that must complete before this job becomes schedulable.
+    # Synthetic stress ledgers leave this empty; model-derived graph ledgers
+    # populate it from the ONNX dataflow.
+    dependency_ids: tuple[int, ...] = ()
 
     def identity(self) -> str:
         payload = "|".join(str(value) for value in asdict(self).values())
@@ -76,6 +80,7 @@ class ModelConfig:
     central_fanout_cycles: int = 2
     central_crossbar_cycles: int = 3
     service_overlap_mode: str = "full"
+    external_link_enabled: bool = True
 
     def __post_init__(self) -> None:
         if self.scheduler not in SCHEDULERS:
@@ -275,6 +280,11 @@ def run_model(
     remote_weight_bytes = 0
     activation_retransmission_bytes = 0
     partial_sum_traffic_bytes = 0
+    charged_link_bytes = 0
+    base_link_bytes_charged = 0
+    remote_link_bytes_charged = 0
+    base_link_service_cycles = 0
+    remote_copy_cycles = 0
     request_serializer_wait = 0
     request_credit_wait = 0
     request_cdc_wait = 0
@@ -288,6 +298,28 @@ def run_model(
     now = min(job.arrival_timestamp for job in job_list)
     last_progress = now
     timed_out = False
+    release_cycles: dict[int, int] = {}
+
+    input_ids = {job.job_id for job in job_list}
+    remaining_dependencies: dict[int, int] = {}
+    dependency_ready_ids: set[int] = set()
+    dependency_finish_cycles: dict[int, int] = {}
+    dependents: dict[int, list[int]] = {
+        job_id: [] for job_id in input_ids
+    }
+    for job in job_list:
+        missing = set(job.dependency_ids) - input_ids
+        if missing:
+            raise ValueError(
+                f"job {job.job_id} has missing dependencies: {sorted(missing)}"
+            )
+        if job.job_id in job.dependency_ids:
+            raise ValueError(f"job {job.job_id} depends on itself")
+        remaining_dependencies[job.job_id] = len(job.dependency_ids)
+        if not job.dependency_ids:
+            dependency_ready_ids.add(job.job_id)
+        for dependency in job.dependency_ids:
+            dependents[dependency].append(job.job_id)
 
     def queue_index(job: TileJob) -> int:
         if global_queue:
@@ -299,8 +331,16 @@ def run_model(
         remaining: list[TileJob] = []
         for job in ingress:
             index = queue_index(job)
-            if len(queues[index]) < config.queue_capacity:
+            dependencies_ready = job.job_id in dependency_ready_ids
+            if dependencies_ready and len(queues[index]) < config.queue_capacity:
+                dependency_finish = dependency_finish_cycles.get(
+                    job.job_id, job.arrival_timestamp
+                )
+                release_cycles[job.job_id] = max(
+                    job.arrival_timestamp, dependency_finish
+                )
                 queues[index].append(job)
+                dependency_ready_ids.discard(job.job_id)
                 max_depth[index] = max(max_depth[index], len(queues[index]))
                 changed = True
             else:
@@ -309,7 +349,7 @@ def run_model(
         return changed
 
     def steal_score(job: TileJob, thief: int) -> float:
-        age = max(0, now - job.arrival_timestamp)
+        age = max(0, now - release_cycles[job.job_id])
         local_bundle = thief % config.bundles
         return (
             config.locality_age_weight * age
@@ -337,13 +377,17 @@ def run_model(
                 channel = job.preferred_channel % config.channels
                 weight_bytes = job.k_length * job.n_length
                 wire_bytes = weight_bytes + job.k_length + job.n_length * 4 + 32
-                link_cycles = max(
-                    1,
-                    math.ceil(
-                        wire_bytes
-                        / (config.link_width_bits // 8)
-                        * config.bundle_clock_ratio
-                    ),
+                link_cycles = (
+                    max(
+                        1,
+                        math.ceil(
+                            wire_bytes
+                            / (config.link_width_bits // 8)
+                            * config.bundle_clock_ratio
+                        ),
+                    )
+                    if config.external_link_enabled
+                    else 0
                 )
                 memory_cycles = max(
                     1,
@@ -355,13 +399,13 @@ def run_model(
                 )
                 start = max(
                     now,
-                    job.arrival_timestamp,
+                    release_cycles[job.job_id],
                     bundle_available[bundle],
                     channel_available[channel],
                 )
                 return (
                     start + max(link_cycles, memory_cycles) + compute_cycles,
-                    job.arrival_timestamp,
+                    release_cycles[job.job_id],
                     job.job_id,
                 )
 
@@ -381,13 +425,13 @@ def run_model(
                 if not job.stealable:
                     continue
                 if config.scheduler == "S2":
-                    score = float(now - job.arrival_timestamp)
+                    score = float(now - release_cycles[job.job_id])
                 else:
                     score = steal_score(job, cluster)
                     if score <= 0:
                         continue
                 candidates.append(
-                    (-score, job.arrival_timestamp, job.job_id, job)
+                    (-score, release_cycles[job.job_id], job.job_id, job)
                 )
         if not candidates:
             return None
@@ -414,11 +458,20 @@ def run_model(
                 raise AssertionError("job completed more than once")
             completed[job.job_id] = {
                 "finish": finish,
-                "latency": finish - job.arrival_timestamp,
+                # Tile latency begins only when declared dependencies have
+                # completed. The full graph span remains total_cycles.
+                "latency": finish - details["release_cycle"],
                 "cluster": cluster,
                 **details,
             }
             completion_order.append(job.job_id)
+            for dependent in dependents[job.job_id]:
+                remaining_dependencies[dependent] -= 1
+                dependency_finish_cycles[dependent] = max(
+                    dependency_finish_cycles.get(dependent, 0), finish
+                )
+                if remaining_dependencies[dependent] == 0:
+                    dependency_ready_ids.add(dependent)
             progressed = True
 
         for cluster in range(config.clusters):
@@ -430,23 +483,54 @@ def run_model(
             job, stolen = selected
             if job.job_id in dispatched:
                 raise AssertionError("job dispatched more than once")
-            bundle = job.preferred_link_bundle % config.bundles
+            home_bundle = job.preferred_link_bundle % config.bundles
+            execution_bundle = (
+                cluster % config.bundles
+                if stolen and job.home_cluster != cluster
+                else home_bundle
+            )
             channel = job.preferred_channel % config.channels
-            if config.stalled_bundle == bundle:
+            if config.stalled_bundle in {home_bundle, execution_bundle}:
                 queues[queue_index(job)].insert(0, job)
                 continue
             dispatched.add(job.job_id)
             weight_bytes = job.k_length * job.n_length
             activation_bytes = job.k_length
             output_bytes = job.n_length * 4
-            wire_bytes = weight_bytes + activation_bytes + output_bytes + 32
-            link_cycles = max(
-                1,
-                math.ceil(
-                    wire_bytes
-                    / (config.link_width_bits // 8)
-                    * config.bundle_clock_ratio
-                ),
+            # The base transfer supplies the statically assigned home queue.
+            # A stolen job is charged a second copy from that home placement to
+            # the thief, including activation and partial-sum movement. This
+            # is an explicit prefetch-before-steal model, not a measured PHY.
+            base_wire_bytes = weight_bytes + 32
+            base_link_cycles = (
+                max(
+                    1,
+                    math.ceil(
+                        base_wire_bytes
+                        / (config.link_width_bits // 8)
+                        * config.bundle_clock_ratio
+                    ),
+                )
+                if config.external_link_enabled
+                else 0
+            )
+            is_remote_copy = stolen and job.home_cluster != cluster
+            copied_wire_bytes = (
+                weight_bytes + activation_bytes + output_bytes + 16
+                if is_remote_copy
+                else 0
+            )
+            copied_link_cycles = (
+                max(
+                    1,
+                    math.ceil(
+                        copied_wire_bytes
+                        / (config.link_width_bits // 8)
+                        * config.bundle_clock_ratio
+                    ),
+                )
+                if copied_wire_bytes
+                else 0
             )
             memory_factor = (
                 config.slow_channel_factor
@@ -473,9 +557,27 @@ def run_model(
                 else 0
             )
             central_queue_control_cycles += physical_dispatch_cycles
-            dispatch_ready = max(now, job.arrival_timestamp) + physical_dispatch_cycles
-            link_start = max(dispatch_ready, bundle_available[bundle])
-            link_end = link_start + link_cycles
+            release_cycle = release_cycles[job.job_id]
+            dispatch_ready = max(now, release_cycle) + physical_dispatch_cycles
+            link_start = (
+                max(dispatch_ready, bundle_available[home_bundle])
+                if config.external_link_enabled
+                else dispatch_ready
+            )
+            base_link_end = link_start + base_link_cycles
+            if config.external_link_enabled:
+                bundle_available[home_bundle] = base_link_end
+            copied_link_start = base_link_end
+            copied_link_end = base_link_end
+            copied_link_wait = 0
+            if copied_link_cycles:
+                copied_link_start = max(
+                    base_link_end, bundle_available[execution_bundle]
+                )
+                copied_link_wait = copied_link_start - base_link_end
+                copied_link_end = copied_link_start + copied_link_cycles
+                bundle_available[execution_bundle] = copied_link_end
+            link_end = copied_link_end
             if config.service_overlap_mode == "full":
                 memory_start = max(dispatch_ready, channel_available[channel])
             else:
@@ -487,28 +589,43 @@ def run_model(
             memory_wait = memory_start - now
             data_ready = max(link_end, memory_start + memory_cycles)
             finish = data_ready + compute_cycles
-            bundle_available[bundle] = link_end
             channel_available[channel] = memory_start + memory_cycles
             cluster_available[cluster] = finish
             cluster_reserved[cluster] += finish - now
             cluster_compute_busy[cluster] += compute_cycles
-            bundle_busy[bundle] += link_cycles
+            bundle_busy[home_bundle] += base_link_cycles
+            if copied_link_cycles:
+                bundle_busy[execution_bundle] += copied_link_cycles
             channel_busy[channel] += memory_cycles
-            bundle_contention_wait += link_wait
+            bundle_contention_wait += link_wait + copied_link_wait
             memory_command_wait += memory_wait
-            request_serializer_wait += max(0, link_cycles - 1)
-            request_credit_wait += link_wait
+            request_serializer_wait += max(
+                0, base_link_cycles + copied_link_cycles - 1
+            )
+            request_credit_wait += link_wait + copied_link_wait
             request_cdc_wait += 1
             response_serializer_wait += max(0, math.ceil(output_bytes / 16) - 1)
             response_cdc_wait += 1
-            queue_waits.append(now - job.arrival_timestamp)
-            if stolen and job.home_cluster != cluster:
+            queue_waits.append(now - release_cycle)
+            charged_link_bytes += (
+                (base_wire_bytes if config.external_link_enabled else 0)
+                + copied_wire_bytes
+            )
+            base_link_bytes_charged += (
+                base_wire_bytes if config.external_link_enabled else 0
+            )
+            remote_link_bytes_charged += copied_wire_bytes
+            base_link_service_cycles += base_link_cycles
+            if is_remote_copy:
                 remote_weight_bytes += weight_bytes
                 activation_retransmission_bytes += activation_bytes
                 if job.reduction_owner != cluster:
                     partial_sum_traffic_bytes += output_bytes
+                remote_copy_cycles += copied_link_cycles
             details = {
-                "queue_wait": now - job.arrival_timestamp,
+                "release_cycle": release_cycle,
+                "dependency_wait": release_cycle - job.arrival_timestamp,
+                "queue_wait": now - release_cycle,
                 "link_wait": link_wait,
                 "memory_wait": memory_wait,
                 "compute_cycles": compute_cycles,
@@ -517,7 +634,7 @@ def run_model(
             if event_sink is not None:
                 event_sink.append(
                     {
-                        "schema_version": "varp.k26.scheduler-event.v1",
+                        "schema_version": "varp.k26.scheduler-event.v2",
                         "evidence_type": "analytical-model",
                         "scheduler": config.scheduler,
                         "workload": workload,
@@ -528,15 +645,25 @@ def run_model(
                         "stolen": int(stolen),
                         "arrival_cycle": job.arrival_timestamp,
                         "dispatch_cycle": now,
-                        "queue_wait_cycles": now - job.arrival_timestamp,
+                        "release_cycle": release_cycle,
+                        "dependency_wait_cycles": (
+                            release_cycle - job.arrival_timestamp
+                        ),
+                        "queue_wait_cycles": now - release_cycle,
                         "link_start_cycle": link_start,
-                        "link_end_cycle": link_end,
+                        "home_link_end_cycle": base_link_end,
+                        "remote_copy_start_cycle": copied_link_start,
+                        "link_end_cycle": copied_link_end,
+                        "home_link_bundle": home_bundle,
+                        "execution_link_bundle": execution_bundle,
+                        "base_link_bytes": base_wire_bytes,
+                        "remote_copy_bytes": copied_wire_bytes,
                         "memory_start_cycle": memory_start,
                         "memory_end_cycle": memory_start + memory_cycles,
                         "compute_start_cycle": data_ready,
                         "compute_end_cycle": finish,
                         "preferred_channel": channel,
-                        "preferred_link_bundle": bundle,
+                        "preferred_link_bundle": home_bundle,
                     }
                 )
             heapq.heappush(
@@ -553,6 +680,34 @@ def run_model(
             future.append(completions[0][0])
         if next_arrival < len(job_list):
             future.append(job_list[next_arrival].arrival_timestamp)
+        # Dependency completion may admit a job after the dispatch pass in
+        # this iteration. Revisit the ready queues on the next model cycle.
+        if global_queue:
+            dispatchable_now = bool(queues[0]) and any(
+                available <= now for available in cluster_available
+            )
+        elif config.scheduler == "S1":
+            dispatchable_now = any(
+                cluster_available[cluster] <= now and bool(queues[cluster])
+                for cluster in range(config.clusters)
+            )
+        else:
+            # S2/S3 have already attempted victim selection in this cycle.
+            # If other work is in flight, jump to that event instead of
+            # advancing one analytical cycle at a time merely because an idle
+            # thief exists.
+            dispatchable_now = False
+        if dispatchable_now:
+            future.append(now + 1)
+        if (
+            not future
+            and config.scheduler in {"S2", "S3"}
+            and any(queues)
+            and any(available <= now for available in cluster_available)
+        ):
+            # No in-flight completion can age an ineligible S3 candidate, so
+            # advance one cycle. This is the only cycle-stepping fallback.
+            future.append(now + 1)
         if not future:
             if len(completed) != len(job_list):
                 timed_out = True
@@ -566,7 +721,6 @@ def run_model(
         now = next_time
 
     completed_ids = set(completed)
-    input_ids = {job.job_id for job in job_list}
     correctness = (
         not timed_out
         and completed_ids == input_ids
@@ -580,6 +734,7 @@ def run_model(
     start_cycle = min(job.arrival_timestamp for job in job_list)
     total_cycles = max(1, end_cycle - start_cycle)
     latencies = [row["latency"] for row in completed.values()]
+    dependency_waits = [row["dependency_wait"] for row in completed.values()]
     total_queue_depth = sum(len(queue) for queue in queues) + len(ingress)
     compute_utilization = [
         min(1.0, busy / total_cycles) for busy in cluster_compute_busy
@@ -604,31 +759,29 @@ def run_model(
         math.ceil(job.k_length * job.n_length / config.channel_bytes_per_cycle)
         for job in job_list
     )
-    total_link_work = sum(
-        math.ceil(
-            (
-                job.k_length * job.n_length
-                + job.k_length
-                + job.n_length * 4
-                + 32
+    total_link_work = (
+        sum(
+            math.ceil(
+                (job.k_length * job.n_length + 32)
+                / (config.link_width_bits // 8)
+                * config.bundle_clock_ratio
             )
-            / (config.link_width_bits // 8)
-            * config.bundle_clock_ratio
+            for job in job_list
         )
-        for job in job_list
+        if config.external_link_enabled
+        else 0
     )
     longest_single_job = max(
         max(
             math.ceil(job.k_length * job.n_length / config.channel_bytes_per_cycle),
-            math.ceil(
-                (
-                    job.k_length * job.n_length
-                    + job.k_length
-                    + job.n_length * 4
-                    + 32
+            (
+                math.ceil(
+                    (job.k_length * job.n_length + 32)
+                    / (config.link_width_bits // 8)
+                    * config.bundle_clock_ratio
                 )
-                / (config.link_width_bits // 8)
-                * config.bundle_clock_ratio
+                if config.external_link_enabled
+                else 0
             ),
         )
         + math.ceil(job.k_length * job.n_length / config.compute_mac_per_cycle)
@@ -641,7 +794,7 @@ def run_model(
         longest_single_job,
     )
     result = {
-        "schema_version": "varp.k26.scheduler-model.v1",
+        "schema_version": "varp.k26.scheduler-model.v2",
         "evidence_type": "analytical-model",
         "scheduler": config.scheduler,
         "workload": workload,
@@ -652,6 +805,7 @@ def run_model(
         "bundles": config.bundles,
         "link_width_bits": config.link_width_bits,
         "service_overlap_mode": config.service_overlap_mode,
+        "external_link_enabled": config.external_link_enabled,
         "jobs": len(job_list),
         "ledger_sha256": input_ledger_hash,
         "completed_jobs": len(completed),
@@ -672,6 +826,12 @@ def run_model(
             max(0, total_cycles - busy) for busy in cluster_compute_busy
         ),
         "queue_wait_mean_cycles": mean(queue_waits) if queue_waits else 0.0,
+        "dependency_wait_mean_cycles": (
+            mean(dependency_waits) if dependency_waits else 0.0
+        ),
+        "dependency_edge_count": sum(
+            len(job.dependency_ids) for job in job_list
+        ),
         "max_queue_depth": max(max_depth, default=0),
         "queue_imbalance": queue_imbalance,
         "ingress_backlog_final": total_queue_depth,
@@ -683,6 +843,15 @@ def run_model(
         "remote_weight_bytes": remote_weight_bytes,
         "activation_retransmission_bytes": activation_retransmission_bytes,
         "partial_sum_traffic_bytes": partial_sum_traffic_bytes,
+        "charged_link_bytes": charged_link_bytes,
+        "base_link_bytes": base_link_bytes_charged,
+        "incremental_remote_link_bytes": remote_link_bytes_charged,
+        "base_link_service_cycles": base_link_service_cycles,
+        "incremental_remote_link_service_cycles": remote_copy_cycles,
+        "base_memory_service_cycles": sum(channel_busy),
+        "incremental_remote_memory_service_cycles": 0,
+        "remote_copy_cycles": remote_copy_cycles,
+        "remote_transfer_semantics": "prefetch-home-then-copy-to-thief",
         "link_bundle_utilization_mean": mean(bundle_utilization),
         "ddr_channel_utilization_mean": mean(channel_utilization),
         "request_serializer_wait": request_serializer_wait,

@@ -1,103 +1,93 @@
-# VARP K26–Memory FPGA Accelerator
+# 온디바이스 sLLM을 위한 K26–Memory FPGA 후보 구조
 
-VARP studies locality-aware work stealing for an on-device Gemma 3 1B
-accelerator candidate built around Kria K26 compute and a multi-channel memory
-FPGA. **This is a research artifact. Results are analytical/model/hybrid unless
-explicitly marked otherwise.**
+Kria K26이 연산·제어를 맡고 외부 Memory FPGA가 다채널로 가중치를 공급하는
+확장형 가속기 구조를 설계하고, 데이터 이동 비용을 포함한 작업 재분배가 언제
+유효한지 평가한 연구 저장소다.
 
-![Implemented compute path, analytical service boundary, and blocked physical integration](paper/final/figures/paper_f01_evidence_path.svg)
+![K26 연산부와 Memory FPGA 가중치 공급부](paper/final/figures/paper_f01_evidence_path.svg)
 
-## What is implemented
+## 핵심 결론
 
-The repository connects a hash-bound ONNX graph inventory to a projection-job
-ledger, an analytical scheduler model, bounded SpinalHDL/Verilator RTL evidence,
-and native KiCad proposal sources.
+- Gemma 3 1B INT8와 문맥 길이 32K의 용량 모델은 2.43 GiB다. 따라서 기본 선택은
+  K26 로컬이며 외부 8GB는 더 큰 모델·긴 문맥·로컬 경합을 위한 확장 후보다.
+- 실제 그래프의 토큰당 183개 투영을 의존성 있는 802개 TileJob으로 변환했다.
+- 합성 편향 부하의 동일 시드 다섯 개 중앙값에서 S3는 S1보다 TileJob p95를
+  19.13%, p99를 18.71% 줄였다. 반면 Gemma 기존 산술 배치에서는 p95가 0.28%
+  늘어 정책 효과가 초기 배치와 이동 비용에 조건부임을 확인했다.
+- 대표 실제 가중치 타일 세 개가 작업 수락→DMA 요청→DDR 응답 경계→논리 링크
+  FIFO→MatVec 결과의 폐루프 논리 RTL을 통과했고 INT32 기준과 일치했다.
 
-| Plane | Implemented boundary | Evidence |
-|---|---|---|
-| Compute | `TileJob + payload → scheduler → payload store → 16×4 INT8 MatVec → result` | RTL simulated, bounded exact-once tests |
-| Memory | external request → channel ingress → bank-aware queue → command | RTL command plane; no PHY or response path |
-| Link | external input → bundle router → output bundle | RTL routing plane; no GT wrapper or returned payload |
-| Physical | KiCad hierarchy and validation coupon | native proposal checks; **NOT FOR FABRICATION** |
+이 수치는 보드 실측이 아니다. GTH·MIG 물리 타이밍, 전체 보드 전력·가격,
+제작 가능한 PCB는 아직 검증하지 않았다.
 
-## Key results
+## 연구 기여
 
-Under the disclosed full-overlap analytical model, locality-aware S3 lowers p95
-versus static S1 by **18.12% for skew** and **17.59% for mixed** workloads. These
-are modeled scheduler results—not measured accelerator speedups. Three actual
-Gemma weight tiles match the bounded INT32 RTL references; native KiCad checks
-pass only within the declared proposal/coupon scope.
+1. K26의 연산·제어와 Memory FPGA의 가중치 공급 역할을 분리한 확장 후보 구조
+2. 원격 가중치·활성값·부분합 비용을 서비스 시간에 부과한 동적 작업 배치 평가
+3. 실제 모델 형상→분석 모델→폐루프 논리 RTL→KiCad 라우팅 쿠폰의 재현 흐름
 
-## Quick start
+## 빠른 시작
 
-Prerequisites: Python 3.11+, Java 21, sbt, Verilator, KiCad 9 CLI, Pandoc,
-Chromium/Chrome, Poppler, ffmpeg, and Noto CJK fonts.
+필수 도구는 Python 3.11+, Java 21, sbt, Verilator, KiCad CLI, Pandoc,
+Chromium, Poppler, ffmpeg, Manim과 한글 글꼴이다.
 
 ```bash
 make setup
+make test
+make rtl-test
+make paper-experiments
+make research-freeze
+make paper
+make presentation
 make reproduce
 ```
 
-Focused commands:
+허가된 원본 Gemma 3 1B ONNX가 있을 때만 다음 명령으로 trace를 재생성한다.
+모델 가중치는 저장소와 release에 포함하지 않는다.
 
 ```bash
-make test                 # Python and repository contracts
-make rtl-test             # eight bounded RTL suites
-make publication-index    # figures, flows, slides, and visual QA
-make paper                # submission and extended report
-make release              # deterministic source/evidence/paper archives
-make clean-rtl            # target/ and simWorkspace/
-make distclean            # all ignored build and RTL output
+GEMMA3_1B_ONNX_DIR=/authorized/path make model-trace
 ```
 
-`make model-trace` is the only target that needs an authorized local Gemma 3 1B
-ONNX artifact via `GEMMA3_1B_ONNX_DIR`; model weights are never redistributed.
+## 주요 산출물
 
-GitHub's automatic **Download ZIP** supports `make test` and
-`make publication-index`. For checksum-bound full reproduction, use the
-official Release `VARP_K26_Source.zip`, which contains `source_manifest.txt`.
+- [제출 논문](paper/final/submission_manuscript.pdf)
+- [기술보고서](paper/technical_report/technical_report.pdf)
+- [16장 발표자료](presentation/final/presentation.pptx)
+- [발표 PDF](presentation/final/presentation.pdf)
+- [발표자 노트](presentation/final/speaker_notes.md)
+- [슬라이드별 출처 인덱스](presentation/final/slide_source_index.md)
+- [발표 contact sheet](presentation/final/slide_contact_sheet.png)
+- [연구 동결 기록](research/v11_research_freeze.md)
+- [스터디팩과 Q&A](study/README.md)
+- [코드·자료 공개 안내](paper/final/code_and_data_availability.md)
+- [학술대회 패키지 통합 인덱스](conference_package/INDEX.md)
 
-## Documents
+## 저장소 구조
 
-- [Submission manuscript](paper/final/submission_manuscript.pdf)
-- [Extended technical report](paper/technical_report/technical_report.pdf)
-- [10-minute presentation](presentation/final/presentation.pptx)
-- [Presentation PDF](presentation/final/presentation.pdf)
-- [Speaker notes](presentation/final/speaker_notes.md)
-- [Slide source index](presentation/final/slide_source_index.md)
-- [Slide contact sheet](presentation/final/slide_contact_sheet.png)
-- [Independent presentation review](presentation/final/independent_review.md)
-- [Work Stealing MP4](presentation/final/assets/work_stealing_sequence.mp4) / [GIF](presentation/final/assets/work_stealing_sequence.gif)
-- [Study pack](study/study_pack.pdf)
-- [Evidence index](release/evidence_index.md)
-- [Architecture and missing loop](docs/architecture.md)
-- [Python/RTL semantic contract](docs/model_rtl_contract.md)
-- [Analytical-to-RTL calibration](docs/calibration.md)
-
-## Repository layout
-
-| Path | Purpose |
+| 경로 | 내용 |
 |---|---|
-| `hw/`, `src/`, `tests/` | bounded RTL, analytical model, and contracts |
-| `experiments/`, `results/`, `evidence/` | graph-derived, modeled, and RTL evidence |
-| `hardware/kicad/` | reference hierarchy and validation coupon |
-| `paper/`, `presentation/final/`, `study/` | submission and defense materials |
-| `release/` | deterministic public release set and checksums |
+| `src/`, `tests/` | 의존성 인식 분석 모델과 검증 |
+| `hw/` | SpinalHDL/Verilator RTL과 폐루프 논리 가상 시제품 |
+| `experiments/`, `results/`, `evidence/` | Gemma trace, 합성 실험, 결과 CSV |
+| `hardware/kicad/` | 일반 경계 라우팅 쿠폰, **NOT FOR FABRICATION** |
+| `paper/`, `presentation/`, `study/` | 논문·발표·방어 자료 |
 
-## Scope and limitations
+## 재현과 주장 범위
 
-There is no implemented `scheduler → DMA → DDR/link response → weight FIFO →
-MatVec` loop. The analytical 64 MAC/cycle default is not the shipped primitive's
-issue rate: that primitive completes 64 MACs in 65 request-to-done cycles. This
-repository does not claim board-measured performance, DDR/link payload
-bandwidth, complete 3B execution, SI/PI closure, or fabrication readiness.
+`make research-freeze`는 동일 시드 비교, 원격 복사 비용 부과, Gemma 단계·토큰
+의존성, 실제 타일 RTL trace, K26 로컬 기준선과 KiCad 범위를 검사한다. 자세한
+논리/물리 경계는 [architecture.md](docs/architecture.md)를 따른다.
 
-## Citation
+## 소스 아카이브
 
-Use [CITATION.cff](CITATION.cff): CHOI YUNHYUK, Korea Digital Media High
-School, ORCID [0009-0006-3537-0249](https://orcid.org/0009-0006-3537-0249).
+GitHub의 자동 **Download ZIP**은 저장소 tree를 그대로 받는 편의 경로다. 재현
+기준은 `v11-conference-final` release에 첨부하는 공식
+`VARP_K26_Source.zip`이며, 이 파일은 `source_manifest`와 checksum을 함께
+포함한다. 두 경로 모두 모델 가중치는 포함하지 않는다.
 
-## License
+## 인용과 라이선스
 
-This is deliberately source-available research evidence, not an OSI-approved
-open-source release. See [LICENSE](LICENSE) and [AUTHORS.md](AUTHORS.md).
+[CITATION.cff](CITATION.cff)의 최윤혁(한국디지털미디어고등학교,
+[ORCID 0009-0006-3537-0249](https://orcid.org/0009-0006-3537-0249)) 정보를 사용한다.
+소스 사용 조건은 [LICENSE](LICENSE)를 따른다.

@@ -1,37 +1,47 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="800" height="292" viewBox="0 0 800 292">
-  <defs>
-    <marker id="arrow2b" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 Z" fill="#1677b8"/></marker>
-    <style>
-      text{font-family:"Noto Sans CJK KR","Noto Sans",sans-serif;fill:#172033}
-      .h{font-size:26px;font-weight:700}.t{font-size:20px;font-weight:700}.s{font-size:18px}
-      .rtl{fill:#eef5fb;stroke:#1677b8;stroke-width:3}.model{fill:#fff4df;stroke:#e89b00;stroke-width:3}
-      .blocked{fill:#f1f2f4;stroke:#6b7280;stroke-width:3;stroke-dasharray:9 6}
-    </style>
-  </defs>
-  <text class="h" x="24" y="34">Figure 3 · S1 → S2 → S3 policy ladder and evidence boundary</text>
-  <rect class="rtl" x="24" y="62" width="166" height="78" rx="10"/>
-  <text class="t" x="107" y="94" text-anchor="middle">S1 static local</text>
-  <text class="s" x="107" y="121" text-anchor="middle">home queue only</text>
-  <line x1="190" y1="101" x2="228" y2="101" stroke="#1677b8" stroke-width="4" marker-end="url(#arrow2b)"/>
-  <rect class="rtl" x="236" y="62" width="166" height="78" rx="10"/>
-  <text class="t" x="319" y="94" text-anchor="middle">S2 oldest steal</text>
-  <text class="s" x="319" y="121" text-anchor="middle">eligible victim job</text>
-  <line x1="402" y1="101" x2="440" y2="101" stroke="#1677b8" stroke-width="4" marker-end="url(#arrow2b)"/>
-  <rect class="rtl" x="448" y="62" width="166" height="78" rx="10"/>
-  <text class="t" x="531" y="91" text-anchor="middle">S3 locality</text>
-  <text class="s" x="531" y="116" text-anchor="middle">age score −</text>
-  <text class="s" x="531" y="135" text-anchor="middle">migration penalty</text>
-  <line x1="614" y1="101" x2="652" y2="101" stroke="#1677b8" stroke-width="4" marker-end="url(#arrow2b)"/>
-  <rect class="rtl" x="660" y="62" width="116" height="78" rx="10"/>
-  <text class="t" x="718" y="94" text-anchor="middle">MatVec</text>
-  <text class="s" x="718" y="121" text-anchor="middle">exact-once</text>
-  <rect class="model" x="24" y="154" width="472" height="74" rx="10"/>
-  <text class="t" x="260" y="180" text-anchor="middle">ANALYTICAL migration cost</text>
-  <text class="s" x="260" y="204" text-anchor="middle">remote bytes + modeled link/memory service</text>
-  <rect class="blocked" x="516" y="154" width="260" height="74" rx="10"/>
-  <text x="646" y="180" text-anchor="middle" font-size="18px" font-weight="700">BLOCKED transaction path</text>
-  <text class="s" x="646" y="201" text-anchor="middle">scheduler → DMA/link/DDR</text>
-  <text class="s" x="646" y="220" text-anchor="middle">→ response/release</text>
-  <text class="s" x="400" y="260" text-anchor="middle">Blue = RTL decision/dispatch/MatVec · orange = analytical migration cost</text>
-  <text class="s" x="400" y="283" text-anchor="middle">Gray dashed = remote-weight transaction path not integrated</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900">
+<rect width="1600" height="900" fill="#f7fbff"/>
+<defs><marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M0,0 L12,6 L0,12 Z" fill="#1878a8"/></marker></defs>
+<text x="70" y="78" font-size="44px" font-family="Noto Sans CJK KR, Noto Sans KR, sans-serif" font-weight="800" fill="#102a43" text-anchor="start">빈 클러스터가 작업을 가져오되 이동 비용을 먼저 계산</text>
+<text x="70" y="124" font-size="31px" font-family="Noto Sans CJK KR, Noto Sans KR, sans-serif" font-weight="500" fill="#486581" text-anchor="start">정적 대기 감소가 가중치·활성값·부분합 복사 시간보다 클 때만 실행한다</text>
+<rect x="60" y="180" width="600" height="600" rx="20" fill="#edf6fb" stroke="#4d9ec2" stroke-width="3"/>
+<text x="95" y="230" font-size="32px" font-family="Noto Sans CJK KR, Noto Sans KR, sans-serif" font-weight="800" fill="#173f5f" text-anchor="start">S1 · 정적 다중 대기열</text>
+<text x="110" y="335" font-size="31px" font-family="Noto Sans CJK KR, Noto Sans KR, sans-serif" font-weight="750" fill="#173f5f" text-anchor="start">C0</text>
+<rect x="170" y="300" width="390" height="55" rx="10" fill="#ffffff" stroke="#76abc4" stroke-width="2"/>
+<rect x="185" y="309" width="38" height="37" rx="5" fill="#2f80b7" stroke="#ffffff" stroke-width="1"/>
+<rect x="235" y="309" width="38" height="37" rx="5" fill="#2f80b7" stroke="#ffffff" stroke-width="1"/>
+<rect x="285" y="309" width="38" height="37" rx="5" fill="#2f80b7" stroke="#ffffff" stroke-width="1"/>
+<rect x="335" y="309" width="38" height="37" rx="5" fill="#2f80b7" stroke="#ffffff" stroke-width="1"/>
+<rect x="385" y="309" width="38" height="37" rx="5" fill="#2f80b7" stroke="#ffffff" stroke-width="1"/>
+<rect x="435" y="309" width="38" height="37" rx="5" fill="#2f80b7" stroke="#ffffff" stroke-width="1"/>
+<rect x="485" y="309" width="38" height="37" rx="5" fill="#2f80b7" stroke="#ffffff" stroke-width="1"/>
+<text x="110" y="440" font-size="31px" font-family="Noto Sans CJK KR, Noto Sans KR, sans-serif" font-weight="750" fill="#173f5f" text-anchor="start">C1</text>
+<rect x="170" y="405" width="390" height="55" rx="10" fill="#ffffff" stroke="#76abc4" stroke-width="2"/>
+<rect x="185" y="414" width="38" height="37" rx="5" fill="#73b7d2" stroke="#ffffff" stroke-width="1"/>
+<rect x="235" y="414" width="38" height="37" rx="5" fill="#73b7d2" stroke="#ffffff" stroke-width="1"/>
+<text x="110" y="545" font-size="31px" font-family="Noto Sans CJK KR, Noto Sans KR, sans-serif" font-weight="750" fill="#173f5f" text-anchor="start">C2</text>
+<rect x="170" y="510" width="390" height="55" rx="10" fill="#ffffff" stroke="#76abc4" stroke-width="2"/>
+<rect x="185" y="519" width="38" height="37" rx="5" fill="#73b7d2" stroke="#ffffff" stroke-width="1"/>
+<text x="110" y="650" font-size="31px" font-family="Noto Sans CJK KR, Noto Sans KR, sans-serif" font-weight="750" fill="#173f5f" text-anchor="start">C3</text>
+<rect x="170" y="615" width="390" height="55" rx="10" fill="#ffffff" stroke="#76abc4" stroke-width="2"/>
+<text x="365" y="651" font-size="31px" font-family="Noto Sans CJK KR, Noto Sans KR, sans-serif" font-weight="750" fill="#9b4d45" text-anchor="middle">유휴</text>
+<line x1="660" y1="480" x2="835" y2="480" stroke="#188e80" stroke-width="8" marker-end="url(#arrow)"/>
+<text x="750" y="445" font-size="31px" font-family="Noto Sans CJK KR, Noto Sans KR, sans-serif" font-weight="750" fill="#176d60" text-anchor="middle">후보 검색</text>
+<rect x="850" y="180" width="690" height="600" rx="20" fill="#eaf7f4" stroke="#3f9f8c" stroke-width="3"/>
+<text x="890" y="230" font-size="32px" font-family="Noto Sans CJK KR, Noto Sans KR, sans-serif" font-weight="800" fill="#176d60" text-anchor="start">S3 · 지역성 인식 재분배</text>
+<rect x="900" y="300" width="300" height="62" rx="12" fill="#ffffff" stroke="#59aa98" stroke-width="2"/>
+<text x="925" y="341" font-size="31px" font-family="Noto Sans CJK KR, Noto Sans KR, sans-serif" font-weight="650" fill="#155e55" text-anchor="start">1  기다린 시간</text>
+<rect x="900" y="390" width="300" height="62" rx="12" fill="#ffffff" stroke="#59aa98" stroke-width="2"/>
+<text x="925" y="431" font-size="31px" font-family="Noto Sans CJK KR, Noto Sans KR, sans-serif" font-weight="650" fill="#155e55" text-anchor="start">2  가중치 크기</text>
+<rect x="900" y="480" width="300" height="62" rx="12" fill="#ffffff" stroke="#59aa98" stroke-width="2"/>
+<text x="925" y="521" font-size="31px" font-family="Noto Sans CJK KR, Noto Sans KR, sans-serif" font-weight="650" fill="#155e55" text-anchor="start">3  활성값·부분합</text>
+<rect x="900" y="570" width="300" height="62" rx="12" fill="#ffffff" stroke="#59aa98" stroke-width="2"/>
+<text x="925" y="611" font-size="31px" font-family="Noto Sans CJK KR, Noto Sans KR, sans-serif" font-weight="650" fill="#155e55" text-anchor="start">4  링크 불일치</text>
+<text x="1240" y="330" font-size="31px" font-family="Noto Sans CJK KR, Noto Sans KR, sans-serif" font-weight="750" fill="#126e92" text-anchor="start">대기 이득</text>
+<text x="1240" y="382" font-size="31px" font-family="Noto Sans CJK KR, Noto Sans KR, sans-serif" font-weight="750" fill="#9b4d45" text-anchor="start">− 이동 비용</text>
+<line x1="1235" y1="408" x2="1485" y2="408" stroke="#708d9b" stroke-width="3"/>
+<text x="1360" y="458" font-size="31px" font-family="Noto Sans CJK KR, Noto Sans KR, sans-serif" font-weight="800" fill="#176d60" text-anchor="middle">점수 &gt; 0</text>
+<rect x="1230" y="505" width="250" height="112" rx="16" fill="#d7f1ea" stroke="#258f7e" stroke-width="3"/>
+<text x="1355" y="548" font-size="31px" font-family="Noto Sans CJK KR, Noto Sans KR, sans-serif" font-weight="650" fill="#155e55" text-anchor="middle">기본 위치 적재</text>
+<text x="1355" y="590" font-size="31px" font-family="Noto Sans CJK KR, Noto Sans KR, sans-serif" font-weight="750" fill="#155e55" text-anchor="middle">→ 유휴 쪽 복사</text>
+<text x="1195" y="700" font-size="31px" font-family="Noto Sans CJK KR, Noto Sans KR, sans-serif" font-weight="650" fill="#486581" text-anchor="middle">추가 바이트·사이클을 링크에 부과</text>
 </svg>

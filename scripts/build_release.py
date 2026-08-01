@@ -262,7 +262,7 @@ def write_index(rows: list[dict[str, object]]) -> None:
 def write_manifest(rows: list[dict[str, object]]) -> None:
     manifest = {
         "schema_version": "varp.k26.evidence-manifest.v1",
-        "release": "v10-submission-ready",
+        "release": "v11-conference-final",
         "model_weights_included": False,
         "records": rows,
         "global_claim_boundary": (
@@ -335,7 +335,9 @@ def deterministic_zip(
         output, "w", compression=zipfile.ZIP_DEFLATED, compresslevel=9
     ) as archive:
         for path in sorted(set(files), key=lambda item: item.as_posix()):
-            if not path.is_file() or not safe_for_release(path):
+            if not path.is_file() or (
+                path not in arcname_overrides and not safe_for_release(path)
+            ):
                 continue
             relative = arcname_overrides.get(
                 path, path.relative_to(ROOT).as_posix()
@@ -424,7 +426,7 @@ def build_archives() -> None:
         json.dumps(
             {
                 "schema_version": "varp.k26.release-manifest.v1",
-                "tag": "v10-submission-ready",
+                "tag": "v11-conference-final",
                 "model_weights_included": False,
                 "archives": [
                     {

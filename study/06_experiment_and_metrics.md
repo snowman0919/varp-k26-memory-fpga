@@ -1,9 +1,13 @@
 # 실험과 지표
 
-Synthetic workload는 balanced, skew, hotspot, bursty, mixed 각각 1,000 job이고 seed는 19/23/29/31/43이다. 동일 seed의 3회 반복은 결정성 검사이며 표본 수를 늘리지 않는다.
+합성 부하는 균형·편향·채널 집중·순간 집중·혼합 각 1,000개 작업과 시드
+19/23/29/31/43을 사용한다. 같은 시드의 S1/S2/S3는 같은 작업 목록 해시를 가진다.
 
-Full-overlap은 `data-ready=max(link-end,memory-end)`, sequential은 두 서비스를 더한다. 두 모델 모두 DMA/PHY cycle timing이 아니다.
+Gemma 평가는 토큰당 802개 TileJob, 보수적 단계 장벽과 토큰 직렬화를 사용한다.
+기존 산술·라운드로빈·크기 균형·채널 친화 초기 배치를 비교한다.
 
-지표는 p50/p95/p99, completion time, successful steals, remote weight bytes, compute duty, reservation occupancy, unreserved idle을 함께 본다. occupancy가 99%여도 MAC이 99% 계산했다는 뜻은 아니다.
+p95와 p99는 의존성 해제 시점부터 TileJob 완료까지의 분포다. 사용자 요청 지연이나
+기능적 텍스트 생성 시간이 아니다. 완료시간, 추가 링크 바이트, 원격 가중치와 함께
+읽는다.
 
-정상성 조건은 input/dispatched/completed ID set 동일, duplicate 0, timeout false다.
+정상성 조건은 입력 ID와 완료 ID 집합 동일, duplicate 0, timeout false다.

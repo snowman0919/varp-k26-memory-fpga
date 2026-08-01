@@ -1,21 +1,29 @@
 # 논문 순회
 
-## I–II. 문제와 차별점
+## I–III. 문제와 질문 전환
 
-‘메모리가 병목’이라는 일반론을 TileJob 소유권, queue skew, locality cost, remote-byte 회계로 구체화한다. 알고리즘 신규성이나 최고 성능을 주장하지 않고 evidence chain을 기여로 둔다.
+처음에는 외부 8GB를 용량 해법으로 보았지만 1B 용량 모델이 2.43 GiB임을 확인했다.
+따라서 질문을 가중치 공급 분리와 다중 클러스터 활용으로 바꿨다.
 
-## III. 실제 workload
+## IV–VI. 구조와 정책
 
-해시로 묶인 Gemma 3 1B ONNX에서 7,837-node inventory와 token당 183 projection을 얻는다. 실제 weight 16×4 tile 세 개만 RTL MatVec parity를 확인했으므로 model-wide accuracy로 확대하면 안 된다.
+K26은 계산 소유권, Memory FPGA는 데이터 공급 친화도를 맡는다. S1은 정적 로컬
+큐, S2는 가장 오래된 작업 이동, S3는 대기 이득에서 가중치·활성값·부분합 이동
+비용을 뺀다. 추가 전송은 실제 분석 서비스 시간에 들어간다.
 
-## IV–V. 구조와 정책
+## V·VII. 실제 모델과 구현
 
-S0는 이상적 중앙 FIFO, S1은 static local, S2는 oldest eligible stealing, S3는 age에서 locality penalty를 뺀 score를 사용한다. compute/memory/link plane의 독립성을 명시한다.
+토큰당 183개 투영을 의존성 있는 802개 출력 TileJob으로 나눈다. 대표 실제 타일
+3개는 폐루프 논리 RTL을 통과했다. 물리 GTH·MIG 경로와 보드 타이밍은 포함하지
+않는다.
 
-## VI–VII. 방법과 결과
+## VIII. 결과와 결정
 
-동일한 1,000-job synthetic streams와 seed 5개를 비교한다. full-overlap과 sequential은 물리 timing이 아니라 service boundary다. S3는 skew/mixed tail과 remote bytes에 이득이 있지만 balanced/hotspot에는 이득이 없고 completion time은 소폭 악화될 수 있다.
+합성 편향 부하에서는 p95/p99가 줄지만 균형·채널 집중 조건에서는 이득이 없다.
+Gemma 형상에서는 초기 배치에 따라 악화와 개선이 모두 나타난다. K26 로컬 기준선이
+시험한 외부 후보보다 짧아 외부 구조의 채택은 보류한다.
 
-## VIII. 물리 범위와 결론
+## IX–XI. 물리 범위와 결론
 
-KiCad coupon은 native source와 제한된 검사 증거다. 55 unrouted nets, SI/PI/PDN/thermal 미검증 때문에 제작 준비 상태가 아니다. 다음 단계는 response가 있는 DMA/link/DDR loop와 보드 계측이다.
+KiCad는 전체 보드가 아니라 일반 경계 라우팅 쿠폰이다. 기여는 역할 분리, 비용 포함
+배치, 모델→RTL→KiCad 재현 흐름이다.

@@ -2,12 +2,13 @@
 
 | 오해 | 바로잡기 |
 |---|---|
-| 메모리가 병목이므로 외부 FPGA가 반드시 필요하다 | 로컬 DDR4 baseline이 없어 채택은 보류 상태다 |
-| S3는 항상 가장 빠르다 | balanced/hotspot 이득이 없고 sequential skew에서 순위가 바뀐다 |
-| occupancy 99%는 MAC 활용률 99%다 | 대기 포함 예약률이며 compute duty와 다르다 |
-| S0 remote bytes 0은 측정 결과다 | 중앙 공유 storage를 가정한 모델 정의다 |
-| 3/3 tile parity는 full model 정확성이다 | 세 representative 16×4 tile의 제한 증거다 |
-| ORT 408.445 ms는 accelerator 결과다 | Y700 Android CPU EP 기능 참조다 |
-| DRAMsim3 snapshot이 Gemma replay에 결합됐다 | 공개 snapshot은 보존 자료이며 재생성·결합되지 않았다 |
-| ERC/DRC pass면 제작 가능하다 | unrouted/SI/PI/PDN/thermal 등 관문이 남는다 |
-| 8 GB는 3B 실행을 증명한다 | generic capacity arithmetic일 뿐 실행 증거가 아니다 |
+| 1B는 외부 8GB가 반드시 필요하다 | 2.43 GiB 용량 모델이므로 K26 로컬이 우선이다 |
+| 외부 후보가 로컬보다 빠르다 | 시험한 분석 민감도에서는 로컬 기준선이 더 짧다 |
+| Work Stealing이 논문의 주인공이다 | 구조의 남은 불균형을 처리하는 조건부 수단이다 |
+| S3는 항상 빠르다 | Gemma 기존 산술 배치에서는 p95와 완료시간이 악화됐다 |
+| p95는 사용자 요청 지연이다 | 의존성 해제 뒤 TileJob 완료 분포다 |
+| 32토큰은 병렬 decode다 | 단계와 토큰을 직렬화한 분석 반복이다 |
+| 실제 타일 3개 일치는 전체 모델 실행이다 | 제한된 폐루프 논리 RTL 정확성이다 |
+| 폐루프 RTL은 물리 GTH/MIG 완료다 | 직렬화·CDC·PHY·보드 타이밍은 후속 범위다 |
+| KiCad 렌더는 제작 가능한 보드다 | 일반 경계 라우팅 쿠폰이며 NOT FOR FABRICATION이다 |
+| 저비용·저전력을 달성했다 | 전체 BOM과 보드 전력이 없어 목표로만 기술한다 |

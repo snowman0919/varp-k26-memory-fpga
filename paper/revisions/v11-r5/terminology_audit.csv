@@ -1,0 +1,20 @@
+original,final,status
+lane bonding,레인 결합,REPLACED
+packet,패킷,REPLACED
+credit,크레딧,REPLACED
+compiler,컴파일러,REPLACED
+runtime,실행 환경,REPLACED
+activation,활성값,REPLACED
+seed,시드,REPLACED
+hash,해시,REPLACED
+cycle,사이클,REPLACED
+balanced,균형,REPLACED
+skew,편향,REPLACED
+hotspot,채널 집중,REPLACED
+bursty,순간 집중,REPLACED
+mixed,혼합,REPLACED
+TileJob,TileJob,STANDARD_NAME
+Work Stealing,Work Stealing,STANDARD_NAME
+K26, K26,STANDARD_NAME
+DDR3L,DDR3L,STANDARD_NAME
+MatVec,MatVec,STANDARD_NAME

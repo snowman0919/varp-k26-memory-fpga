@@ -10,7 +10,7 @@ import zipfile
 
 
 ROOT = Path(__file__).resolve().parents[1]
-ARCHIVE = ROOT / "build" / "release" / "VARP_K26_Source.zip"
+ARCHIVE = ROOT / "release" / "VARP_K26_Source.zip"
 
 
 def main() -> int:

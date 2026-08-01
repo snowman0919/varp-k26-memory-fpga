@@ -1,26 +1,47 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="800" height="260" viewBox="0 0 800 260">
-  <style>
-    text{font-family:"Noto Sans CJK KR","Noto Sans",sans-serif;fill:#172033}
-    .h{font-size:26px;font-weight:700}.t{font-size:20px;font-weight:700}.s{font-size:18px}
-  </style>
-  <text class="h" x="24" y="34">Figure 4 · RTL-simulated job identity and exact-once timeline</text>
-  <line x1="112" y1="72" x2="756" y2="72" stroke="#94a3b8" stroke-width="2"/>
-  <text class="s" x="112" y="62" text-anchor="middle">cycle 0</text>
-  <text class="s" x="225" y="62" text-anchor="middle">16–18</text>
-  <text class="s" x="415" y="62" text-anchor="middle">85–86</text>
-  <text class="s" x="566" y="62" text-anchor="middle">153–154</text>
-  <text class="s" x="720" y="62" text-anchor="middle">221</text>
-  <text class="t" x="24" y="105">Dispatch</text>
-  <circle cx="215" cy="99" r="8" fill="#1677b8"/><circle cx="233" cy="99" r="8" fill="#1677b8"/><circle cx="251" cy="99" r="8" fill="#1677b8"/>
-  <text class="s" x="215" y="128" text-anchor="middle">job 1</text><text class="s" x="251" y="151" text-anchor="middle">jobs 5, 9</text>
-  <text class="t" x="24" y="188">MatVec</text>
-  <line x1="251" y1="181" x2="415" y2="181" stroke="#1677b8" stroke-width="8"/>
-  <line x1="415" y1="181" x2="566" y2="181" stroke="#1677b8" stroke-width="8"/>
-  <line x1="566" y1="181" x2="720" y2="181" stroke="#1677b8" stroke-width="8"/>
-  <circle cx="415" cy="181" r="10" fill="#d979a8"/><circle cx="566" cy="181" r="10" fill="#d979a8"/><circle cx="720" cy="181" r="10" fill="#d979a8"/>
-  <text class="s" x="415" y="214" text-anchor="middle">result job 1</text>
-  <text class="s" x="566" y="214" text-anchor="middle">result job 5</text>
-  <text class="s" x="720" y="214" text-anchor="middle">result job 9</text>
-  <rect x="168" y="220" width="464" height="34" rx="9" fill="#eef5fb" stroke="#1677b8" stroke-width="2"/>
-  <text class="t" x="400" y="244" text-anchor="middle">3 accepted = 3 dispatched = 3 completed</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900">
+<rect width="1600" height="900" fill="#f7fbff"/>
+<defs><marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M0,0 L12,6 L0,12 Z" fill="#1878a8"/></marker></defs>
+<text x="70" y="78" font-size="44px" font-family="Noto Sans CJK KR, Noto Sans KR, sans-serif" font-weight="800" fill="#102a43" text-anchor="start">실제 가중치 타일 3개가 폐쇄형 논리 경로를 통과</text>
+<text x="70" y="124" font-size="31px" font-family="Noto Sans CJK KR, Noto Sans KR, sans-serif" font-weight="500" fill="#486581" text-anchor="start">DMA 명령과 DDR 응답 뒤에만 MatVec이 실행되며 세 결과가 소프트웨어 기준과 일치한다</text>
+<line x1="260.0" y1="190" x2="260.0" y2="760" stroke="#d8e5ec" stroke-width="2"/>
+<text x="260.0" y="800" font-size="31px" font-family="Noto Sans CJK KR, Noto Sans KR, sans-serif" font-weight="500" fill="#627d98" text-anchor="middle">0</text>
+<line x1="494.61538461538464" y1="190" x2="494.61538461538464" y2="760" stroke="#d8e5ec" stroke-width="2"/>
+<text x="494.61538461538464" y="800" font-size="31px" font-family="Noto Sans CJK KR, Noto Sans KR, sans-serif" font-weight="500" fill="#627d98" text-anchor="middle">50</text>
+<line x1="729.2307692307693" y1="190" x2="729.2307692307693" y2="760" stroke="#d8e5ec" stroke-width="2"/>
+<text x="729.2307692307693" y="800" font-size="31px" font-family="Noto Sans CJK KR, Noto Sans KR, sans-serif" font-weight="500" fill="#627d98" text-anchor="middle">100</text>
+<line x1="963.8461538461538" y1="190" x2="963.8461538461538" y2="760" stroke="#d8e5ec" stroke-width="2"/>
+<text x="963.8461538461538" y="800" font-size="31px" font-family="Noto Sans CJK KR, Noto Sans KR, sans-serif" font-weight="500" fill="#627d98" text-anchor="middle">150</text>
+<line x1="1198.4615384615386" y1="190" x2="1198.4615384615386" y2="760" stroke="#d8e5ec" stroke-width="2"/>
+<text x="1198.4615384615386" y="800" font-size="31px" font-family="Noto Sans CJK KR, Noto Sans KR, sans-serif" font-weight="500" fill="#627d98" text-anchor="middle">200</text>
+<line x1="1433.076923076923" y1="190" x2="1433.076923076923" y2="760" stroke="#d8e5ec" stroke-width="2"/>
+<text x="1433.076923076923" y="800" font-size="31px" font-family="Noto Sans CJK KR, Noto Sans KR, sans-serif" font-weight="500" fill="#627d98" text-anchor="middle">250</text>
+<text x="1450" y="845" font-size="31px" font-family="Noto Sans CJK KR, Noto Sans KR, sans-serif" font-weight="600" fill="#486581" text-anchor="start">사이클</text>
+<text x="65" y="287" font-size="31px" font-family="Noto Sans CJK KR, Noto Sans KR, sans-serif" font-weight="750" fill="#173f5f" text-anchor="start">gate_proj</text>
+<line x1="283.46153846153845" y1="275" x2="672.9230769230769" y2="275" stroke="#2f80b7" stroke-width="10"/>
+<circle cx="283.46153846153845" cy="275" r="11" fill="#2f80b7" stroke="#ffffff" stroke-width="3"/>
+<circle cx="311.61538461538464" cy="275" r="11" fill="#2f80b7" stroke="#ffffff" stroke-width="3"/>
+<circle cx="321.0" cy="275" r="11" fill="#2f80b7" stroke="#ffffff" stroke-width="3"/>
+<circle cx="672.9230769230769" cy="275" r="11" fill="#2f80b7" stroke="#ffffff" stroke-width="3"/>
+<text x="478.1923076923077" y="240" font-size="31px" font-family="Noto Sans CJK KR, Noto Sans KR, sans-serif" font-weight="650" fill="#35556b" text-anchor="middle">수락 5 · DMA 11 · 응답 13</text>
+<text x="672.9230769230769" y="323" font-size="31px" font-family="Noto Sans CJK KR, Noto Sans KR, sans-serif" font-weight="750" fill="#35556b" text-anchor="middle">결과 88</text>
+<text x="65" y="467" font-size="31px" font-family="Noto Sans CJK KR, Noto Sans KR, sans-serif" font-weight="750" fill="#173f5f" text-anchor="start">lm_head</text>
+<line x1="677.6153846153846" y1="455" x2="1067.076923076923" y2="455" stroke="#2aa58e" stroke-width="10"/>
+<circle cx="677.6153846153846" cy="455" r="11" fill="#2aa58e" stroke="#ffffff" stroke-width="3"/>
+<circle cx="705.7692307692307" cy="455" r="11" fill="#2aa58e" stroke="#ffffff" stroke-width="3"/>
+<circle cx="715.1538461538462" cy="455" r="11" fill="#2aa58e" stroke="#ffffff" stroke-width="3"/>
+<circle cx="1067.076923076923" cy="455" r="11" fill="#2aa58e" stroke="#ffffff" stroke-width="3"/>
+<text x="872.3461538461538" y="420" font-size="31px" font-family="Noto Sans CJK KR, Noto Sans KR, sans-serif" font-weight="650" fill="#35556b" text-anchor="middle">수락 89 · DMA 95 · 응답 97</text>
+<text x="1067.076923076923" y="503" font-size="31px" font-family="Noto Sans CJK KR, Noto Sans KR, sans-serif" font-weight="750" fill="#35556b" text-anchor="middle">결과 172</text>
+<text x="65" y="647" font-size="31px" font-family="Noto Sans CJK KR, Noto Sans KR, sans-serif" font-weight="750" fill="#173f5f" text-anchor="start">o_proj</text>
+<line x1="1071.7692307692307" y1="635" x2="1461.2307692307693" y2="635" stroke="#5576c5" stroke-width="10"/>
+<circle cx="1071.7692307692307" cy="635" r="11" fill="#5576c5" stroke="#ffffff" stroke-width="3"/>
+<circle cx="1099.923076923077" cy="635" r="11" fill="#5576c5" stroke="#ffffff" stroke-width="3"/>
+<circle cx="1109.3076923076924" cy="635" r="11" fill="#5576c5" stroke="#ffffff" stroke-width="3"/>
+<circle cx="1461.2307692307693" cy="635" r="11" fill="#5576c5" stroke="#ffffff" stroke-width="3"/>
+<text x="1266.5" y="600" font-size="31px" font-family="Noto Sans CJK KR, Noto Sans KR, sans-serif" font-weight="650" fill="#35556b" text-anchor="middle">수락 173 · DMA 179 · 응답 181</text>
+<text x="1461.2307692307693" y="683" font-size="31px" font-family="Noto Sans CJK KR, Noto Sans KR, sans-serif" font-weight="750" fill="#35556b" text-anchor="middle">결과 256</text>
+<rect x="1160" y="710" width="300" height="58" rx="10" fill="#e2f4ee" stroke="#2aa58e" stroke-width="2"/>
+<text x="1310" y="749" font-size="31px" font-family="Noto Sans CJK KR, Noto Sans KR, sans-serif" font-weight="750" fill="#176d60" text-anchor="middle">3/3 INT32 일치</text>
+<rect x="70" y="720" width="430" height="64" rx="12" fill="#fff3e9" stroke="#c97938" stroke-width="2"/>
+<text x="285" y="762" font-size="31px" font-family="Noto Sans CJK KR, Noto Sans KR, sans-serif" font-weight="700" fill="#8a4a19" text-anchor="middle">GTH·MIG 타이밍은 포함하지 않음</text>
 </svg>

@@ -1,24 +1,20 @@
-# 주장 경계
+# 주장 범위
 
-## 직접 또는 제한적으로 지지
+## 직접 또는 RTL로 확인
 
-- ONNX hash와 graph inventory
-- token당 projection ledger
-- representative tile 3/3 RTL parity
-- synthetic steal→MatVec exact-once
-- native KiCad source와 bounded checks
+- Gemma ONNX 노드·투영 형상과 대표 실제 가중치 타일
+- 대표 타일 3개의 폐루프 논리 RTL 순서와 INT32 일치
+- KiCad 원본 객체와 제한된 쿠폰 검사
 
-## 모델·추정
+## 분석 모델
 
-- S0–S3 p95/p99/completion/remote bytes
-- hybrid token latency
-- dynamic energy sensitivity
-- memory-die-cost normalization과 capacity
+- 합성 부하 S1/S2/S3의 TileJob p95/p99·완료시간·이동량
+- Gemma 형상의 초기 배치 민감도
+- K26 로컬/외부 메모리 대역폭 민감도와 2.43 GiB 용량 모델
 
 ## 주장하지 않음
 
-- 완성된 K26–Memory FPGA accelerator
-- 보드 성능·대역폭·전력 측정
-- full 3B 실행
-- 닫힌 DDR response/link receive/MatVec payload loop
-- fabrication-ready PCB 또는 SI/PI/thermal signoff
+- 보드 실측 성능·전력·물리 링크 대역폭
+- 기능적 Gemma 생성 또는 전체 모델 FPGA 실행
+- 전체 가속기 가격·저전력 달성
+- 제작 가능한 PCB·SI/PI/thermal closure

@@ -1,0 +1,12 @@
+term,status,replacement
+tail latency,REVISE,꼬리 지연
+request latency,REVISE,사용자 요청 지연
+TileJob latency,ACCEPT,TileJob 지연
+dependency-aware,REVISE,의존성 인식
+placement,REVISE,초기 배치
+home prefetch,REVISE,기본 위치 사전 적재
+thief,REVISE,유휴 클러스터
+closed-loop logical path,REVISE,폐루프 논리 경로
+physical link,REVISE,물리 링크
+fabrication-ready,REMOVE,제작 가능한
+low-cost/low-power achieved,REMOVE,저비용·저전력 달성

@@ -11,13 +11,13 @@
   "quick": false,
   "results": {
     "path": "results/experiments/scheduler_controlled.csv",
-    "sha256": "a125ceb4e2d49ac9235c2ee44a130f2ca12129b02ee6ee02d67cbda66c3f8ebd"
+    "sha256": "ab30ebadd8c801c166f4fd510cdb68706a102a9747d3bd640674cbe2636db848"
   },
   "schema_version": "varp.k26.experiment-manifest.v1",
   "seed_ledger": {
     "path": "results/experiments/seed_ledger.csv",
     "rows": 25,
-    "sha256": "e831eb819a3132a2ce8d1c4410efbc8ab586ca33fdc2ec02fb97c28b65efc36e"
+    "sha256": "775cd941882e2dbeae0f4dabc5e573d52d43c73fe133bea7028e75322025f995"
   },
   "seed_plan_path": "configs/experiments/k26_seed_ledger.json",
   "seed_plan_sha256": "691992c3768f83c6c8312d3ae521306865ad3c98fe8afb2af117e0130ab96861",
@@ -29,6 +29,6 @@
     ],
     "path": "results/experiments/service_overlap_sensitivity.csv",
     "rows": 180,
-    "sha256": "247538e230bae627971b70a718acf6d84daafb5df6b713ab0d928592bab2fe9c"
+    "sha256": "f47f08c3d8184c8101f2921af55c9a37c5dbd33a1dfc89d045cbfbf1eff44c40"
   }
 }

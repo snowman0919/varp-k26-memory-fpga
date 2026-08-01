@@ -1,0 +1,13 @@
+placement,scheduler,tile_jobs,cluster_tile_counts_per_token,total_completion_cycles,tilejob_p95_cycles,tilejob_p99_cycles,remote_weight_bytes,incremental_remote_link_bytes,completion_vs_same_placement_s1_pct,claim_boundary
+source_rule,S1,802,464|208|78|52,64725120,19902384.899999995,22855255.380000003,0,0,0.0,Decode-1 analytical tile schedule; not request tail or functional inference.
+source_rule,S2,802,464|208|78|52,79579528,19939504.499999996,22894269.7,653524992,656042096,22.94998912323376,Decode-1 analytical tile schedule; not request tail or functional inference.
+source_rule,S3,802,464|208|78|52,67834970,19957936.499999996,22912701.7,393281536,395167616,4.804703336200844,Decode-1 analytical tile schedule; not request tail or functional inference.
+round_robin,S1,802,201|201|200|200,60953300,15939994.599999996,18302239.720000003,0,0,0.0,Decode-1 analytical tile schedule; not request tail or functional inference.
+round_robin,S2,802,201|201|200|200,71028887,15939994.599999996,18302239.720000003,235307008,236051648,16.530010680307704,Decode-1 analytical tile schedule; not request tail or functional inference.
+round_robin,S3,802,201|201|200|200,60593886,15939994.599999996,18302239.720000003,43057152,43256880,-0.5896547028626853,Decode-1 analytical tile schedule; not request tail or functional inference.
+size_aware,S1,802,198|202|200|202,62394046,15939994.599999996,18302239.720000003,0,0,0.0,Decode-1 analytical tile schedule; not request tail or functional inference.
+size_aware,S2,802,198|202|200|202,69713684,15939994.599999996,18302239.720000003,266174464,267170288,11.73130846491346,Decode-1 analytical tile schedule; not request tail or functional inference.
+size_aware,S3,802,198|202|200|202,61919743,15939994.599999996,18302239.720000003,110297088,110816720,-0.7601734947594196,Decode-1 analytical tile schedule; not request tail or functional inference.
+channel_affinity,S1,802,394|136|136|136,67324292,19902384.899999995,22855255.380000003,0,0,0.0,Decode-1 analytical tile schedule; not request tail or functional inference.
+channel_affinity,S2,802,394|136|136|136,69976081,16010796.999999989,18303796.73,602800128,605227520,3.938829390140497,Decode-1 analytical tile schedule; not request tail or functional inference.
+channel_affinity,S3,802,394|136|136|136,62231756,15962855.65,18394900.97,414482432,416445920,-7.564187975419035,Decode-1 analytical tile schedule; not request tail or functional inference.

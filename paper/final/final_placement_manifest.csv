@@ -1,8 +1,8 @@
 paper_figure,source_svg,final_page,pdf_anchor,source_min_font_px,source_title_font_px,reported_title_font_pt,title_ratio_inferred_width_pt_not_pdf_bbox,conservative_min_final_font_pt,required_min_pt,status
-1,paper/final/figures/paper_f01_evidence_path.svg,2,Figure · Implemented RTL planes and missing end-to-end loop,14.000,23.000,16.000,539.130,9.435,8.000,PASS
-2,paper/final/figures/paper_f02_onnx_runtime_graph.svg,4,Figure · ONNX graph and Runtime evidence boundary,14.000,24.000,17.000,550.000,9.625,8.000,PASS
-3,paper/final/figures/paper_f03_policy_boundary.svg,6,S policy ladder and evidence boundary,18.000,26.000,18.000,538.462,12.115,8.000,PASS
-4,paper/final/figures/paper_f04_waveform_identity.svg,6,Figure · RTL-simulated job identity and exact-once timeline,18.000,26.000,18.000,538.462,12.115,8.000,PASS
-5,paper/final/figures/paper_f05_tail_latency.svg,8,Figure · Full-overlap p : static S versus locality-aware S,18.000,26.000,18.000,538.462,12.115,8.000,PASS
-6,paper/final/figures/paper_f06_tradeoff.svg,9,against oldest-steal S,16.000,26.000,18.000,538.462,10.769,8.000,PASS
-7,paper/final/figures/paper_f07_kicad_coupon_render.png,11,KiCad native PCB source / validation coupon,N/A,N/A,N/A,N/A,N/A,N/A,PASS_RASTER_2352x1456
+1,paper/final/figures/paper_f01_evidence_path.svg,2,연산과,31.000,44.000,12.000,418.182,8.102,8.000,PASS
+2,paper/final/figures/paper_f02_onnx_runtime_graph.svg,3,형상을,31.000,44.000,12.000,418.182,8.102,8.000,PASS
+3,paper/final/figures/paper_f03_policy_boundary.svg,4,가져오되,31.000,44.000,12.000,418.182,8.102,8.000,PASS
+4,paper/final/figures/paper_f04_waveform_identity.svg,5,폐쇄형,31.000,44.000,12.000,418.182,8.102,8.000,PASS
+5,paper/final/figures/paper_f05_tail_latency.svg,6,유효구간에서,31.000,44.000,12.000,418.182,8.102,8.000,PASS
+6,paper/final/figures/paper_f06_tradeoff.svg,6,가른다,31.000,44.000,12.000,418.182,8.102,8.000,PASS
+7,paper/final/figures/paper_f07_kicad_coupon_render.png,7,KiCad 인터페이스 라우팅 쿠폰,N/A,N/A,N/A,N/A,N/A,N/A,PASS_RASTER_2352x1456
