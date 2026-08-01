@@ -15,11 +15,11 @@ ASSETS = ROOT / "presentation" / "final" / "assets"
 MEDIA = ROOT / "presentation" / "final" / ".work" / "manim"
 
 JOBS = (
-    ("WorkStealingSequence", "work_stealing_sequence", 4.8),
-    ("TileDataflow", "tile_dataflow", 4.0),
-    ("SchedulerTimeline", "scheduler_timeline", 3.8),
-    ("TailLatencyResults", "tail_latency_results", 4.2),
-    ("BottleneckMigration", "bottleneck_migration", 4.2),
+    ("WorkStealingSequence", "work_stealing_sequence", 8.5),
+    ("TileDataflow", "tile_dataflow", 9.0),
+    ("SchedulerTimeline", "scheduler_timeline", 8.5),
+    ("TailLatencyResults", "tail_latency_results", 8.0),
+    ("BottleneckMigration", "bottleneck_migration", 8.0),
 )
 
 
@@ -50,7 +50,13 @@ def main() -> int:
         mp4 = ASSETS / f"{stem}.mp4"
         gif = ASSETS / f"{stem}.gif"
         still = ASSETS / f"{stem}_frame.png"
-        shutil.copy2(source, mp4)
+        # Manim scenes are intentionally concise. Slow the final H.264 asset to
+        # a conference-friendly 9–11 seconds without looping or inventing frames.
+        run(
+            ffmpeg, "-y", "-i", str(source), "-an", "-vf", "setpts=2.0*PTS",
+            "-c:v", "libx264", "-pix_fmt", "yuv420p", "-movflags", "+faststart",
+            str(mp4),
+        )
         run(ffmpeg, "-y", "-i", str(mp4), "-vf", "fps=12,scale=960:-2:flags=lanczos", "-loop", "0", str(gif))
         run(ffmpeg, "-y", "-ss", str(frame_time), "-i", str(mp4), "-frames:v", "1", "-update", "1", str(still))
     run(

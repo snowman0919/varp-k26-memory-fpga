@@ -49,7 +49,7 @@ def txt(value: str, size: int = 28, color: str = INK, bold: bool = False) -> Tex
 
 def box(label: str, color: str, width: float = 2.35, height: float = 1.25) -> VGroup:
     body = RoundedRectangle(width=width, height=height, corner_radius=0.14, color=color, fill_color=PANEL, fill_opacity=1)
-    title = txt(label, 22, color, True).move_to(body)
+    title = txt(label, 28, color, True).move_to(body)
     return VGroup(body, title)
 
 
@@ -75,7 +75,7 @@ class TileDataflow(Scene):
 
     def construct(self):
         title = txt("실제 가중치로 MatVec 산술을 확인했다", 40, INK, True).to_edge(UP, buff=0.28)
-        subtitle = txt("대표 가중치 타일 3개 · 소프트웨어 INT32 기준값과 비교", 22, MUTED).next_to(title, DOWN, buff=0.08)
+        subtitle = txt("대표 가중치 타일 3개 · 소프트웨어 INT32 기준값과 비교", 28, MUTED).next_to(title, DOWN, buff=0.08)
         names = ["실제 가중치\n추출", "시험 입력\n생성", "16×4 INT8\nMatVec RTL", "기준값\n비교"]
         colors = [BLUE, CYAN, BLUE, TEAL]
         stages = VGroup(*[box(name, color, 2.65, 1.45) for name, color in zip(names, colors)]).arrange(RIGHT, buff=0.45).shift(DOWN * 0.10)
@@ -88,7 +88,7 @@ class TileDataflow(Scene):
             new_status = txt(labels[index], 30, TEAL if index == 3 else AMBER, True).move_to(status)
             self.play(token.animate.move_to(stages[index]), Transform(status, new_status), run_time=0.62)
             self.wait(0.18)
-        boundary = txt("검증 범위 · MatVec 산술", 22, MUTED, True).to_edge(DOWN, buff=0.95)
+        boundary = txt("검증 범위 · MatVec 산술", 28, MUTED, True).to_edge(DOWN, buff=0.95)
         self.play(FadeIn(boundary))
         self.wait(1.0)
 
@@ -108,7 +108,7 @@ class WorkStealingSequence(Scene):
         probe = Arrow(right[0].get_left(), left[0].get_right(), color=CYAN, buff=0.12, stroke_width=7)
         status2 = txt("2  기다림 감소와 데이터 이동 비용 비교", 29, AMBER, True).move_to(status)
         self.play(Transform(status, status2), GrowArrow(probe))
-        score = VGroup(txt("기다림 감소", 25, CYAN, True), txt("-  가중치·활성값 이동", 24, RED, True), txt(">  0", 30, TEAL, True)).arrange(DOWN, buff=0.14).move_to([0, 1.0, 0])
+        score = VGroup(txt("기다림 감소", 30, CYAN, True), txt("-  가중치·활성값 이동", 29, RED, True), txt(">  0", 32, TEAL, True)).arrange(DOWN, buff=0.14).move_to([0, 1.0, 0])
         self.play(FadeIn(score))
         stolen = jobs[-1].copy()
         status3 = txt("3  이득이 클 때만 작업 이전", 29, TEAL, True).move_to(status)
@@ -128,22 +128,22 @@ class SchedulerTimeline(Scene):
         remote = int(s3["link_end_cycle"]) - int(s3["remote_copy_start_cycle"])
         compute = int(s3["compute_end_cycle"]) - int(s3["compute_start_cycle"])
         title = txt("같은 작업에서 배정 정책만 바꿨다", 40, INK, True).to_edge(UP, buff=0.24)
-        static_head = txt("정적 배정 · C0", 27, BLUE, True).move_to([-4.2, 2.0, 0])
-        move_head = txt("지역성 인식 재분배 · C2", 27, TEAL, True).move_to([3.8, 2.0, 0])
+        static_head = txt("고정 배정 · C0", 29, BLUE, True).move_to([-4.2, 2.0, 0])
+        move_head = txt("지역성 인식 재배분 · C2", 29, TEAL, True).move_to([3.8, 2.0, 0])
         self.play(FadeIn(title, static_head, move_head))
 
         def lane(x: float, queue_text: str, remote_text: str | None) -> VGroup:
             base = RoundedRectangle(width=6.0, height=1.1, corner_radius=0.10, color="#294057", fill_color=PANEL, fill_opacity=1).move_to([x, 0.35, 0])
             queue = Rectangle(width=2.7, height=0.68, color=MUTED, fill_color=MUTED, fill_opacity=0.55).move_to([x - 1.45, 0.35, 0])
-            queue_label = txt(queue_text, 20, INK, True).move_to(queue)
+            queue_label = txt(queue_text, 26, INK, True).move_to(queue)
             data = Rectangle(width=1.35, height=0.68, color="#2B667B", fill_color="#2B667B", fill_opacity=0.9).move_to([x + 0.62, 0.35, 0])
-            data_label = txt("데이터\n준비", 18, INK, True).move_to(data)
+            data_label = txt("데이터\n준비", 24, INK, True).move_to(data)
             compute_box = Rectangle(width=0.95, height=0.68, color=BLUE, fill_color=BLUE, fill_opacity=0.86).move_to([x + 2.05, 0.35, 0])
-            compute_label = txt(f"연산\n{compute}", 17, INK, True).move_to(compute_box)
+            compute_label = txt(f"연산\n{compute}", 22, INK, True).move_to(compute_box)
             group = VGroup(base, queue, queue_label, data, data_label, compute_box, compute_label)
             if remote_text:
                 remote_box = Rectangle(width=1.25, height=0.68, color=TEAL, fill_color=TEAL, fill_opacity=0.86).move_to([x + 0.61, -0.70, 0])
-                remote_label = txt(remote_text, 17, INK, True).move_to(remote_box)
+                remote_label = txt(remote_text, 22, INK, True).move_to(remote_box)
                 connector = Arrow(data.get_bottom(), remote_box.get_top(), color=TEAL, buff=0.05, stroke_width=4)
                 group.add(remote_box, remote_label, connector)
             return group
@@ -154,7 +154,7 @@ class SchedulerTimeline(Scene):
         arrow = Arrow([-0.35, -1.65, 0], [0.35, -1.65, 0], color=CYAN, stroke_width=7)
         saved_text = txt(f"큐 대기 {saved:,} 사이클 감소", 29, CYAN, True).move_to([0, -2.25, 0])
         self.play(GrowArrow(arrow), FadeIn(moved_lane, saved_text), run_time=1.0)
-        note = txt("폭은 설명용 · 숫자는 원본 사건 자료", 20, MUTED, True).to_edge(DOWN, buff=0.20)
+        note = txt("폭은 설명용 · 숫자는 원본 사건 자료", 25, MUTED, True).to_edge(DOWN, buff=0.20)
         self.play(FadeIn(note))
         self.wait(1.3)
 
@@ -168,7 +168,7 @@ class TailLatencyResults(Scene):
         skew_p99 = paired_effect("skew", "S3_vs_S1", "p99_tile_latency_cycles")
         source_p95 = placement_effect("source_rule", "tilejob_p95_effect_s3_vs_s1_pct")
         affinity_p95 = placement_effect("channel_affinity", "tilejob_p95_effect_s3_vs_s1_pct")
-        panels = VGroup(box("합성 편향 부하", CYAN, 3.4, 2.4), box("Gemma · 기존 배치", AMBER, 3.4, 2.4), box("Gemma · 채널 고려", TEAL, 3.4, 2.4)).arrange(RIGHT, buff=0.55).shift(DOWN * 0.25)
+        panels = VGroup(box("작업 치우침 실험", CYAN, 3.4, 2.4), box("Gemma · 기존 배치", AMBER, 3.4, 2.4), box("Gemma · 채널 고려", TEAL, 3.4, 2.4)).arrange(RIGHT, buff=0.55).shift(DOWN * 0.25)
         for panel in panels:
             panel[1].shift(UP * 0.72)
         self.play(FadeIn(title, panels))
@@ -179,7 +179,7 @@ class TailLatencyResults(Scene):
         )
         for number in numbers:
             self.play(FadeIn(number), run_time=0.55)
-        rule = txt("재분배는 초기 배치 뒤 남은 불균형이 이동 비용보다 클 때만 유효", 25, AMBER, True).to_edge(DOWN, buff=0.36)
+        rule = txt("재배분은 초기 배치 뒤 남은 불균형이 이동 비용보다 클 때만 유효", 28, AMBER, True).to_edge(DOWN, buff=0.36)
         self.play(FadeIn(rule))
         self.wait(1.2)
 
@@ -195,19 +195,19 @@ class BottleneckMigration(Scene):
         static_panel = RoundedRectangle(width=5.2, height=3.0, corner_radius=0.14, color=BLUE, fill_color=PANEL, fill_opacity=1).shift(LEFT * 3.3 + DOWN * 0.10)
         locality_panel = RoundedRectangle(width=5.2, height=3.0, corner_radius=0.14, color=TEAL, fill_color=PANEL, fill_opacity=1).shift(RIGHT * 3.3 + DOWN * 0.10)
         headings = VGroup(
-            txt("정적 배정 대비", 24, BLUE, True).move_to(static_panel).shift(UP * 1.05),
-            txt("무제약 재분배 대비", 24, TEAL, True).move_to(locality_panel).shift(UP * 1.05),
+            txt("고정 배정 대비", 28, BLUE, True).move_to(static_panel).shift(UP * 1.05),
+            txt("무제약 재배분 대비", 28, TEAL, True).move_to(locality_panel).shift(UP * 1.05),
         )
         self.play(FadeIn(title, static_panel, locality_panel, headings))
         left = VGroup(
             txt(f"꼬리 지연 p95 {p95:.2f}%", 27, CYAN, True),
-            txt("원격 링크 서비스: 0에서 발생", 20, AMBER, True),
-            txt("병목: 큐에서 데이터 이동으로", 20, INK, True),
+            txt("원격 링크 서비스: 0에서 발생", 24, AMBER, True),
+            txt("병목: 큐에서 데이터 이동으로", 24, INK, True),
         ).arrange(DOWN, buff=0.34).move_to(static_panel).shift(DOWN * 0.25)
         right = VGroup(
             txt(f"원격 가중치 {remote:.2f}%", 27, TEAL, True),
             txt(f"완료시간 {completion:+.2f}%", 27, AMBER, True),
-            txt("이동량 감소와 완료시간 이득은 다름", 19, INK, True),
+            txt("이동량 감소와 완료시간 이득은 다름", 24, INK, True),
         ).arrange(DOWN, buff=0.34).move_to(locality_panel).shift(DOWN * 0.25)
         self.play(FadeIn(left), run_time=0.7)
         self.play(FadeIn(right), run_time=0.7)
