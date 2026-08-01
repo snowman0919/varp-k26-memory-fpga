@@ -57,6 +57,7 @@ KiCad 자료는 인터페이스 라우팅 참조 쿠폰이며 **NOT FOR FABRICAT
 - 최종 Gate 기록: [`docs/final_closure/final_validation.md`](../docs/final_closure/final_validation.md)
 - 본선 심사 기준 감사표: [`docs/final_closure/final_round_scoring_audit.md`](../docs/final_closure/final_round_scoring_audit.md)
 - Release checksum: [`release/checksums.sha256`](../release/checksums.sha256)
+- 공개 Release: [`v11-conference-final`](https://github.com/snowman0919/varp-k26-memory-fpga/releases/tag/v11-conference-final)
 
 로컬 산출물과 공식 소스 아카이브 검증은 통과했다. 과거 PDF의 GitHub 경보 #1은
 저장소 소유자가 `false_positive`로 해소했고, 현재 패키지 재귀 검사도 0건이다.

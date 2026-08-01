@@ -47,3 +47,15 @@
 2026-08-01 09:32 KST에 저장소 소유자 `snowman0919`가 `false_positive`로
 해소했다. 토큰으로 표시됐던 문자열은 읽거나 문서화하지 않았다. Git 이력
 force-push 없이 새 `v11-conference-final` Release만 현재 clean commit에서 만든다.
+
+## 원격 게시 감사
+
+- Release 내용 커밋: `fe65fd6157a66e305486d8704a0da4b6eae21af2`
+- Annotated tag: `v11-conference-final` — peeled commit이 내용 커밋과 일치
+- 공개 Release: <https://github.com/snowman0919/varp-k26-memory-fpga/releases/tag/v11-conference-final>
+- 공개 자산: 17개, GitHub SHA-256 digest와 로컬 파일 17/17 일치
+- PR: <https://github.com/snowman0919/varp-k26-memory-fpga/pull/3>, Draft·mergeable
+- GitHub Actions workflow: 0개
+- 경보 #1: `resolved / false_positive`, resolved by `snowman0919`
+
+이 절은 공개 후 기록이므로 Release tag의 내용 커밋 다음 사후 감사 커밋에 보존한다.

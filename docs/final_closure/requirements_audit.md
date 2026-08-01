@@ -34,7 +34,7 @@ archive, PDF timeout, README, study, release, secret scan Gate는 그대로 유�
 | 공개 인덱스 | 논문·슬라이드·표·그림·영상·Q&A 한곳 연결 | **PASS** | `conference_package/INDEX.md`와 슬라이드별 출처·해석 경계 연결 |
 | README | 한국어 최소 공개 진입점 | **PASS** | 구조·핵심 결과·Quick start·재현 명령·산출물 경로를 간결하게 제공 |
 | 저장소 정리 | Release ZIP과 대형 미디어를 main에서 제거 | **PASS** | ZIP·대형 MP4/GIF 추적 제거 및 `.gitignore`; 로컬 Release 자산은 유지 |
-| GitHub | `conference-final`, 최종 commit/tag/release | **진행 중** | 원격 브랜치·Draft PR·17개 Draft Release 자산 완료; 최종 tag/공개 전환 진행 |
+| GitHub | `conference-final`, 최종 commit/tag/release | **PASS** | release content `fe65fd6`, annotated tag `v11-conference-final`, 공개 Release 자산 17개와 원격 digest 일치, Draft PR #3 유지 |
 | Actions | 오류 없는 공개 자동화 | **PASS** | 실패하던 공개 workflow를 삭제했고 현재 `.github/workflows` 추적 파일 0개 |
 | 보안 | 비밀정보·내부 토큰 0건 | **PASS** | 현재 산출물·중첩 Release 자산 949개 고신뢰 패턴 0건; 소유자가 과거 PDF 경보 #1을 `false_positive`로 해소 |
 | 독립 검토 | 최소 5회 | **PASS** | 가속기 기여·인과·한국어 가독성·하드웨어 시각·발표/Q&A·최종 언어의 6회 검토와 대응 기록 보존 |
