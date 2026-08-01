@@ -7,8 +7,8 @@
     },
     {
       "name": "VARP_K26_Paper_and_Presentation.zip",
-      "sha256": "388f36597219a5bd95edbff164e54a04d49724ae69fbdb02a0a7a9f98622b92d",
-      "size_bytes": 32902782
+      "sha256": "bd65f8a0cc6ea30ac73ee1f15da729243fe78b0f6d8d1922bf2e8c6c75d10c73",
+      "size_bytes": 32907609
     },
     {
       "name": "VARP_K26_Publication_Assets.zip",
@@ -17,13 +17,13 @@
     },
     {
       "name": "VARP_K26_Source.zip",
-      "sha256": "4b87069a9e47b786f96c1b955f682f3a9a1947dff5e95a0abb46ff288236bc93",
-      "size_bytes": 33859198
+      "sha256": "57e4ed770eda5439364d7868017c8ff8cef7581ac7f2049acf7b0fc6cbf34e6c",
+      "size_bytes": 33876280
     },
     {
       "name": "VARP_K26_Study_Pack.zip",
-      "sha256": "abd3fa13f106c8de293033788ae9a23054785c5d78f3e25b5979f67108a85960",
-      "size_bytes": 122508
+      "sha256": "c8b87827e66f93d460adb62082c55e20ff82224e662ee1bf54982d70f7471747",
+      "size_bytes": 130779
     }
   ],
   "model_weights_included": false,
