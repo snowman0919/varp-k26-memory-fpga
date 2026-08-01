@@ -38,7 +38,7 @@ archive, PDF timeout, README, study, release, secret scan Gate는 그대로 유�
 | Actions | 오류 없는 공개 자동화 | **PASS** | 실패하던 공개 workflow를 삭제했고 현재 `.github/workflows` 추적 파일 0개 |
 | 보안 | 비밀정보·내부 토큰 0건 | **BLOCKED(과거 이력)** | 현재 산출물·기존 Release 자산은 0건이나 과거 PDF 커밋의 Vault 토큰 경보 #1이 열려 있음; 폐기·교체 후 `revoked` 해소 필요 |
 | 독립 검토 | 최소 5회 | **PASS** | 가속기 기여·인과·한국어 가독성·하드웨어 시각·발표/Q&A·최종 언어의 6회 검토와 대응 기록 보존 |
-| 최종 검증 | make 계약·fresh archive·시각 QA | **진행 중** | unit/RTL/paper/presentation Gate 통과; source archive와 release checksum 최종 검증 예정 |
+| 최종 검증 | make 계약·fresh archive·시각 QA | **PASS** | unit/RTL/paper/presentation/reproduce/release, 실제 공식 source archive와 GitHub archive, checksum 검증 통과 |
 
 ## 현재 금지 주장
 

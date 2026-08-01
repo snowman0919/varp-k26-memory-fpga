@@ -49,3 +49,13 @@ KiCad 자료는 인터페이스 라우팅 참조 쿠폰이며 **NOT FOR FABRICAT
 - 통합 학습자료 PDF: [`study/study_pack.pdf`](../study/study_pack.pdf)
 - 화이트보드 설명: [`study/11_whiteboard_explanations.md`](../study/11_whiteboard_explanations.md)
 - 주장 경계: [`study/09_claim_boundary.md`](../study/09_claim_boundary.md)
+
+## 최종 검증과 공개 상태
+
+- 요구사항 감사표: [`docs/final_closure/requirements_audit.md`](../docs/final_closure/requirements_audit.md)
+- 최종 Gate 기록: [`docs/final_closure/final_validation.md`](../docs/final_closure/final_validation.md)
+- Release checksum: [`release/checksums.sha256`](../release/checksums.sha256)
+
+로컬 산출물과 공식 소스 아카이브 검증은 통과했다. 공개
+`v11-conference-final` Release는 과거 커밋의 Vault token 경보 #1을 폐기·교체
+후 `revoked`로 해소한 뒤 게시한다.
