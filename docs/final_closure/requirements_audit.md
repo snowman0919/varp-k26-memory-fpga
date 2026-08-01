@@ -34,9 +34,9 @@ archive, PDF timeout, README, study, release, secret scan Gate는 그대로 유�
 | 공개 인덱스 | 논문·슬라이드·표·그림·영상·Q&A 한곳 연결 | **PASS** | `conference_package/INDEX.md`와 슬라이드별 출처·해석 경계 연결 |
 | README | 한국어 최소 공개 진입점 | **PASS** | 구조·핵심 결과·Quick start·재현 명령·산출물 경로를 간결하게 제공 |
 | 저장소 정리 | Release ZIP과 대형 미디어를 main에서 제거 | **PASS** | ZIP·대형 MP4/GIF 추적 제거 및 `.gitignore`; 로컬 Release 자산은 유지 |
-| GitHub | `conference-final`, 최종 commit/tag/release | **진행 중** | 로컬 커밋 완료; 브랜치·PR 푸시 후 공개 tag/release는 보안 경보 해소 뒤 게시 |
+| GitHub | `conference-final`, 최종 commit/tag/release | **진행 중** | 원격 브랜치·Draft PR·17개 Draft Release 자산 완료; 최종 tag/공개 전환 진행 |
 | Actions | 오류 없는 공개 자동화 | **PASS** | 실패하던 공개 workflow를 삭제했고 현재 `.github/workflows` 추적 파일 0개 |
-| 보안 | 비밀정보·내부 토큰 0건 | **BLOCKED(과거 이력)** | 현재 산출물·기존 Release 자산은 0건이나 과거 PDF 커밋의 Vault 토큰 경보 #1이 열려 있음; 폐기·교체 후 `revoked` 해소 필요 |
+| 보안 | 비밀정보·내부 토큰 0건 | **PASS** | 현재 산출물·중첩 Release 자산 949개 고신뢰 패턴 0건; 소유자가 과거 PDF 경보 #1을 `false_positive`로 해소 |
 | 독립 검토 | 최소 5회 | **PASS** | 가속기 기여·인과·한국어 가독성·하드웨어 시각·발표/Q&A·최종 언어의 6회 검토와 대응 기록 보존 |
 | 최종 검증 | make 계약·fresh archive·시각 QA | **PASS** | unit/RTL/paper/presentation/reproduce/release, 실제 공식 source archive와 GitHub archive, checksum 검증 통과 |
 
@@ -58,4 +58,4 @@ archive, PDF timeout, README, study, release, secret scan Gate는 그대로 유�
 3. K26-local 및 초기 배치 기준선: 완료.
 4. 연구 동결 문서와 Figure source 교체: 완료.
 5. 연구 동결 이후 v11 논문·14장 발표 생성: 완료.
-6. 남은 P0: 과거 Vault 토큰 폐기·교체 및 GitHub secret-scanning 경보 #1 해소.
+6. 과거 Vault 경보: 소유자 `false_positive` 해소와 현재 자산 재귀 검사 0건으로 완료.

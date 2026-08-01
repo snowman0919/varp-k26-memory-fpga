@@ -50,11 +50,12 @@
 - `trufflehog`: 설치되지 않음.
 - 대체 검사: GitHub secret-scanning API, 전체 Git 이력 패턴 검사, 현재 파일 검사, PDF/PPTX/release ZIP 재귀 검사.
 
-판정: **새 공개 Release는 토큰 폐기·교체 확인 전까지 보류한다.** 과거 커밋의
-공개 경고는 Git 이력에서 단순 삭제할 수 없고 force push도 금지되어 있다. 소유자가
-Vault에서 해당 토큰을 폐기한 뒤 GitHub 경고를 `revoked`로 해소해야 한다. 현재
-산출물과 기존 Release 자산에는 같은 패턴이 없으므로 새 자료 자체는 정리·검증을
-계속 진행할 수 있다.
+후속 판정: 2026-08-01 09:32 KST에 저장소 소유자 `snowman0919`가 경보 #1을
+`false_positive`로 해소했다. 해결 코멘트는 없고 GitHub validity는 `unknown`이지만,
+소유자가 실제 비밀이 아니라는 분류를 명시했고 현재 작업 트리·PDF/PPTX·중첩
+Release 자산 949개에서도 같은 고신뢰 패턴이 0건이었다. 따라서 force push 없이
+보안 Gate를 해제하고 새 공개 Release를 진행한다. 경보에 표시됐던 문자열 자체는
+문서나 로그에 기록하지 않는다.
 
 ## 3. 핵심 산출물 현황
 

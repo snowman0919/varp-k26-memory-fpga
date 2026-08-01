@@ -58,6 +58,6 @@ KiCad 자료는 인터페이스 라우팅 참조 쿠폰이며 **NOT FOR FABRICAT
 - 본선 심사 기준 감사표: [`docs/final_closure/final_round_scoring_audit.md`](../docs/final_closure/final_round_scoring_audit.md)
 - Release checksum: [`release/checksums.sha256`](../release/checksums.sha256)
 
-로컬 산출물과 공식 소스 아카이브 검증은 통과했다. 공개
-`v11-conference-final` Release는 과거 커밋의 Vault token 경보 #1을 폐기·교체
-후 `revoked`로 해소한 뒤 게시한다.
+로컬 산출물과 공식 소스 아카이브 검증은 통과했다. 과거 PDF의 GitHub 경보 #1은
+저장소 소유자가 `false_positive`로 해소했고, 현재 패키지 재귀 검사도 0건이다.
+공개 기준은 `v11-conference-final` tag와 Release로 고정한다.

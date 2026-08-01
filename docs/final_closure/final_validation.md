@@ -2,13 +2,13 @@
 
 검증일: 2026-08-01  
 브랜치: `conference-final`  
-검증 기준 코드·데이터 커밋: `000f0c4`
+검증 기준: `conference-final` 최종 HEAD를 `v11-conference-final` tag로 고정
 
 ## 판정
 
 연구 모델, 논리 RTL 경로, KiCad 제한 쿠폰, 논문, 발표, 학습자료와 공식 소스
-아카이브의 로컬 품질 Gate는 **PASS**다. 공개 GitHub Release만 과거 커밋에 남은
-Vault token 경보 #1의 폐기·교체 확인 전까지 보류한다.
+아카이브의 로컬 품질 Gate는 **PASS**다. 과거 PDF의 GitHub 경보 #1도 저장소
+소유자가 `false_positive`로 해소했고 현재 패키지 재귀 검사를 통과했다.
 
 ## 실행한 Gate
 
@@ -40,18 +40,10 @@ Vault token 경보 #1의 폐기·교체 확인 전까지 보류한다.
   `study/15_final_round_scoring_strategy.md`
 - Release checksum: `release/checksums.sha256`
 
-## 보안 보류 조건
+## 보안 최종 판정
 
-현재 작업 트리·현재 논문/PPTX/PDF·기존 Release 자산의 고신뢰 자격증명 패턴은
-검출 0건이다. 그러나 GitHub secret scanning에는 과거 커밋
-`730a05b`의 `presentation/final/presentation.pdf`를 가리키는
-HashiCorp Vault service token 경보 #1이 열려 있다. 토큰 값을 문서에 기록하지
-않는다.
-
-공개 `v11-conference-final` tag/Release 게시 조건은 다음 두 가지다.
-
-1. Vault에서 해당 token을 폐기 또는 교체한다.
-2. GitHub 경보 #1을 `revoked`로 해소한 뒤 상태를 재조회한다.
-
-이 조건이 충족되기 전에는 clean branch와 PR은 게시할 수 있지만 새 공개 Release
-자산은 게시하지 않는다. Git 이력 force-push는 사용하지 않는다.
+현재 작업 트리·논문/PPTX/PDF와 중첩 Release 자산 949개에서 고신뢰 자격증명
+패턴은 0건이다. 과거 커밋 `730a05b`의 PDF를 가리키던 GitHub 경보 #1은
+2026-08-01 09:32 KST에 저장소 소유자 `snowman0919`가 `false_positive`로
+해소했다. 토큰으로 표시됐던 문자열은 읽거나 문서화하지 않았다. Git 이력
+force-push 없이 새 `v11-conference-final` Release만 현재 clean commit에서 만든다.
