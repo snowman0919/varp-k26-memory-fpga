@@ -2,13 +2,13 @@
   "archives": [
     {
       "name": "VARP_K26_Compact_Evidence.zip",
-      "sha256": "67648b3c2fc9144326c42b64444fcba8435732f39dfcf3ed54d39c18eac02bc6",
-      "size_bytes": 238378
+      "sha256": "753df53362e47c82f89d13f32ae4a2beedc7ec41d1e00d9c151abf0a6e1e988a",
+      "size_bytes": 303031
     },
     {
       "name": "VARP_K26_Paper_and_Presentation.zip",
-      "sha256": "b21edf633b833abf9563b138b4b706675561e82ef945c7acff28ec378a044c1e",
-      "size_bytes": 27194166
+      "sha256": "388f36597219a5bd95edbff164e54a04d49724ae69fbdb02a0a7a9f98622b92d",
+      "size_bytes": 32902782
     },
     {
       "name": "VARP_K26_Publication_Assets.zip",
@@ -17,16 +17,16 @@
     },
     {
       "name": "VARP_K26_Source.zip",
-      "sha256": "4a09d5cb16d55dc04bdfcf288b1e5b8cc12452ee067e52fa4e947bd87391e9b5",
-      "size_bytes": 26341736
+      "sha256": "320a7ff2eb239f46ccb1398e274975ddbc403a63e1ac0f48d6fb226e452820bb",
+      "size_bytes": 33857105
     },
     {
       "name": "VARP_K26_Study_Pack.zip",
-      "sha256": "79c8e0a3ddfe5a32f3d07a846d702c0127508e01eb574c4c3597aaad84b41a9e",
-      "size_bytes": 133062
+      "sha256": "abd3fa13f106c8de293033788ae9a23054785c5d78f3e25b5979f67108a85960",
+      "size_bytes": 122508
     }
   ],
   "model_weights_included": false,
   "schema_version": "varp.k26.release-manifest.v1",
-  "tag": "v10-submission-ready"
+  "tag": "v11-conference-final"
 }
