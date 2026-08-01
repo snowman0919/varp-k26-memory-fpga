@@ -194,6 +194,16 @@ def main() -> int:
 
     if media != 5:
         fail(f"expected five movie shapes, got {media}")
+    for slide_number in (6, 8, 10, 11, 12):
+        shapes = list(prs.slides[slide_number - 1].shapes)
+        movie_index = next(index for index, shape in enumerate(shapes) if shape.shape_type == MSO_SHAPE_TYPE.MEDIA)
+        movie = shapes[movie_index]
+        movie_area = movie.width * movie.height
+        for shape in shapes[movie_index + 1:]:
+            overlap_w = max(0, min(movie.left + movie.width, shape.left + shape.width) - max(movie.left, shape.left))
+            overlap_h = max(0, min(movie.top + movie.height, shape.top + shape.height) - max(movie.top, shape.top))
+            if overlap_w * overlap_h > movie_area * 0.50:
+                fail(f"slide {slide_number}: shape above movie intercepts playback: {shape.name}")
     for slide_number in (8, 10, 12):
         count = sum(shape.shape_type == MSO_SHAPE_TYPE.MEDIA for shape in prs.slides[slide_number - 1].shapes)
         if count != 1:

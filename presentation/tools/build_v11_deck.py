@@ -240,10 +240,11 @@ def embedded_movie(c: SlideCanvas, stem: str, x: int, y: int, w: int, h: int) ->
     frame = ASSETS / f"{stem}_frame.png"
     movie = ASSETS / f"{stem}.mp4"
     c.image_file(frame, x, y, w, h, mode="contain")
+    # Keep decorative geometry behind the movie. A transparent shape placed
+    # after add_movie intercepts the click and makes PowerPoint playback appear
+    # broken even though the MP4 relationship is valid.
+    c.rect(x - 4, y - 4, w + 8, h + 8, BG, stroke=CYAN, stroke_width=2, radius=10, alpha=0)
     c.slide.shapes.add_movie(str(movie), inch(x), inch(y), inch(w), inch(h), poster_frame_image=str(frame), mime_type="video/mp4")
-    c.rect(x, y, w, h, BG, stroke=CYAN, stroke_width=2, radius=10, alpha=0)
-    c.circle(x + w - 90, y + h - 90, 58, CYAN)
-    c.text("▶", x + w - 78, y + h - 83, 34, 34, size=20, color=BG, bold=True, align="center", valign="middle")
 
 
 def metric(c: SlideCanvas, x: int, y: int, value: str, label: str, color: str, width: int = 430) -> None:
