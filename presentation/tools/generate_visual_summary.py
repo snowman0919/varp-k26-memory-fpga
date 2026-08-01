@@ -74,7 +74,7 @@ def main() -> int:
         "| 4 | `tail_latency_results.mp4/.gif` | 합성 부하와 Gemma 배치 민감도 | `paired_policy_effects.csv`; `gemma3_1b_policy_effects.csv` |",
         "| 5 | `bottleneck_migration.mp4/.gif` | p95·비지역 가중치·완료시간 절충 | `paired_policy_effects.csv` |",
         "",
-        "`presentation.mp4`와 `presentation.gif`는 위 장면을 연결한 무음 시각 요약이다. 9분 40초 구두 설명은 `speaker_notes.md`를 따른다.",
+        "`presentation.mp4`와 `presentation.gif`는 위 장면을 연결한 무음 시각 요약이다. 9분 50초 구두 설명은 `speaker_notes.md`를 따른다.",
     ]
     (FINAL / "animation_manifest.md").write_text("\n".join(manifest) + "\n", encoding="utf-8")
     print(f"visual_summary={mp4.relative_to(ROOT)} gif={gif.relative_to(ROOT)}")

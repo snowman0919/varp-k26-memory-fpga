@@ -53,7 +53,7 @@ GEMMA3_1B_ONNX_DIR=/authorized/path make model-trace
 
 - [제출 논문](paper/final/submission_manuscript.pdf)
 - [기술보고서](paper/technical_report/technical_report.pdf)
-- [14장 발표자료](presentation/final/presentation.pptx)
+- [16장 발표자료](presentation/final/presentation.pptx)
 - [발표 PDF](presentation/final/presentation.pdf)
 - [발표자 노트](presentation/final/speaker_notes.md)
 - [슬라이드별 출처 인덱스](presentation/final/slide_source_index.md)

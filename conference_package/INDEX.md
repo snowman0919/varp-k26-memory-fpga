@@ -11,7 +11,7 @@
 - 코드·데이터 공개 범위: [`paper/final/code_and_data_availability.md`](../paper/final/code_and_data_availability.md)
 - 개정 이력: [`paper/revisions/`](../paper/revisions/)
 
-## 9분 40초 발표
+## 9분 50초 발표
 
 - 편집 가능한 PPTX: [`presentation/final/presentation.pptx`](../presentation/final/presentation.pptx)
 - PDF: [`presentation/final/presentation.pdf`](../presentation/final/presentation.pdf)
@@ -61,4 +61,5 @@ KiCad 자료는 인터페이스 라우팅 참조 쿠폰이며 **NOT FOR FABRICAT
 
 로컬 산출물과 공식 소스 아카이브 검증은 통과했다. 과거 PDF의 GitHub 경보 #1은
 저장소 소유자가 `false_positive`로 해소했고, 현재 패키지 재귀 검사도 0건이다.
-공개 기준은 `v11-conference-final` tag와 Release로 고정한다.
+`v11-conference-final` tag와 Release는 공개 당시 기준선으로 보존한다. 이후 요청된
+16장 발표 개정은 tag를 이동하지 않고 `conference-final` 브랜치 최신 커밋에서 제공한다.

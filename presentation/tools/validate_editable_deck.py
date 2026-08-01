@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Fail-closed validation for the 14-slide v11 conference deck."""
+"""Fail-closed validation for the 16-slide v11 conference deck."""
 
 from __future__ import annotations
 
@@ -34,7 +34,9 @@ TITLES = [
     "작업 훔치기는 병목을 없애지 않고 이동시킨다",
     "이번 민감도에서는 K26 로컬이 우선이다",
     "KiCad 결과는 참조 라우팅 쿠폰이다",
-    "기여는 구조·비용 모델·재현 가능한 설계 흐름",
+    "한계와 향후 탐구 방향",
+    "결론 및 기여",
+    "Q&A",
 ]
 FONT_REGULAR = "/usr/share/fonts/truetype/nanum/NanumSquareR.ttf"
 FONT_BOLD = "/usr/share/fonts/truetype/nanum/NanumSquareB.ttf"
@@ -71,8 +73,8 @@ def main() -> int:
             fail(f"expected four embedded Manim movies, got {len(movies)}")
 
     prs = Presentation(PPTX)
-    if len(prs.slides) != 14:
-        fail(f"expected 14 slides, got {len(prs.slides)}")
+    if len(prs.slides) != 16:
+        fail(f"expected 16 slides, got {len(prs.slides)}")
     if abs(prs.slide_width / prs.slide_height - 16 / 9) > 0.002:
         fail("deck is not 16:9")
 
@@ -91,6 +93,11 @@ def main() -> int:
         screen = " ".join(value.replace("\n", " ") for value in texts)
         if title not in screen:
             fail(f"slide {index}: title missing")
+        if index == 16:
+            allowed = {"Q&A", "질문 받겠습니다", "감사합니다"}
+            visible = {value.strip() for value in texts if value.strip()}
+            if not visible.issubset(allowed):
+                fail(f"slide 16: detailed Q&A content must stay in speaker notes: {sorted(visible - allowed)!r}")
         notes = slide.notes_slide.notes_text_frame.text.strip()
         if not notes.startswith("기억할 문장:"):
             fail(f"slide {index}: notes do not start with memory sentence")
@@ -136,36 +143,36 @@ def main() -> int:
         fail(f"expected four movie shapes, got {media}")
     if pictures != 10:
         fail(f"expected ten scoped raster pictures, got {pictures}")
-    if len(PdfReader(str(PDF)).pages) != 14:
-        fail("PDF does not have 14 pages")
+    if len(PdfReader(str(PDF)).pages) != 16:
+        fail("PDF does not have 16 pages")
     pngs = sorted((FINAL / "slides").glob("slide_*.png"))
-    if len(pngs) != 14:
-        fail(f"expected 14 slide PNGs, got {len(pngs)}")
+    if len(pngs) != 16:
+        fail(f"expected 16 slide PNGs, got {len(pngs)}")
     for path in pngs:
         with Image.open(path) as image:
             if image.size != (1920, 1080):
                 fail(f"wrong slide PNG size: {path.name} {image.size}")
 
     notes_md = (FINAL / "speaker_notes.md").read_text(encoding="utf-8")
-    if notes_md.count("기억할 문장:") != 14:
-        fail("speaker notes must contain 14 memory sentences")
+    if notes_md.count("기억할 문장:") != 16:
+        fail("speaker notes must contain 16 memory sentences")
     for field in ("그림 설명 순서:", "예상 질문:", "답변 핵심:", "해석 경계:", "주의할 표현:"):
-        if notes_md.count(field) != 14:
-            fail(f"speaker notes must contain 14 {field} entries")
+        if notes_md.count(field) != 16:
+            fail(f"speaker notes must contain 16 {field} entries")
     for rubric in ("주제 이해도 30점", "전달성 10점", "질의응답 20점", "참여도 5점"):
         if rubric not in notes_md:
             fail(f"speaker notes missing final-round rubric: {rubric}")
     durations = re.findall(r"\((\d+):(\d{2})\)", notes_md)
     total_seconds = sum(int(minutes) * 60 + int(seconds) for minutes, seconds in durations)
-    if total_seconds != 580:
-        fail(f"speaker-note target is {total_seconds}s, expected 580s")
+    if total_seconds != 590:
+        fail(f"speaker-note target is {total_seconds}s, expected 590s")
     spoken = "".join(re.findall(r"(?:발화문|전환): (.*)", notes_md)).replace(" ", "")
     estimated_seconds = len(spoken) / 275 * 60
     if not 560 <= estimated_seconds <= 590:
         fail(f"script reading estimate {estimated_seconds:.1f}s outside 9:20–9:50")
 
     source_index = (FINAL / "slide_source_index.md").read_text(encoding="utf-8")
-    for index in range(1, 15):
+    for index in range(1, 17):
         if f"| {index} |" not in source_index:
             fail(f"source index missing slide {index}")
     for header in ("원본 CSV", "생성·검증 스크립트", "허용 해석", "금지 해석"):
@@ -174,7 +181,7 @@ def main() -> int:
 
     audit = {
         "status": "PASS",
-        "slides": 14,
+        "slides": 16,
         "aspect_ratio": "16:9",
         "embedded_manim_movies": media,
         "scoped_raster_pictures": pictures,
@@ -182,16 +189,16 @@ def main() -> int:
         "minimum_font_pt": min_font,
         "out_of_bounds_shapes": 0,
         "obsolete_v10_screen_values": 0,
-        "speaker_note_memory_sentences": 14,
-        "speaker_note_visual_orders": 14,
-        "speaker_note_expected_questions": 14,
+        "speaker_note_memory_sentences": 16,
+        "speaker_note_visual_orders": 16,
+        "speaker_note_expected_questions": 16,
         "final_round_rubric_mapped": True,
         "target_duration_seconds": total_seconds,
         "script_estimate_seconds_at_275_chars_per_minute": round(estimated_seconds, 1),
         "rendered_png_size": [1920, 1080],
     }
     (FINAL / "layout_audit.json").write_text(json.dumps(audit, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    print(f"validated: 14 slides, 4 embedded movies, 14 notes, {total_seconds}s target, {estimated_seconds:.1f}s reading estimate, minimum {min_font:.1f}pt")
+    print(f"validated: 16 slides, 4 embedded movies, 16 notes, {total_seconds}s target, {estimated_seconds:.1f}s reading estimate, minimum {min_font:.1f}pt")
     return 0
 
 

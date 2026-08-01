@@ -17,4 +17,6 @@
 | 11 | paired_policy_effects.csv | bottleneck_migration.mp4/frame | manim_scenes.py | S1/S2 비교 기준을 분리한 병목 이동 | 세 수치가 같은 비교라는 해석 |
 | 12 | k26_local_external_sensitivity.csv | 편집 가능한 로컬/외부 비교 | run_k26_local_baseline.py; build_v11_deck.py | 시험한 대역폭 민감도에서 K26 로컬 우선 | 보드 실측·모든 미래 조건의 우월성 |
 | 13 | 없음 | 실제 KiCad 렌더와 확대 이미지 | verify_k26_kicad.py; kicad-cli; build_v11_deck.py | 참조 쿠폰의 객체·부분 배선·제한 검사 범위 | 제작 가능 보드·전체 DRC 0 |
-| 14 | 없음 | 편집 가능한 기여·QR | build_v11_deck.py | 기여·한계·공개 저장소 | 실측 전력·완성 제품 |
+| 14 | 없음 | 편집 가능한 한계→탐구 관문 | build_v11_deck.py | 현재 미구현 경계와 후속 검증 순서 | 실측 완료·전체 보드 완료 |
+| 15 | 없음 | 편집 가능한 3줄 결론·QR | build_v11_deck.py | 후보 구조·효과 조건·현재 채택 판단의 요약 | 보편적 우월성·실측 완료 |
+| 16 | 없음 | 편집 가능한 Q&A 마무리 화면 | build_v11_deck.py; study/10_qna_bank.md; study/15_final_round_scoring_strategy.md | 구두 질의응답 시작 | 준비된 질문·답변이 화면에 있다는 해석 |

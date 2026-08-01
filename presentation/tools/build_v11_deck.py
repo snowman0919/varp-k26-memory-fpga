@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build the 14-slide v11 Korean conference deck.
+"""Build the 16-slide v11 Korean conference deck.
 
 The presentation keeps text, diagrams, bars, arrows, and annotations editable.
 Raster media is limited to a decorative cover, Manim fallback frames, the
@@ -74,17 +74,19 @@ META = (
     SlideMeta("온디바이스 sLLM을 위한 K26–Memory FPGA 후보 구조 평가", 0, "Gemma 3 1B 작업 부하에서 구조·배치·이동 비용의 채택 조건을 분석한다.", 25, "이 발표는 완성 제품이 아니라 K26–Memory FPGA 후보 구조의 설계 공간 평가입니다.", "온디바이스 sLLM에서 가중치를 어디에 두고 어떻게 공급할지를 연구했습니다. K26이 연산과 제어를 맡고 외부 Memory FPGA가 다채널 가중치 공급을 맡는 후보 구조를 만들고, 작업 훔치기(Work Stealing)가 유휴 연산을 줄이는 조건과 그때 생기는 데이터 이동 비용을 함께 분석했습니다.", "먼저 오늘 답할 질문을 보겠습니다.", "후보 구조·분석 결과이며 제작 완료 가속기를 뜻하지 않습니다."),
     SlideMeta("오늘 답할 네 가지 질문", 0, "필요성→구조→검증→채택 조건의 순서로 연구 질문에 답한다.", 25, "발표는 왜 검토했는지, 무엇을 설계했는지, 무엇을 확인했는지, 언제 채택할지의 순서입니다.", "첫째 외부 메모리 구조를 왜 검토했는가, 둘째 계산부와 가중치 공급부를 어떻게 나눴는가, 셋째 실제 Gemma 작업에서 무엇을 검증했는가, 마지막으로 어떤 조건에서 구조와 작업 훔치기가 유효한가를 답하겠습니다.", "출발점은 예상과 달랐던 용량 계산입니다.", "세부 조건은 발표자 노트와 출처 인덱스에 있습니다."),
     SlideMeta("1B는 4GB에 들어갔다—연구 질문을 바꿨다", 0, "외부 8GB의 가치는 용량보다 가중치 공급 분리와 유휴 연산 감소에서 검증해야 한다.", 45, "Gemma 1B의 2.43 GiB가 K26 4GB 안에 들어가므로 외부 메모리는 기본 요구가 아니라 조건부 후보입니다.", "INT8 가중치와 문맥 32K, 실행 여유를 합치면 약 2.43 GiB였습니다. 그래서 외부 8GB가 필요하다는 최초 가설을 버리고, 가중치 공급을 분리해 네 클러스터의 유휴를 줄이는 이득이 데이터 이동 비용보다 큰가로 질문을 바꿨습니다.", "이 질문을 두 FPGA의 역할 분리로 구체화했습니다.", "2.43 GiB는 용량 모델이며 보드 실측이 아닙니다."),
-    SlideMeta("계산은 K26, 공급은 Memory FPGA 후보", 1, "TileJob이 네 연산 클러스터와 네 DDR3L 채널·논리 링크의 위치를 함께 추적한다.", 50, "K26은 연산·제어를, Memory FPGA 후보는 네 채널의 가중치 공급을 맡습니다.", "K26의 네 연산 클러스터와 로컬 큐가 TileJob을 실행합니다. 외부 후보는 네 DDR3L 채널과 네 논리 링크로 가중치를 공급합니다. TileJob의 선호 채널과 링크가 계산 위치와 데이터 위치를 연결합니다. 실선은 이번에 닫은 논리 경로, 점선 GTH·CDC·MIG는 후속 물리 경로입니다.", "실제 타일이 닫힌 논리 경로를 통과하는지 확인했습니다.", "4채널과 4링크는 후보 구조이며 물리 GTH/MIG는 미구현입니다."),
-    SlideMeta("실제 가중치 타일이 논리 폐루프 RTL을 통과했다", 1, "DMA 응답 뒤에 MatVec이 실행되고 세 결과가 INT32 기준과 일치했다.", 45, "대표 Gemma 타일 세 개가 작업 수락부터 결과까지 닫힌 논리 경로를 통과했습니다.", "작업 수락, DMA 요청, 응답 경계, 논리 링크 FIFO, 작업 ID 결합, MatVec 결과를 하나의 상위 모듈로 연결했습니다. gate_proj, lm_head, o_proj 세 타일이 모두 INT32 기준과 일치했습니다. 이 실제 타일 시험은 1클러스터·1채널·S0이며, S3 작업 소유권 시험은 별도의 합성 스케줄러 시험 입력입니다. 응답은 MIG가 아니라 시험벤치 경계에서 주입했습니다.", "이제 동적 재분배가 필요한 정적 큐 문제를 보겠습니다.", "GTH·CDC·MIG 물리 타이밍과 작업 훔치기 결합 실험은 포함하지 않습니다."),
+    SlideMeta("계산은 K26, 공급은 Memory FPGA 후보", 1, "TileJob이 네 연산 클러스터와 네 DDR3L 채널·논리 링크의 위치를 함께 추적한다.", 45, "K26은 연산·제어를, Memory FPGA 후보는 네 채널의 가중치 공급을 맡습니다.", "K26의 네 연산 클러스터와 로컬 큐가 TileJob을 실행합니다. 외부 후보는 네 DDR3L 채널과 네 논리 링크로 가중치를 공급합니다. TileJob의 선호 채널과 링크가 계산 위치와 데이터 위치를 연결합니다. 실선은 이번에 닫은 논리 경로, 점선 GTH·CDC·MIG는 후속 물리 경로입니다.", "실제 타일이 닫힌 논리 경로를 통과하는지 확인했습니다.", "4채널과 4링크는 후보 구조이며 물리 GTH/MIG는 미구현입니다."),
+    SlideMeta("실제 가중치 타일이 논리 폐루프 RTL을 통과했다", 1, "DMA 응답 뒤에 MatVec이 실행되고 세 결과가 INT32 기준과 일치했다.", 40, "대표 Gemma 타일 세 개가 작업 수락부터 결과까지 닫힌 논리 경로를 통과했습니다.", "작업 수락, DMA 요청, 응답 경계, 논리 링크 FIFO, 작업 ID 결합, MatVec 결과를 하나의 상위 모듈로 연결했습니다. gate_proj, lm_head, o_proj 세 타일이 모두 INT32 기준과 일치했습니다. 이 실제 타일 시험은 1클러스터·1채널·S0이며, S3 작업 소유권 시험은 별도의 합성 스케줄러 시험 입력입니다. 응답은 MIG가 아니라 시험벤치 경계에서 주입했습니다.", "이제 동적 재분배가 필요한 정적 큐 문제를 보겠습니다.", "GTH·CDC·MIG 물리 타이밍과 작업 훔치기 결합 실험은 포함하지 않습니다."),
     SlideMeta("정적 로컬 큐는 지역성을 지키지만 작업대를 놀린다", 1, "한 큐가 길어지면 다른 클러스터가 비어 있어도 꼬리 작업은 기다린다.", 40, "정적 큐의 문제는 전체 자원 부족보다 작업 쏠림입니다.", "각 클러스터가 자기 큐만 처리하면 가중치 지역성은 좋습니다. 하지만 C0에 작업이 몰리면 C1부터 C3이 비어 있어도 도와주지 못하고, 뒤쪽 TileJob의 p95와 p99가 길어집니다.", "빈 작업대가 일을 가져오는 조건을 추가했습니다.", "이 화면은 개념이며 수치는 뒤의 동일 시드 실험에서 제시합니다."),
     SlideMeta("이득이 이동 비용보다 클 때만 훔친다", 1, "대기 감소가 가중치·활성값·부분합 이동 비용보다 큰 작업만 옮긴다.", 40, "S3 지역성 인식 작업 훔치기(Work Stealing)는 이동 비용을 서비스 시간에 직접 반영합니다.", "유휴 클러스터가 실행 가능한 작업을 찾고, 기다림 감소에서 데이터 이동 비용을 뺀 값이 양수일 때만 작업 소유권을 옮깁니다. S2는 가장 오래된 작업을 가져오지만 S3는 지역성 비용을 포함해 원격 이동량을 줄입니다.", "정책을 실제 Gemma 형상의 작업으로 바꾸겠습니다.", "영상은 정책 상태 전이이며 최적성이나 보드 타이밍을 뜻하지 않습니다."),
     SlideMeta("Gemma 그래프를 의존성 있는 802개 TileJob으로 변환", 2, "초기 배치와 나중 재분배의 효과를 분리한다.", 45, "그래프 형상과 단계·토큰 의존성, 네 초기 배치를 명시적으로 모델링했습니다.", "7,837개 그래프 노드에서 토큰당 183개 밀집 투영을 찾고 N≤1024 기준으로 802 TileJob을 만들었습니다. q/k/v 다음 o, MLP, 다음 계층, lm_head 뒤 다음 토큰 순서를 지켰습니다. 32토큰은 25,664 TileJob입니다. 네 초기 배치를 비교해 처음부터 잘 나눈 효과와 나중에 훔친 효과를 구분했습니다.", "같은 작업과 시드에서 정책만 바꾼 실행을 보겠습니다.", "802와 25,664는 그래프 형상과 명시한 타일 분할 규칙의 결과입니다."),
-    SlideMeta("동일 작업·동일 시드에서 S1과 S3만 바꿨다", 2, "S1의 유휴·대기 구간이 S3에서는 원격 준비와 연산 구간으로 바뀐다.", 50, "실행 사건 CSV의 같은 작업을 대기·원격 준비·연산 구간으로 비교합니다.", "합성 편향 부하의 같은 1,000개 작업과 같은 시드에서 정책만 바꿨습니다. 대표 작업 훔치기 세 건을 확대해 도착부터 배치까지의 대기, 원격 복사, 연산, 완료를 색으로 구분했습니다. 모든 정책은 완료 ID와 작업 해시가 같고 중복과 누락이 없습니다.", "다섯 시드를 짝지은 꼬리 지연 결과를 보겠습니다.", "분석 사건이며 GTH·DDR 물리 사이클이 아닙니다."),
-    SlideMeta("효과는 부하 불균형과 초기 배치에 조건부", 2, "편향 부하에서는 줄지만 Gemma의 기존 산술 배치에서는 오히려 늘 수 있다.", 50, "작업 훔치기는 남은 불균형이 큰 조건에서만 효과가 있습니다.", "합성 편향 부하에서 S3는 S1보다 TileJob p95를 19.13%, p99를 18.71% 줄였습니다. Gemma 형상에서는 기존 산술 배치가 p95를 0.28% 늘렸고 채널 친화 배치에서는 19.79% 줄였습니다. 보편적 우월성이 아니라 효과 조건을 분리한 결과입니다.", "이득과 함께 새로 생긴 비용을 보겠습니다.", "p95와 p99는 의존성 해제 뒤 TileJob 완료 분포이며 사용자 응답 지연이 아닙니다."),
-    SlideMeta("작업 훔치기는 병목을 없애지 않고 이동시킨다", 2, "큐 대기는 줄지만 원격 복사와 링크·메모리 서비스가 새 비용이 된다.", 45, "비교 기준을 분리하면 꼬리 지연 감소와 이동량 감소가 완료시간 개선을 보장하지 않음을 볼 수 있습니다.", "S3 대 S1에서 p95는 19.13% 줄었습니다. S3 대 S2에서 원격 가중치는 35.49% 줄었지만 완료시간은 0.01% 늘어 사실상 같았습니다. 첫 비교는 정적 큐 효과, 두 번째는 지역성 점수 효과입니다.", "이제 전체 구조가 K26 로컬 기준선을 이기는지 보겠습니다.", "서로 다른 기준의 수치를 하나의 인과식으로 해석하지 않습니다."),
+    SlideMeta("동일 작업·동일 시드에서 S1과 S3만 바꿨다", 2, "S1의 유휴·대기 구간이 S3에서는 원격 준비와 연산 구간으로 바뀐다.", 45, "실행 사건 CSV의 같은 작업을 대기·원격 준비·연산 구간으로 비교합니다.", "합성 편향 부하의 같은 1,000개 작업과 같은 시드에서 정책만 바꿨습니다. 대표 작업 훔치기 세 건을 확대해 도착부터 배치까지의 대기, 원격 복사, 연산, 완료를 색으로 구분했습니다. 모든 정책은 완료 ID와 작업 해시가 같고 중복과 누락이 없습니다.", "다섯 시드를 짝지은 꼬리 지연 결과를 보겠습니다.", "분석 사건이며 GTH·DDR 물리 사이클이 아닙니다."),
+    SlideMeta("효과는 부하 불균형과 초기 배치에 조건부", 2, "편향 부하에서는 줄지만 Gemma의 기존 산술 배치에서는 오히려 늘 수 있다.", 45, "작업 훔치기는 남은 불균형이 큰 조건에서만 효과가 있습니다.", "합성 편향 부하에서 S3는 S1보다 TileJob p95를 19.13%, p99를 18.71% 줄였습니다. Gemma 형상에서는 기존 산술 배치가 p95를 0.28% 늘렸고 채널 친화 배치에서는 19.79% 줄였습니다. 보편적 우월성이 아니라 효과 조건을 분리한 결과입니다.", "이득과 함께 새로 생긴 비용을 보겠습니다.", "p95와 p99는 의존성 해제 뒤 TileJob 완료 분포이며 사용자 응답 지연이 아닙니다."),
+    SlideMeta("작업 훔치기는 병목을 없애지 않고 이동시킨다", 2, "큐 대기는 줄지만 원격 복사와 링크·메모리 서비스가 새 비용이 된다.", 40, "비교 기준을 분리하면 꼬리 지연 감소와 이동량 감소가 완료시간 개선을 보장하지 않음을 볼 수 있습니다.", "S3 대 S1에서 p95는 19.13% 줄었습니다. S3 대 S2에서 원격 가중치는 35.49% 줄었지만 완료시간은 0.01% 늘어 사실상 같았습니다. 첫 비교는 정적 큐 효과, 두 번째는 지역성 점수 효과입니다.", "이제 전체 구조가 K26 로컬 기준선을 이기는지 보겠습니다.", "서로 다른 기준의 수치를 하나의 인과식으로 해석하지 않습니다."),
     SlideMeta("이번 민감도에서는 K26 로컬이 우선이다", 3, "시험한 대역폭 범위에서 외부 4채널 후보는 K26 로컬 완료시간을 이기지 못했다.", 45, "Gemma 1B의 기본 선택은 이번 분석 민감도에서 K26 로컬입니다.", "대표 중앙 조건에서 K26 로컬 9.6 GB/s는 약 24.6M사이클, 외부 4채널 6.4 GB/s는 약 120.6M사이클이었습니다. 모든 시험 범위에서 외부 후보가 로컬을 이기지 못했습니다. 외부 구조는 더 큰 모델, 더 긴 문맥, 실제 로컬 경합이 계측될 때 재평가해야 합니다.", "물리 후보를 어디까지 구체화했는지 보겠습니다.", "분석 모델의 민감도이며 보드 측정이나 주파수 환산값이 아닙니다."),
-    SlideMeta("KiCad 결과는 참조 라우팅 쿠폰이다", 3, "실제 KiCad 객체와 일부 배선은 만들었지만 전체 제품 보드나 제작 자료는 아니다.", 45, "쿠폰은 경계 링크·기준 클록·DDR3L 한 슬라이스의 물리 질문을 구체화합니다.", "범용 경계 커넥터, DDR3L x16 한 슬라이스, GTH/기준 클록 일부 배선을 실제 KiCad 객체로 만들었습니다. 풋프린트 29개와 배선 20개, 선언된 쿠폰 범위의 ERC/DRC 0을 확인했지만 전체 116개 신호망 중 55개가 미배선이고 SI/PI/PDN도 남았습니다.", "기여와 다음 검증을 정리하겠습니다.", "REFERENCE COUPON이며 NOT FOR FABRICATION입니다."),
-    SlideMeta("기여는 구조·비용 모델·재현 가능한 설계 흐름", 3, "현재 결과는 제한 RTL과 분석 모델이며 GitHub에서 전 과정을 재현할 수 있다.", 30, "핵심 기여는 역할 분리 구조, 이동 비용을 포함한 동적 배치, 모델→RTL→KiCad 재현 흐름입니다.", "계산과 가중치 공급의 역할을 분리했고, 이동 비용을 실제 서비스 시간에 넣어 동적 작업 배치를 평가했으며, 모델 형상에서 논리 RTL과 KiCad 쿠폰까지 이어지는 흐름을 공개했습니다. 다음 단계는 K26 로컬 보드 실측, GTH와 MIG 물리 폐루프, 전체 보드 전력과 비용입니다.", "이상으로 발표를 마치겠습니다. 질문 받겠습니다.", "재현 시작 명령은 `make setup && make reproduce`입니다."),
+    SlideMeta("KiCad 결과는 참조 라우팅 쿠폰이다", 3, "실제 KiCad 객체와 일부 배선은 만들었지만 전체 제품 보드나 제작 자료는 아니다.", 45, "쿠폰은 경계 링크·기준 클록·DDR3L 한 슬라이스의 물리 질문을 구체화합니다.", "범용 경계 커넥터, DDR3L x16 한 슬라이스, GTH/기준 클록 일부 배선을 실제 KiCad 객체로 만들었습니다. 풋프린트 29개와 배선 20개, 선언된 쿠폰 범위의 ERC/DRC 0을 확인했지만 전체 116개 신호망 중 55개가 미배선이고 SI/PI/PDN도 남았습니다.", "이제 현재 한계와 다음 검증 순서를 분명히 하겠습니다.", "REFERENCE COUPON이며 NOT FOR FABRICATION입니다."),
+    SlideMeta("한계와 향후 탐구 방향", 3, "현재의 미구현 경계를 다음 세 측정 관문으로 바꾼다.", 25, "한계는 미완성 목록이 아니라 다음 검증 순서를 결정합니다.", "현재 결과는 제한 RTL과 분석 모델까지입니다. 다음은 K26 로컬 기준선을 측정하고 물리 폐루프를 연결한 뒤 정확성·대역폭·꼬리 지연·SI/PI·전력을 재평가합니다.", "세 문장으로 결론과 기여를 정리하겠습니다.", "현재 성능·전력은 보드 실측이 아니며 제작 가능한 전체 보드도 아닙니다. 후속 물리 폐루프는 packet/GTH·CDC·credit, MIG timing, 핀·전원·배선, SI/PI·보드 계측 순입니다."),
+    SlideMeta("결론 및 기여", 3, "이 연구의 결론은 세 문장으로 압축된다.", 25, "구조, 조건, 채택 판단이 이 연구의 세 줄 결론입니다.", "첫째 계산·공급 역할 분리 후보를 설계했습니다. 둘째 분석 모델에서 이동 비용을 포함한 Work Stealing 조건을 분리했습니다. 셋째 이번 민감도에서 Gemma 1B는 K26 로컬 우선입니다.", "이상으로 발표를 마치겠습니다.", "재현 시작 명령은 `make setup && make reproduce`이며 공개 저장소의 수치도 분석 모델 경계를 유지합니다."),
+    SlideMeta("Q&A", 3, "질문 받겠습니다.", 15, "질문은 결론→근거→경계→다음 검증 순서로 짧게 답합니다.", "이상으로 발표를 마치겠습니다. 질문 받겠습니다.", "감사합니다.", "상세 답변은 study/10_qna_bank.md와 study/15_final_round_scoring_strategy.md의 발표자 참고 자료에만 둡니다."),
 )
 
 NOTE_EXTENSIONS = (
@@ -101,7 +103,9 @@ NOTE_EXTENSIONS = (
     "왼쪽은 정적 S1과 S3를 비교하고 오른쪽은 가장 오래된 작업 우선 S2와 S3를 비교합니다. 기준이 다르므로 세 수치를 하나의 연속 인과식으로 읽으면 안 됩니다.",
     "4.8, 9.6, 14.4 GB/s의 로컬과 3.2, 6.4, 12.8 GB/s의 외부 민감도를 비교했습니다. 전 범위에서 외부 후보가 로컬 완료시간을 이기지 못했습니다.",
     "화면의 J1·J2는 특정 K26나 Memory FPGA BGA 핀 배치가 아니라 범용 경계입니다. 미배선 55개와 SI·PI·PDN 관문 때문에 제작 대상으로 사용할 수 없습니다.",
-    "현재 결론은 Gemma 1B는 K26 로컬 우선입니다. 외부 후보는 더 큰 모델, 긴 문맥, 실제 로컬 경합이 계측된 뒤 같은 실행 추적과 정확성 조건에서 다시 판단합니다.",
+    "",
+    "",
+    "",
 )
 
 VISUAL_ORDERS = (
@@ -118,7 +122,9 @@ VISUAL_ORDERS = (
     "S1 대비 p95 → S2 대비 원격 가중치 → 완료시간 → 기준 차이",
     "K26 로컬 → 외부 후보 → 시험 대역폭 범위 → 채택 보류 조건",
     "전체 KiCad 렌더 → 경계 링크 → 기준 클록 → DDR3L 쿠폰 → 제작 금지",
-    "세 기여 → 현재 한계 → GitHub QR → Q&A",
+    "현재 한계 세 가지 → 대응 탐구 세 단계 → 검증 순서",
+    "01 후보 구조 → 02 효과 조건 → 03 채택 판단 → GitHub QR",
+    "화면 중앙 Q&A → 질문을 향해 시선 이동",
 )
 
 EXPECTED_QUESTIONS = (
@@ -135,7 +141,9 @@ EXPECTED_QUESTIONS = (
     "세 수치의 비교 기준이 서로 다른 이유는 무엇인가?",
     "K26 로컬이 이겼는데 외부 구조 연구가 왜 의미 있는가?",
     "이 PCB 자료로 바로 제작할 수 있는가?",
-    "가장 독창적인 기여와 다음 검증 한 가지는 무엇인가?",
+    "가장 먼저 수행할 후속 실험은 무엇인가?",
+    "가장 독창적인 기여를 한 가지로 압축하면 무엇인가?",
+    "질문을 받으면 어떤 순서로 답할 것인가?",
 )
 
 ANSWER_CORES = (
@@ -152,7 +160,9 @@ ANSWER_CORES = (
     "S1 비교는 정적 큐 대비 재분배 효과를, S2 비교는 단순 훔치기 대비 지역성 점수 효과를 분리합니다.",
     "이번 1B 조건은 K26 로컬이 우선이지만 더 큰 모델·긴 문맥·실측 로컬 경합에서는 외부 후보를 다시 평가할 가치가 있습니다.",
     "아닙니다. 범용 경계와 일부 GTH·기준 클록·DDR3L 배선을 확인한 참조 쿠폰이며 미배선·SI/PI/PDN 과제가 남았습니다.",
-    "가장 큰 기여는 계산 위치와 데이터 위치를 함께 평가한 공동설계이며 다음 검증은 동일 Gemma 작업의 K26 로컬 보드 측정입니다.",
+    "동일 Gemma 작업의 K26 로컬 보드 기준선을 먼저 측정한 뒤 물리 폐루프와 전력 평가를 연결합니다.",
+    "계산 위치와 데이터 위치를 이동 비용까지 포함해 함께 평가한 공동설계입니다.",
+    "결론 한 문장, 근거 유형과 수치, 해석 경계, 다음 검증 순서로 25초 안에 답합니다.",
 )
 
 CAUTIONS = (
@@ -169,7 +179,9 @@ CAUTIONS = (
     "서로 다른 기준의 수치를 하나의 연속 인과식으로 묶지 않는다.",
     "민감도 결과를 보드 실측이나 미래 모든 조건으로 일반화하지 않는다.",
     "쿠폰 ERC/DRC 0을 전체 보드 제작 준비 완료로 말하지 않는다.",
-    "저비용·저전력 달성과 완성 시스템을 주장하지 않는다.",
+    "한계를 변명처럼 나열하지 말고 후속 검증 순서로 연결한다.",
+    "세 문장 밖의 세부 설명을 화면에 추가하지 않는다.",
+    "준비된 질문·답변을 화면에 표시하거나 노트를 그대로 읽지 않는다.",
 )
 
 
@@ -443,25 +455,59 @@ def make_qr() -> Path:
 
 def slide_14(c: SlideCanvas) -> None:
     header(c, META[13])
-    items = [("1", "계산·메모리\n역할 분리", BLUE), ("2", "이동 비용 포함\n동적 작업 배치", CYAN), ("3", "모델→RTL→KiCad\n재현 흐름", TEAL)]
-    xs = [100, 480, 860]
-    for number, label, color in items:
-        x = xs[int(number) - 1]
-        c.circle(x + 90, 330, 110, BG3, stroke=color, stroke_width=3)
-        c.text(number, x + 90, 352, 110, 58, size=29, color=color, bold=True, align="center", valign="middle")
-        c.text(label, x - 20, 500, 330, 110, size=20, color=WHITE, bold=True, align="center", valign="middle")
-    c.line(90, 700, 1240, 700, GRID, width=2)
-    c.text("한계", 110, 760, 120, 40, size=19, color=RED, bold=True)
-    c.text("현재 성능·전력은 제한 RTL과 분석 모델 기반", 250, 748, 900, 58, size=22, color=WHITE, bold=True)
+    c.text("현재 한계", 120, 250, 430, 50, size=21, color=RED, bold=True)
+    c.text("다음 측정 관문", 1060, 250, 500, 50, size=21, color=CYAN, bold=True)
+    rows = [
+        ("제한 RTL·분석 모델", "K26 로컬 보드 기준선", "01"),
+        ("GTH·CDC·MIG 미구현", "물리 폐루프 통합", "02"),
+        ("전력·SI/PI 미측정", "SI/PI·전력 검증 + 동일 Gemma 재평가", "03"),
+    ]
+    for index, (limit, future, number) in enumerate(rows):
+        y = 345 + index * 185
+        c.rect(110, y, 600, 115, BG3, stroke="#5B2A38", stroke_width=2, radius=14)
+        c.text(limit, 150, y + 26, 520, 60, size=23, color=WHITE, bold=True, valign="middle")
+        c.line(735, y + 58, 1005, y + 58, GRID, width=4)
+        c.chevron(965, y + 32, 72, 52, CYAN)
+        c.circle(1060, y + 14, 86, BG3, stroke=CYAN, stroke_width=3)
+        c.text(number, 1060, y + 33, 86, 42, size=19, color=CYAN, bold=True, align="center", valign="middle")
+        c.text(future, 1175, y + 25, 610, 66, size=22, color=WHITE, bold=True, valign="middle")
+    c.line(110, 930, 1810, 930, GRID, width=2)
+    c.text("검증 순서", 120, 955, 180, 42, size=18, color=TEAL, bold=True)
+    c.text("정확성 → 유효 대역폭 → 꼬리 지연 → SI/PI·전력", 330, 945, 1250, 58, size=23, color=WHITE, bold=True)
+
+
+def slide_15(c: SlideCanvas) -> None:
+    header(c, META[14])
+    lines = [
+        ("01", "K26 계산·Memory FPGA 공급의 역할 분리 후보 구조를 설계했다.", BLUE),
+        ("02", "분석 모델에서 이동 비용을 포함해 Work Stealing의 유효 조건을 분리했다.", CYAN),
+        ("03", "이번 민감도에서 Gemma 1B는 K26 로컬 우선이다.", TEAL),
+    ]
+    for index, (number, sentence, color) in enumerate(lines):
+        y = 285 + index * 190
+        c.text(number, 110, y, 130, 74, size=31, color=color, bold=True, align="center", valign="middle")
+        c.line(265, y + 36, 335, y + 36, color, width=4)
+        c.text(sentence, 370, y - 2, 1160, 80, size=25, color=WHITE, bold=True, valign="middle")
     qr = make_qr()
-    c.rect(1370, 270, 400, 400, WHITE, radius=8)
-    c.image_file(qr, 1390, 290, 360, 360, mode="contain")
-    c.text("코드·데이터·논문", 1350, 690, 440, 42, size=20, color=CYAN, bold=True, align="center")
-    c.text("github.com/snowman0919/\nvarp-k26-memory-fpga", 1300, 760, 540, 78, size=17, color=WHITE, align="center")
-    c.text("Q&A", 1420, 900, 300, 60, size=34, color=CYAN, bold=True, align="center")
+    c.rect(1590, 330, 230, 230, WHITE, radius=8)
+    c.image_file(qr, 1605, 345, 200, 200, mode="contain")
+    c.text("코드·데이터·논문", 1530, 590, 350, 38, size=17, color=CYAN, bold=True, align="center")
+    c.text("github.com/snowman0919/\nvarp-k26-memory-fpga", 1490, 645, 430, 72, size=13, color=MUTED, align="center")
+    c.line(110, 920, 1810, 920, GRID, width=2)
+    c.text("구조 → 효과 조건 → 현재 채택 판단", 110, 950, 1700, 50, size=21, color=MUTED, align="center")
 
 
-BUILDERS = (slide_1, slide_2, slide_3, slide_4, slide_5, slide_6, slide_7, slide_8, slide_9, slide_10, slide_11, slide_12, slide_13, slide_14)
+def slide_16(c: SlideCanvas) -> None:
+    c.rect(0, 0, W, H, BG)
+    c.circle(660, 120, 600, BG2, stroke="#123B51", stroke_width=3)
+    c.circle(760, 220, 400, BG, stroke=CYAN, stroke_width=2)
+    c.rect(770, 485, 380, 8, CYAN)
+    c.text("Q&A", 510, 360, 900, 220, size=72, color=WHITE, bold=True, align="center", valign="middle")
+    c.text("질문 받겠습니다", 610, 620, 700, 70, size=26, color=CYAN, bold=True, align="center", valign="middle")
+    c.text("감사합니다", 760, 930, 400, 46, size=18, color=MUTED, align="center")
+
+
+BUILDERS = (slide_1, slide_2, slide_3, slide_4, slide_5, slide_6, slide_7, slide_8, slide_9, slide_10, slide_11, slide_12, slide_13, slide_14, slide_15, slide_16)
 
 
 def read_csv(path: Path) -> list[dict[str, str]]:
@@ -471,9 +517,9 @@ def read_csv(path: Path) -> list[dict[str, str]]:
 
 def write_notes() -> None:
     lines = [
-        "# VARP v11 — 9분 40초 발표자 노트",
+        "# VARP v11 — 9분 50초 발표자 노트",
         "",
-        "총 목표 시간: 9:40",
+        "총 목표 시간: 9:50",
         "",
         "## 본선 심사 기준 대응",
         "",
@@ -481,7 +527,7 @@ def write_notes() -> None:
         "- 전달성 10점: 한 슬라이드 한 문장, 그림은 아래 순서대로 가리키며 읽지 말고 설명한다.",
         "- 질의응답 20점: 결론 한 문장→근거 유형·수치→해석 경계→다음 검증 순서로 25초 안에 답한다.",
         "- 참여도 5점: 전체 세션의 80% 이상 접속하고 다른 발표에 근거 있는 질문을 준비한다.",
-        "- 시간 점검: Slide 4 끝 2:25 · Slide 8 끝 5:15 · Slide 11 끝 7:40 · Slide 13 끝 9:10.",
+        "- 시간 점검: Slide 4 끝 2:20 · Slide 8 끝 5:05 · Slide 11 끝 7:15 · Slide 14 끝 9:10 · Slide 15 끝 9:35.",
         "",
     ]
     for index, meta in enumerate(META, 1):
@@ -511,7 +557,7 @@ def write_notes() -> None:
 
 
 def write_outline() -> None:
-    lines = ["# 온디바이스 sLLM을 위한 K26–Memory FPGA 후보 구조 평가", "", "형식: 16:9 · 14장 · 목표 9:40 · 한국어 기술 컨퍼런스 발표", "", "중심 문장: K26 계산부와 Memory FPGA 가중치 공급부의 후보 구조를 평가하고, 작업 훔치기(Work Stealing)는 남은 부하 불균형의 이득이 이동 비용보다 클 때만 사용하는 수단으로 둔다.", "", "## 구성", ""]
+    lines = ["# 온디바이스 sLLM을 위한 K26–Memory FPGA 후보 구조 평가", "", "형식: 16:9 · 16장 · 목표 9:50 · 한국어 기술 컨퍼런스 발표", "", "중심 문장: K26 계산부와 Memory FPGA 가중치 공급부의 후보 구조를 평가하고, 작업 훔치기(Work Stealing)는 남은 부하 불균형의 이득이 이동 비용보다 클 때만 사용하는 수단으로 둔다.", "", "## 구성", ""]
     for index, meta in enumerate(META, 1):
         minutes, seconds = divmod(meta.duration, 60)
         lines.append(f"{index}. {meta.title} — {minutes}:{seconds:02d} · {meta.conclusion}")
@@ -533,7 +579,9 @@ def write_source_index() -> None:
         (11, "paired_policy_effects.csv", "bottleneck_migration.mp4/frame", "manim_scenes.py", "S1/S2 비교 기준을 분리한 병목 이동", "세 수치가 같은 비교라는 해석"),
         (12, "k26_local_external_sensitivity.csv", "편집 가능한 로컬/외부 비교", "run_k26_local_baseline.py; build_v11_deck.py", "시험한 대역폭 민감도에서 K26 로컬 우선", "보드 실측·모든 미래 조건의 우월성"),
         (13, "없음", "실제 KiCad 렌더와 확대 이미지", "verify_k26_kicad.py; kicad-cli; build_v11_deck.py", "참조 쿠폰의 객체·부분 배선·제한 검사 범위", "제작 가능 보드·전체 DRC 0"),
-        (14, "없음", "편집 가능한 기여·QR", "build_v11_deck.py", "기여·한계·공개 저장소", "실측 전력·완성 제품"),
+        (14, "없음", "편집 가능한 한계→탐구 관문", "build_v11_deck.py", "현재 미구현 경계와 후속 검증 순서", "실측 완료·전체 보드 완료"),
+        (15, "없음", "편집 가능한 3줄 결론·QR", "build_v11_deck.py", "후보 구조·효과 조건·현재 채택 판단의 요약", "보편적 우월성·실측 완료"),
+        (16, "없음", "편집 가능한 Q&A 마무리 화면", "build_v11_deck.py; study/10_qna_bank.md; study/15_final_round_scoring_strategy.md", "구두 질의응답 시작", "준비된 질문·답변이 화면에 있다는 해석"),
     ]
     lines = ["# Slide Source Index", "", "모든 경로는 저장소 root 기준이다. 화면에서 생략한 시드·분석 모델 조건은 speaker notes와 연구 CSV에 남긴다.", "", "| Slide | 원본 CSV | 사용 Figure / 자료 | 생성·검증 스크립트 | 허용 해석 | 금지 해석 |", "|---:|---|---|---|---|---|"]
     for row in rows:
@@ -555,9 +603,10 @@ def build_pdf(paths: list[Path]) -> None:
 
 def contact_sheet(paths: list[Path]) -> Path:
     tw, th = 480, 270
-    sheet = Image.new("RGB", (tw * 2 + 84, th * 7 + 135), rgb("#030812"))
+    rows = (len(paths) + 1) // 2
+    sheet = Image.new("RGB", (tw * 2 + 84, th * rows + 135), rgb("#030812"))
     draw = ImageDraw.Draw(sheet)
-    draw.text((42, 26), "VARP v11 · 14-slide contact sheet", font=font(18, True), fill=rgb(WHITE))
+    draw.text((42, 26), f"VARP v11 · {len(paths)}-slide contact sheet", font=font(18, True), fill=rgb(WHITE))
     for index, path in enumerate(paths):
         image = Image.open(path).convert("RGB").resize((tw, th), Image.Resampling.LANCZOS)
         col, row = index % 2, index // 2
