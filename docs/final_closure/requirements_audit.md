@@ -30,7 +30,7 @@ archive, PDF timeout, README, study, release, secret scan Gate는 그대로 유�
 | 발표 | 12~14장, 9:20~9:50, 목차와 진행 표시 | **PASS** | 14장, 목표 580초·낭독 추정 574.3초, PPTX/PDF/notes/source index/PNG/contact sheet; 본선 30·10·20·5점 기준 매핑 |
 | Manim | 설명 기능이 있는 영상 3개 이상 | **PASS** | 데이터 흐름·작업 재분배·타임라인·꼬리 지연·병목 이동 영상과 정지 fallback 생성 |
 | 발표 편집성 | 텍스트·도형·그래프 편집 가능 | **PASS** | 14장 검증, 4개 내장 영상, 텍스트·도형 중심 구성; 전체 슬라이드 이미지화 없음 |
-| Q&A | 80개 이상, v11 연구 중심 | **PASS** | 연구 중심 89문항과 본선 심사 전략을 포함한 33쪽 학습 자료 PDF 완성 |
+| Q&A | 80개 이상, v11 연구 중심 | **PASS** | 연구 중심 89문항과 본선 심사 전략을 포함한 34쪽 학습 자료 PDF 완성 |
 | 공개 인덱스 | 논문·슬라이드·표·그림·영상·Q&A 한곳 연결 | **PASS** | `conference_package/INDEX.md`와 슬라이드별 출처·해석 경계 연결 |
 | README | 한국어 최소 공개 진입점 | **PASS** | 구조·핵심 결과·Quick start·재현 명령·산출물 경로를 간결하게 제공 |
 | 저장소 정리 | Release ZIP과 대형 미디어를 main에서 제거 | **PASS** | ZIP·대형 MP4/GIF 추적 제거 및 `.gitignore`; 로컬 Release 자산은 유지 |
